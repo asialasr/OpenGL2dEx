@@ -1,4 +1,5 @@
 #include "texture_2d.h"
+#include "logging.h"
 #include <glad/glad.h>
 
 namespace util {
@@ -14,12 +15,15 @@ namespace util {
 		, filter_max_{GL_LINEAR}
 	{
 		glGenTextures(1, &id_);
+		ASSERT(id_ != 0, "Texture not properly generated");
 	}
 
 	void Texture2D::generate(const unsigned int width, 
 							 const unsigned int height, 
 							 unsigned char		*data)
 	{
+		ASSERT(data, "No image data");
+
 		width_ = width;
 		height_ = height;
 

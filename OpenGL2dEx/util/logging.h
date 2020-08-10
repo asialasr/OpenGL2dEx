@@ -2,6 +2,7 @@
 #define LOGGING_H
 
 #include <iostream>
+#include <cassert>
 
 #define LOG(message) \
 do {\
@@ -13,6 +14,7 @@ do {\
 if (!(bex)) {\
 std::cerr << "Assertion Failed: ";\
 LOG(message);\
+assert(false);\
 }\
 } while (0)
 

@@ -11,9 +11,14 @@ namespace util {
 
 	class Shader {
 	public:
+		Shader(const Shader& other)
+			: id_{ other.id_ }
+		{
+		}
+
 		Shader(const char *vertex_path, const char *fragment_path, Optional<const char *> geometry_path);
 
-		void use()
+		void use() const
 		{
 			glUseProgram(id_);
 		}

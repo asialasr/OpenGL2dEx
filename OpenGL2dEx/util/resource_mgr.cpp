@@ -19,7 +19,7 @@ namespace util {
 		return shader_id;
 	}
 
-	Shader ResourceManager::get_shader(const ShaderId shader_id)
+	const Shader &ResourceManager::get_shader(const ShaderId shader_id)
 	{
 		ASSERT(shaders_.find(shader_id) != shaders_.end(), "ResourceManager: shader not found");
 		return shaders_.at(shader_id);
@@ -37,6 +37,7 @@ namespace {
 
 		int width, height, num_channels;
 		unsigned char* data = stbi_load(file, &width, &height, &num_channels, 0);
+		ASSERT(data, "No data read in from image file");
 
 		texture.generate(width, height, data);
 
@@ -53,7 +54,7 @@ namespace {
 		return texture_id;
 	}
 
-	Texture2D ResourceManager::get_texture(Texture2DId texture_id)
+	const Texture2D &ResourceManager::get_texture(Texture2DId texture_id)
 	{
 		ASSERT(textures_.find(texture_id) != textures_.end(), "Texture ID not found");
 		return textures_[texture_id];

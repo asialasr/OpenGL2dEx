@@ -14,11 +14,11 @@ public:
 
 	// load/get shaders
 	static ShaderId load_shader(const char * vertex_path, const char * fragment_path, const Optional<const char *> geometry_path);
-	static Shader   get_shader(ShaderId shader_id);
+	static const Shader   &get_shader(ShaderId shader_id);
 	
 	// 2D Textures
 	static Texture2DId load_texture(const char *file, bool alpha);
-	static Texture2D   get_texture(Texture2DId texture_id);
+	static const Texture2D   &get_texture(Texture2DId texture_id);
 
 	// de-allocate all resources
 	static void clear();

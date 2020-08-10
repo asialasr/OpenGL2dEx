@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "resource_mgr.h"
+#include "sprite_renderer.h"
+
 namespace util {
 
 	class Game
@@ -35,6 +38,12 @@ namespace util {
 		GameState state_;
 		bool      keys_[kNumKeys];
 		Dimension width_, height_;
+
+		SpriteRenderer            *sprite_renderer_;
+		ResourceManager::ShaderId sprite_shader_id_;
+
+		// textures
+		ResourceManager::Texture2DId smiley_texture_id_;
 	}; // class Game
 
 } // namespace util

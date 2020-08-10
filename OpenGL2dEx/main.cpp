@@ -1,5 +1,6 @@
 #include "util/game.h"
 #include "util/logging.h"
+#include "util/gl_debug.h"
 #include "util/resource_mgr.h"
 
 #include <glad/glad.h>
@@ -76,6 +77,8 @@ int main(int argc, char *argv[])
 		g_breakout_.render();
 
 		glfwSwapBuffers(window);
+
+		util::check_for_gl_errors();
 	}
 
 	// delete all resources as loaded using manager

@@ -113,6 +113,8 @@ Shader::Shader(const char *vertex_path, const char *fragment_path, Optional<cons
 	}
 	glAttachShader(id_, fragment_shader_id);
 
+	glLinkProgram(id_);
+
 	check_compile_errors(id_, CompileErrorCheckType::kLinker, {});
 
 	// delete the shaders since they're already linked in
@@ -182,12 +184,12 @@ void Shader::set_mat2(const std::string &name, const glm::mat2 &mat, const bool 
 
 void Shader::set_mat3(const std::string &name, const glm::mat3 &mat, const bool allow_invalid) const
 {
-	glUniformMatrix4fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
+	glUniformMatrix3fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
 }
 
 void Shader::set_mat4(const std::string &name, const glm::mat4 &mat, const bool allow_invalid) const
 {
-	glUniformMatrix3fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
+	glUniformMatrix4fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
 }
 
 } // namespace util
