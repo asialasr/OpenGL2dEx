@@ -18,10 +18,7 @@ namespace util {
 
 		Shader(const char *vertex_path, const char *fragment_path, Optional<const char *> geometry_path);
 
-		void use() const
-		{
-			glUseProgram(id_);
-		}
+		void use() const;
 
 		void set_bool(const std::string &name, bool value, bool allow_invalid) const;
 		void set_int(const std::string &name, int value, bool allow_invalid) const;

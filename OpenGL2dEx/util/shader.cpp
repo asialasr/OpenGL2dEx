@@ -1,6 +1,7 @@
 #include "shader.h"
 
 #include "logging.h"
+#include "gl_debug.h"
 #include <fstream>
 #include <sstream>
 
@@ -47,6 +48,8 @@ void check_compile_errors(unsigned int object, CompileErrorCheckType type, const
 		ASSERT(false, "Unknown compile error checking type");
 		break;
 	}
+
+	check_for_gl_errors();
 }
 
 std::string shader_code(const char *shader_path)
@@ -126,6 +129,12 @@ Shader::Shader(const char *vertex_path, const char *fragment_path, Optional<cons
 	glDeleteShader(fragment_shader_id);
 }
 
+void Shader::use() const
+{
+	glUseProgram(id_);
+	check_for_gl_errors();
+}
+
 namespace {
 	unsigned int uniform_location(const unsigned int id, const std::string &name, bool allow_invalid)
 	{
@@ -145,51 +154,61 @@ namespace {
 void Shader::set_bool(const std::string &name, const bool value, const bool allow_invalid) const
 {
 	glUniform1i(uniform_location(id_, name, allow_invalid), static_cast<int>(value));
+	check_for_gl_errors();
 }
 
 void Shader::set_int(const std::string &name, const int value, const bool allow_invalid) const
 {
 	glUniform1i(uniform_location(id_, name, allow_invalid), value);
+	check_for_gl_errors();
 }
 
 void Shader::set_float(const std::string &name, const float value, const bool allow_invalid) const
 {
 	glUniform1f(uniform_location(id_, name, allow_invalid), value);
+	check_for_gl_errors();
 }
 
 void Shader::set_vec2(const std::string &name, const float val_1, const float val_2, const bool allow_Invalid) const
 {
 	glUniform2f(uniform_location(id_, name, allow_Invalid), val_1, val_2);
+	check_for_gl_errors();
 }
 
 void Shader::set_vec2(const std::string &name, const glm::vec2 &vec, const bool allow_invalid) const
 {
 	set_vec2(name, vec.x, vec.y, allow_invalid);
+	check_for_gl_errors();
 }
 
 void Shader::set_vec3(const std::string &name, const float val_1, const float val_2, const float val_3, const bool allow_invalid) const
 {
 	glUniform3f(uniform_location(id_, name, allow_invalid), val_1, val_2, val_3);
+	check_for_gl_errors();
 }
 
 void Shader::set_vec3(const std::string &name, const glm::vec3 &vec, bool allow_invalid) const
 {
 	set_vec3(name, vec.x, vec.y, vec.z, allow_invalid);
+	check_for_gl_errors();
 }
 
 void Shader::set_mat2(const std::string &name, const glm::mat2 &mat, const bool allow_invalid) const
 {
 	glUniformMatrix2fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
+	check_for_gl_errors();
 }
 
 void Shader::set_mat3(const std::string &name, const glm::mat3 &mat, const bool allow_invalid) const
 {
 	glUniformMatrix3fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
+	check_for_gl_errors();
 }
 
 void Shader::set_mat4(const std::string &name, const glm::mat4 &mat, const bool allow_invalid) const
 {
 	glUniformMatrix4fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);
+	check_for_gl_errors();
 }
 
 } // namespace util
