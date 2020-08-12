@@ -12,7 +12,12 @@ namespace util
 		, height_{ height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
+		, background_texture_id_{}
 		, smiley_texture_id_{}
+		, block_texture_id_{}
+		, block_solid_texture_id_{}
+		, levels_{}
+		, current_level_{0}
 	{
 
 	}
@@ -44,8 +49,32 @@ namespace util
 
 		sprite_renderer_ = new SpriteRenderer{ ResourceManager::get_shader(sprite_shader_id_) };
 
-		smiley_texture_id_ = ResourceManager::load_texture("textures/awesomeface.png", true);
+		background_texture_id_ = ResourceManager::load_texture(kBackgroundImagePath, false);
+		smiley_texture_id_ = ResourceManager::load_texture(kSmileyImagePath, true);
+		block_texture_id_ = ResourceManager::load_texture(kBlockImagePath, false);
+		block_solid_texture_id_ = ResourceManager::load_texture(kBlockSolidImagePath, false);
 
+		auto one = GameLevel{};
+		one.load(kLevelOnePath, width_, height_ / 2,
+			block_solid_texture_id_, block_texture_id_);
+
+		auto two = GameLevel{};
+		two.load(kLevelTwoPath, width_, height_ / 2,
+			block_solid_texture_id_, block_texture_id_);
+
+		auto three = GameLevel{};
+		three.load(kLevelThreePath, width_, height_ / 2,
+			block_solid_texture_id_, block_texture_id_);
+
+		auto four = GameLevel{};
+		four.load(kLevelFourPath, width_, height_ / 2,
+			block_solid_texture_id_, block_texture_id_);
+
+		levels_.push_back(one);
+		levels_.push_back(two);
+		levels_.push_back(three);
+		levels_.push_back(four);
+		current_level_ = 0;
 		check_for_gl_errors();
 	}
 
@@ -61,8 +90,15 @@ namespace util
 
 	void Game::render()
 	{
-		sprite_renderer_->draw(ResourceManager::get_texture(smiley_texture_id_),
-			glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (GameState::kActive == state_)
+		{
+			sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
+				glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
+
+			levels_.at(current_level_).draw(*sprite_renderer_);
+		}
+		//sprite_renderer_->draw(ResourceManager::get_texture(smiley_texture_id_),
+		//	glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	void Game::set_key(size_t key, bool val)

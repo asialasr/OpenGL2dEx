@@ -1,8 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "game_level.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
+
+#include <vector>
 
 namespace util {
 
@@ -35,6 +38,16 @@ namespace util {
 		}
 
 	private:
+		const char * const kLevelOnePath = "levels/one.lvl";
+		const char * const kLevelTwoPath = "levels/two.lvl";
+		const char * const kLevelThreePath = "levels/three.lvl";
+		const char * const kLevelFourPath = "levels/four.lvl";
+
+		const char * const kBackgroundImagePath = "textures/background.jpg";
+		const char * const kSmileyImagePath = "textures/awesomeface.png";
+		const char * const kBlockSolidImagePath = "textures/block_solid.png";
+		const char * const kBlockImagePath = "textures/block.png";
+
 		GameState state_;
 		bool      keys_[kNumKeys];
 		Dimension width_, height_;
@@ -43,7 +56,13 @@ namespace util {
 		ResourceManager::ShaderId sprite_shader_id_;
 
 		// textures
+		ResourceManager::Texture2DId background_texture_id_;
 		ResourceManager::Texture2DId smiley_texture_id_;
+		ResourceManager::Texture2DId block_texture_id_;
+		ResourceManager::Texture2DId block_solid_texture_id_;
+	
+		std::vector<GameLevel> levels_;
+		size_t                 current_level_;
 	}; // class Game
 
 } // namespace util

@@ -20,7 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util\game.h" />
+    <ClInclude Include="util\game_object.h" />
     <ClInclude Include="util\gl_debug.h" />
+    <ClInclude Include="util\game_level.h" />
     <ClInclude Include="util\logging.h" />
     <ClInclude Include="util\optional.h" />
     <ClInclude Include="util\resource_mgr.h" />
@@ -33,17 +35,26 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stbi\stb_helper.cpp" />
     <ClCompile Include="util\game.cpp" />
+    <ClCompile Include="util\game_level.cpp" />
+    <ClCompile Include="util\game_object.cpp" />
     <ClCompile Include="util\resource_mgr.cpp" />
     <ClCompile Include="util\shader.cpp" />
     <ClCompile Include="util\sprite_renderer.cpp" />
     <ClCompile Include="util\texture_2d.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="levels\four.lvl" />
+    <None Include="levels\one.lvl" />
+    <None Include="levels\three.lvl" />
+    <None Include="levels\two.lvl" />
     <None Include="shaders\sprite.fs" />
     <None Include="shaders\sprite.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\background.jpg" />
+    <Image Include="textures\block.png" />
+    <Image Include="textures\block_solid.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{781DCEDD-00BB-4977-8541-8CFC545308D7}</ProjectGuid>

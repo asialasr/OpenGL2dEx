@@ -9,6 +9,19 @@ class Texture2D {
 public:
 	Texture2D();
 
+	Texture2D(const Texture2D &other)
+		: id_{ other.id_ }
+		, width_{ other.width_ }
+		, height_{ other.height_ }
+		, internal_format_{ other.internal_format_ }
+		, image_format_{ other.image_format_ }
+		, wrap_s_{ other.wrap_s_ }
+		, wrap_t_{ other.wrap_t_ }
+		, filter_min_{ other.filter_min_ }
+		, filter_max_{ other.filter_max_ }
+	{
+	}
+
 	void generate(unsigned int width, unsigned int height, unsigned char* data);
 
 	void bind() const;

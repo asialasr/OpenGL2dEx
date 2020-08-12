@@ -37,7 +37,7 @@ namespace {
 
 		int width, height, num_channels;
 		unsigned char* data = stbi_load(file, &width, &height, &num_channels, 0);
-		ASSERT(data, "No data read in from image file");
+		ASSERT(data, "No data read in from image file: " + std::string{ file });
 
 		texture.generate(width, height, data);
 
