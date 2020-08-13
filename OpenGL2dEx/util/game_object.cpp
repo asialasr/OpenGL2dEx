@@ -2,12 +2,11 @@
 
 namespace util {
 
-
 	GameObject::GameObject()
 		: position_{0.0f, 0.0f}
 		, size_{1.0f, 1.0f}
 		, velocity_{0.0f}
-		, color_{1.0f}
+		, color_{1.0f, 1.0f, 1.0f}
 		, rotation_{0.0f}
 		, is_solid_{true}
 		, destroyed_{false}

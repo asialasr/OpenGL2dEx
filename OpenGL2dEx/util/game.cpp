@@ -3,6 +3,8 @@
 #include "logging.h"
 #include "gl_debug.h"
 
+#include <GLFW/glfw3.h>
+
 namespace util
 {
 	Game::Game(Dimension width, Dimension height) 
@@ -16,10 +18,11 @@ namespace util
 		, smiley_texture_id_{}
 		, block_texture_id_{}
 		, block_solid_texture_id_{}
+		, paddle_texture_id_{}
 		, levels_{}
 		, current_level_{0}
+		, paddle_{}
 	{
-
 	}
 
 	Game::~Game()
@@ -29,6 +32,12 @@ namespace util
 			delete sprite_renderer_;
 		}
 		sprite_renderer_ = nullptr;
+
+		if (paddle_)
+		{
+			delete paddle_;
+		}
+		paddle_ = nullptr;
 	}
 
 	void Game::initialize()
@@ -53,6 +62,7 @@ namespace util
 		smiley_texture_id_ = ResourceManager::load_texture(kSmileyImagePath, true);
 		block_texture_id_ = ResourceManager::load_texture(kBlockImagePath, false);
 		block_solid_texture_id_ = ResourceManager::load_texture(kBlockSolidImagePath, false);
+		paddle_texture_id_ = ResourceManager::load_texture(kPaddleImagePath, true);
 
 		auto one = GameLevel{};
 		one.load(kLevelOnePath, width_, height_ / 2,
@@ -75,12 +85,36 @@ namespace util
 		levels_.push_back(three);
 		levels_.push_back(four);
 		current_level_ = 0;
+
+		auto player_pos = glm::vec2(
+			width_ / 2.0f - kPlayerSize.x / 2.0f,
+			height_ - kPlayerSize.y
+		);
+		paddle_ = new GameObject(player_pos, kPlayerSize, ResourceManager::get_texture(paddle_texture_id_), {}, {});
+
 		check_for_gl_errors();
 	}
 
-	void Game::process_input(float /*dt*/)
+	void Game::process_input(float dt)
 	{
-
+		if (GameState::kActive == state_)
+		{
+			auto velocity = kPlayerVelocity * dt;
+			if (keys_[GLFW_KEY_A])
+			{
+				if (paddle_->position().x >= 0.0f)
+				{
+					paddle_->move_x(-velocity);
+				}
+			}
+			if (keys_[GLFW_KEY_D])
+			{
+				if (paddle_->position().x <= width_ - paddle_->size().x)
+				{
+					paddle_->move_x(velocity);
+				}
+			}
+		}
 	}
 
 	void Game::update(float /*dt*/)
@@ -96,6 +130,9 @@ namespace util
 				glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
 
 			levels_.at(current_level_).draw(*sprite_renderer_);
+			paddle_->draw(*sprite_renderer_);
+
+			check_for_gl_errors();
 		}
 		//sprite_renderer_->draw(ResourceManager::get_texture(smiley_texture_id_),
 		//	glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));

@@ -47,6 +47,7 @@ namespace util {
 		const char * const kSmileyImagePath = "textures/awesomeface.png";
 		const char * const kBlockSolidImagePath = "textures/block_solid.png";
 		const char * const kBlockImagePath = "textures/block.png";
+		const char * const kPaddleImagePath = "textures/paddle.png";
 
 		GameState state_;
 		bool      keys_[kNumKeys];
@@ -60,9 +61,16 @@ namespace util {
 		ResourceManager::Texture2DId smiley_texture_id_;
 		ResourceManager::Texture2DId block_texture_id_;
 		ResourceManager::Texture2DId block_solid_texture_id_;
-	
+		ResourceManager::Texture2DId paddle_texture_id_;
+
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
+
+		// TODO(sasiala): what's the deal with this not being able
+		// to be constexpr and/or static?
+		const glm::vec2 kPlayerSize = glm::vec2( 100.0f, 20.0f );
+		static constexpr float kPlayerVelocity{ 500.0f };
+		GameObject *paddle_;
 	}; // class Game
 
 } // namespace util

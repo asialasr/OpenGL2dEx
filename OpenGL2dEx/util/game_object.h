@@ -22,6 +22,31 @@ public:
 			   Optional<glm::vec3> color, 
 			   Optional<glm::vec2> velocity);
 
+	GameObject(const GameObject &other)
+		: position_{ other.position_ }
+		, size_{ other.size_ }
+		, velocity_{ other.velocity_ }
+		, color_{ other.color_ }
+		, rotation_{ other.rotation_ }
+		, is_solid_{ other.is_solid_ }
+		, destroyed_{ other.destroyed_ }
+		, sprite_{ other.sprite_ }
+	{
+	}
+
+	GameObject& operator=(const GameObject &other)
+	{
+		position_ = other.position_;
+		size_ = other.size_;
+		velocity_ = other.velocity_;
+		color_ = other.color_;
+		rotation_ = other.rotation_;
+		is_solid_ = other.is_solid_;
+		destroyed_ = other.destroyed_;
+		sprite_ = other.sprite_;
+		return *this;
+	}
+
 	virtual void draw(SpriteRenderer &renderer);
 
 	bool is_solid() const
@@ -42,6 +67,26 @@ public:
 	void set_destroyed(bool destroyed)
 	{
 		destroyed_ = destroyed;
+	}
+
+	const glm::vec2& position() const
+	{
+		return position_;
+	}
+
+	void move_x(float dx)
+	{
+		position_.x += dx;
+	}
+
+	void move_y(float dy)
+	{
+		position_.y += dy;
+	}
+
+	const glm::vec2& size() const
+	{
+		return size_;
 	}
 
 private:

@@ -55,6 +55,7 @@
     <Image Include="textures\background.jpg" />
     <Image Include="textures\block.png" />
     <Image Include="textures\block_solid.png" />
+    <Image Include="textures\paddle.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{781DCEDD-00BB-4977-8541-8CFC545308D7}</ProjectGuid>

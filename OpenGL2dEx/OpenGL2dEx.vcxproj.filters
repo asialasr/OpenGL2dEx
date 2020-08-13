@@ -99,5 +99,8 @@
     <Image Include="textures\block_solid.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="textures\paddle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
