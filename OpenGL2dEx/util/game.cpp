@@ -60,7 +60,7 @@ namespace util
 		delete_dynamic_data();
 
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
-		
+
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width_),
 			static_cast<float>(height_), 0.0f, -1.0f, 1.0f);
 		ResourceManager::get_shader(sprite_shader_id_).use();
@@ -75,27 +75,15 @@ namespace util
 		block_solid_texture_id_ = ResourceManager::load_texture(kBlockSolidImagePath, false);
 		paddle_texture_id_ = ResourceManager::load_texture(kPaddleImagePath, true);
 		ball_texture_id_ = ResourceManager::load_texture(kBallImagePath, true);
+		
+		for (size_t i = 0; i < kMaxLevels; ++i)
+		{
+			auto level = GameLevel{};
+			level.load(kLevelPaths[i], width_, height_ / 2,
+				       block_solid_texture_id_, block_texture_id_);
+			levels_.push_back(level);
+		}
 
-		auto one = GameLevel{};
-		one.load(kLevelOnePath, width_, height_ / 2,
-			block_solid_texture_id_, block_texture_id_);
-
-		auto two = GameLevel{};
-		two.load(kLevelTwoPath, width_, height_ / 2,
-			block_solid_texture_id_, block_texture_id_);
-
-		auto three = GameLevel{};
-		three.load(kLevelThreePath, width_, height_ / 2,
-			block_solid_texture_id_, block_texture_id_);
-
-		auto four = GameLevel{};
-		four.load(kLevelFourPath, width_, height_ / 2,
-			block_solid_texture_id_, block_texture_id_);
-
-		levels_.push_back(one);
-		levels_.push_back(two);
-		levels_.push_back(three);
-		levels_.push_back(four);
 		current_level_ = 0;
 
 		auto player_pos = glm::vec2(
@@ -153,12 +141,36 @@ namespace util
 		}
 	}
 
+	void Game::reset_level()
+	{
+		ASSERT(kMaxLevels >= current_level_, "Invalid level");
+
+		// TODO(sasiala): I think a "reset" function in level would be better
+		levels_[current_level_].load(kLevelPaths[current_level_], 
+			width_, height_ / 2, 
+			block_solid_texture_id_, block_texture_id_);
+	}
+
+	void Game::reset_player()
+	{
+		paddle_->set_size(kPlayerSize);
+		paddle_->set_position(glm::vec2(width_ / 2.0f - kPlayerSize.x / 2.0f,
+			height_ - kPlayerSize.y));
+		ball_->reset(paddle_->position() + glm::vec2(paddle_->size().x / 2.0f - kBallRadius, -(kBallRadius * 2.0f)), kInitialBallVelocity);
+	}
+
 	void Game::update(float dt)
 	{
 		ASSERT(ball_, "No ball defined");
 
 		ball_->move(dt, width_);
 		check_collisions();
+
+		if (ball_->position().y >= height_)
+		{
+			reset_level();
+			reset_player();
+		}
 	}
 
 namespace {
@@ -318,7 +330,9 @@ namespace {
 			glm::vec2 old_velocity = ball_->velocity();
 			glm::vec2 new_velocity = ball_->velocity();
 			new_velocity.x = kInitialBallVelocity.x * percentage * strength;
-			new_velocity.y = -old_velocity.y;
+			// new_velocity.y = -old_velocity.y;
+			// assuming that collision is always with top of paddle prevents sticky issue
+			new_velocity.y = -1 * abs(old_velocity.y);
 			new_velocity = glm::normalize(new_velocity) * glm::length(old_velocity);
 			ball_->set_velocity(new_velocity);
 		}

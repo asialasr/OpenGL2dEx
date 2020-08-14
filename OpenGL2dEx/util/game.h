@@ -52,12 +52,18 @@ namespace util {
 		}
 
 	private:
+		void reset_level();
+		void reset_player();
+
 		void delete_dynamic_data();
 
-		const char * const kLevelOnePath = "levels/one.lvl";
-		const char * const kLevelTwoPath = "levels/two.lvl";
-		const char * const kLevelThreePath = "levels/three.lvl";
-		const char * const kLevelFourPath = "levels/four.lvl";
+		static constexpr size_t kMaxLevels{ 4 };
+		const char * const kLevelPaths[kMaxLevels] = {
+			"levels/one.lvl",
+			"levels/two.lvl",
+			"levels/three.lvl",
+			"levels/four.lvl"
+		};
 
 		const char * const kBackgroundImagePath = "textures/background.jpg";
 		const char * const kSmileyImagePath = "textures/awesomeface.png";

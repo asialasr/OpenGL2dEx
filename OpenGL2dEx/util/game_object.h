@@ -119,6 +119,11 @@ public:
 		return size_;
 	}
 
+	void set_size(const glm::vec2 &size)
+	{
+		size_ = size;
+	}
+
 private:
 	// object state
 	glm::vec2 position_;
