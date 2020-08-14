@@ -155,6 +155,38 @@ namespace util
 		ASSERT(ball_, "No ball defined");
 
 		ball_->move(dt, width_);
+		check_collisions();
+	}
+
+namespace {
+	bool check_collision(const GameObject &one, const GameObject &two)
+	{
+		const auto collision_x = (one.position().x + one.size().x) >= two.position().x &&
+			(two.position().x + two.size().x) >= one.position().x;
+		const auto collision_y = (one.position().y + one.size().y) >= two.position().y &&
+			(two.position().y + two.size().y) >= one.position().y;
+
+		return (collision_x && collision_y);
+	
+	}
+} // namespace
+
+	void Game::check_collisions()
+	{
+		auto &current_level = levels_.at(current_level_);
+		size_t index = 0;
+		for (auto &box : current_level.bricks())
+		{
+			if (!box.is_destroyed() && 
+				check_collision(*ball_, box))
+			{
+				if (!box.is_solid())
+				{
+					current_level.set_brick_destroyed(index, true);
+				}
+			}
+			++index;
+		}
 	}
 
 	void Game::render()

@@ -22,6 +22,7 @@ namespace util {
 
 		void process_input(float dt);
 		void update(float dt);
+		void check_collisions();
 		void render();
 
 		static constexpr size_t kNumKeys{ 1024 };
