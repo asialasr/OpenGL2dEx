@@ -9,6 +9,8 @@
 
 namespace util {
 
+	class BallObject;
+
 	class Game
 	{
 	public:
@@ -38,6 +40,8 @@ namespace util {
 		}
 
 	private:
+		void delete_dynamic_data();
+
 		const char * const kLevelOnePath = "levels/one.lvl";
 		const char * const kLevelTwoPath = "levels/two.lvl";
 		const char * const kLevelThreePath = "levels/three.lvl";
@@ -48,6 +52,7 @@ namespace util {
 		const char * const kBlockSolidImagePath = "textures/block_solid.png";
 		const char * const kBlockImagePath = "textures/block.png";
 		const char * const kPaddleImagePath = "textures/paddle.png";
+		const char * const kBallImagePath = "textures/awesomeface.png";
 
 		GameState state_;
 		bool      keys_[kNumKeys];
@@ -62,6 +67,7 @@ namespace util {
 		ResourceManager::Texture2DId block_texture_id_;
 		ResourceManager::Texture2DId block_solid_texture_id_;
 		ResourceManager::Texture2DId paddle_texture_id_;
+		ResourceManager::Texture2DId ball_texture_id_;
 
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
@@ -71,6 +77,10 @@ namespace util {
 		const glm::vec2 kPlayerSize = glm::vec2( 100.0f, 20.0f );
 		static constexpr float kPlayerVelocity{ 500.0f };
 		GameObject *paddle_;
+
+		const glm::vec2 kInitialBallVelocity{ 100.0f, -350.0f };
+		static constexpr float kBallRadius{ 12.5f };
+		BallObject *ball_;
 	}; // class Game
 
 } // namespace util

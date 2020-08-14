@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include "ball_object.h"
 #include "logging.h"
 #include "gl_debug.h"
 
@@ -25,7 +26,7 @@ namespace util
 	{
 	}
 
-	Game::~Game()
+	void Game::delete_dynamic_data()
 	{
 		if (sprite_renderer_)
 		{
@@ -38,15 +39,22 @@ namespace util
 			delete paddle_;
 		}
 		paddle_ = nullptr;
+
+		if (ball_)
+		{
+			delete ball_;
+		}
+		ball_ = nullptr;
+	}
+
+	Game::~Game()
+	{
+		delete_dynamic_data();
 	}
 
 	void Game::initialize()
 	{
-		if (sprite_renderer_)
-		{
-			delete sprite_renderer_;
-		}
-		sprite_renderer_ = nullptr;
+		delete_dynamic_data();
 
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
 		
@@ -63,6 +71,7 @@ namespace util
 		block_texture_id_ = ResourceManager::load_texture(kBlockImagePath, false);
 		block_solid_texture_id_ = ResourceManager::load_texture(kBlockSolidImagePath, false);
 		paddle_texture_id_ = ResourceManager::load_texture(kPaddleImagePath, true);
+		ball_texture_id_ = ResourceManager::load_texture(kBallImagePath, true);
 
 		auto one = GameLevel{};
 		one.load(kLevelOnePath, width_, height_ / 2,
@@ -90,13 +99,23 @@ namespace util
 			width_ / 2.0f - kPlayerSize.x / 2.0f,
 			height_ - kPlayerSize.y
 		);
-		paddle_ = new GameObject(player_pos, kPlayerSize, ResourceManager::get_texture(paddle_texture_id_), {}, {});
+		paddle_ = new GameObject(player_pos, kPlayerSize, 
+			ResourceManager::get_texture(paddle_texture_id_), {}, {});
 
+		auto ball_pos = player_pos + 
+						glm::vec2(kPlayerSize.x / 2.0f - kBallRadius, 
+								  -kBallRadius * 2.0f);
+		ball_ = new BallObject(ball_pos, kBallRadius, kInitialBallVelocity, 
+			ResourceManager::get_texture(ball_texture_id_));
+		
 		check_for_gl_errors();
 	}
 
 	void Game::process_input(float dt)
 	{
+		ASSERT(ball_, "No ball defined");
+		ASSERT(paddle_, "No paddle defined");
+
 		if (GameState::kActive == state_)
 		{
 			auto velocity = kPlayerVelocity * dt;
@@ -105,6 +124,11 @@ namespace util
 				if (paddle_->position().x >= 0.0f)
 				{
 					paddle_->move_x(-velocity);
+
+					if (ball_->stuck())
+					{
+						ball_->move_x(-velocity);
+					}
 				}
 			}
 			if (keys_[GLFW_KEY_D])
@@ -112,18 +136,32 @@ namespace util
 				if (paddle_->position().x <= width_ - paddle_->size().x)
 				{
 					paddle_->move_x(velocity);
+
+					if (ball_->stuck())
+					{
+						ball_->move_x(velocity);
+					}
 				}
+			}
+			if (keys_[GLFW_KEY_SPACE])
+			{
+				ball_->set_stuck(false);
 			}
 		}
 	}
 
-	void Game::update(float /*dt*/)
+	void Game::update(float dt)
 	{
+		ASSERT(ball_, "No ball defined");
 
+		ball_->move(dt, width_);
 	}
 
 	void Game::render()
 	{
+		ASSERT(ball_, "No ball defined");
+		ASSERT(paddle_, "No paddle defined");
+
 		if (GameState::kActive == state_)
 		{
 			sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
@@ -131,6 +169,7 @@ namespace util
 
 			levels_.at(current_level_).draw(*sprite_renderer_);
 			paddle_->draw(*sprite_renderer_);
+			ball_->draw(*sprite_renderer_);
 
 			check_for_gl_errors();
 		}

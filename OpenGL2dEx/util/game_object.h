@@ -74,6 +74,11 @@ public:
 		return position_;
 	}
 
+	void progress_time(float dt)
+	{
+		position_ += velocity_ * dt;
+	}
+
 	void move_x(float dx)
 	{
 		position_.x += dx;
@@ -82,6 +87,31 @@ public:
 	void move_y(float dy)
 	{
 		position_.y += dy;
+	}
+
+	void set_position(const glm::vec2 &position)
+	{
+		position_ = position;
+	}
+
+	void set_pos_x(float x)
+	{
+		position_.x = x;
+	}
+
+	void set_pos_y(float y)
+	{
+		position_.y = y;
+	}
+
+	const glm::vec2& velocity() const
+	{
+		return velocity_;
+	}
+
+	void set_velocity(const glm::vec2 &velocity)
+	{
+		velocity_ = velocity;
 	}
 
 	const glm::vec2& size() const

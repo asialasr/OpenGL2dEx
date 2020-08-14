@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\ball_object.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
     <ClInclude Include="util\gl_debug.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stbi\stb_helper.cpp" />
+    <ClCompile Include="util\ball_object.cpp" />
     <ClCompile Include="util\game.cpp" />
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
