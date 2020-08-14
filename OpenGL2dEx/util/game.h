@@ -6,6 +6,7 @@
 #include "sprite_renderer.h"
 
 #include <vector>
+#include <tuple>
 
 namespace util {
 
@@ -14,7 +15,17 @@ namespace util {
 	class Game
 	{
 	public:
+		enum class Direction {
+			kUp,
+			kDown,
+			kLeft,
+			kRight,
+			kNumDirections,
+			kUnknown,
+		};
 		typedef unsigned int Dimension;
+		typedef std::tuple<bool, Direction, glm::vec2> Collision;
+		
 		Game(Dimension width, Dimension height);
 		~Game();
 

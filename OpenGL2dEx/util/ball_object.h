@@ -17,6 +17,11 @@ public:
 	void      reset(const glm::vec2 &position, 
 					const glm::vec2 &velocity);
 
+	float radius() const
+	{
+		return radius_;
+	}
+
 	bool stuck() const
 	{
 		return stuck_;
