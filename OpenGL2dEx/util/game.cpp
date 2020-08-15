@@ -3,6 +3,7 @@
 #include "ball_object.h"
 #include "logging.h"
 #include "gl_debug.h"
+#include "particle_generator.h"
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -18,6 +19,7 @@ namespace util
 		, height_{ height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
+		, particle_shader_id_{}
 		, background_texture_id_{}
 		, smiley_texture_id_{}
 		, block_texture_id_{}
@@ -25,7 +27,9 @@ namespace util
 		, paddle_texture_id_{}
 		, levels_{}
 		, current_level_{0}
-		, paddle_{}
+		, paddle_{ nullptr }
+		, ball_{ nullptr }
+		, particle_generator_{ nullptr }
 	{
 	}
 
@@ -48,6 +52,12 @@ namespace util
 			delete ball_;
 		}
 		ball_ = nullptr;
+
+		if (particle_generator_)
+		{
+			delete particle_generator_;
+		}
+		particle_generator_ = nullptr;
 	}
 
 	Game::~Game()
@@ -60,6 +70,7 @@ namespace util
 		delete_dynamic_data();
 
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
+		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {});
 
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width_),
 			static_cast<float>(height_), 0.0f, -1.0f, 1.0f);
@@ -75,7 +86,8 @@ namespace util
 		block_solid_texture_id_ = ResourceManager::load_texture(kBlockSolidImagePath, false);
 		paddle_texture_id_ = ResourceManager::load_texture(kPaddleImagePath, true);
 		ball_texture_id_ = ResourceManager::load_texture(kBallImagePath, true);
-		
+		particle_texture_id_ = ResourceManager::load_texture(kParticleImagePath, true);
+
 		for (size_t i = 0; i < kMaxLevels; ++i)
 		{
 			auto level = GameLevel{};
@@ -99,6 +111,13 @@ namespace util
 		ball_ = new BallObject(ball_pos, kBallRadius, kInitialBallVelocity, 
 			ResourceManager::get_texture(ball_texture_id_));
 		
+		particle_generator_ = new ParticleGenerator(
+			ResourceManager::get_shader(particle_shader_id_),
+			ResourceManager::get_texture(particle_texture_id_),
+			kMaxParticles,
+			projection
+		);
+
 		check_for_gl_errors();
 	}
 
@@ -162,6 +181,7 @@ namespace util
 	void Game::update(float dt)
 	{
 		ASSERT(ball_, "No ball defined");
+		ASSERT(particle_generator_, "No particle generator defined");
 
 		ball_->move(dt, width_);
 		check_collisions();
@@ -171,6 +191,8 @@ namespace util
 			reset_level();
 			reset_player();
 		}
+
+		particle_generator_->update(dt, *ball_, kNewParticlesPerUpdate, glm::vec2(ball_->radius() / 2.0f));
 	}
 
 namespace {
@@ -350,6 +372,7 @@ namespace {
 
 			levels_.at(current_level_).draw(*sprite_renderer_);
 			paddle_->draw(*sprite_renderer_);
+			particle_generator_->draw();
 			ball_->draw(*sprite_renderer_);
 
 			check_for_gl_errors();

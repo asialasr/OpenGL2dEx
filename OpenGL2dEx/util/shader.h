@@ -27,6 +27,8 @@ namespace util {
 		void set_vec2(const std::string &name, const glm::vec2 &vec, bool allow_invalid) const;
 		void set_vec3(const std::string &name, float val_1, float val_2, float val_3, bool allow_invalid) const;
 		void set_vec3(const std::string &name, const glm::vec3 &vec, bool allow_invalid) const;
+		void set_vec4(const std::string &name, float val_1, float val_2, float val_3, float val_4, bool allow_invalid) const;
+		void set_vec4(const std::string &name, const glm::vec4 &vec, bool allow_invalid) const;
 		void set_mat2(const std::string &name, const glm::mat2 &mat, bool allow_invalid) const;
 		void set_mat3(const std::string &name, const glm::mat3 &mat, bool allow_invalid) const;
 		void set_mat4(const std::string &name, const glm::mat4 &mat, bool allow_invalid) const;

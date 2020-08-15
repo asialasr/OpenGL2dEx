@@ -193,6 +193,18 @@ void Shader::set_vec3(const std::string &name, const glm::vec3 &vec, bool allow_
 	check_for_gl_errors();
 }
 
+void Shader::set_vec4(const std::string &name, float val_1, float val_2, float val_3, float val_4, bool allow_invalid) const
+{
+	glUniform4f(uniform_location(id_, name, allow_invalid), val_1, val_2, val_3, val_4);
+	check_for_gl_errors();
+}
+
+void Shader::set_vec4(const std::string &name, const glm::vec4 &vec, bool allow_invalid) const
+{
+	set_vec4(name, vec.x, vec.y, vec.z, vec.w, allow_invalid);
+	check_for_gl_errors();
+}
+
 void Shader::set_mat2(const std::string &name, const glm::mat2 &mat, const bool allow_invalid) const
 {
 	glUniformMatrix2fv(uniform_location(id_, name, allow_invalid), 1, GL_FALSE, &mat[0][0]);

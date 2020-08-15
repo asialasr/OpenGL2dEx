@@ -26,6 +26,7 @@
     <ClInclude Include="util\game_level.h" />
     <ClInclude Include="util\logging.h" />
     <ClInclude Include="util\optional.h" />
+    <ClInclude Include="util\particle_generator.h" />
     <ClInclude Include="util\resource_mgr.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="util\game.cpp" />
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
+    <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\resource_mgr.cpp" />
     <ClCompile Include="util\shader.cpp" />
     <ClCompile Include="util\sprite_renderer.cpp" />
@@ -49,6 +51,8 @@
     <None Include="levels\one.lvl" />
     <None Include="levels\three.lvl" />
     <None Include="levels\two.lvl" />
+    <None Include="shaders\particle.fs" />
+    <None Include="shaders\particle.vs" />
     <None Include="shaders\sprite.fs" />
     <None Include="shaders\sprite.vs" />
   </ItemGroup>
@@ -58,6 +62,7 @@
     <Image Include="textures\block.png" />
     <Image Include="textures\block_solid.png" />
     <Image Include="textures\paddle.png" />
+    <Image Include="textures\particle.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{781DCEDD-00BB-4977-8541-8CFC545308D7}</ProjectGuid>

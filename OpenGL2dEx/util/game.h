@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "game_level.h"
+#include "particle_generator.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
 
@@ -11,6 +12,7 @@
 namespace util {
 
 	class BallObject;
+	class ParticleGenerator;
 
 	class Game
 	{
@@ -71,6 +73,7 @@ namespace util {
 		const char * const kBlockImagePath = "textures/block.png";
 		const char * const kPaddleImagePath = "textures/paddle.png";
 		const char * const kBallImagePath = "textures/awesomeface.png";
+		const char * const kParticleImagePath = "textures/particle.png";
 
 		GameState state_;
 		bool      keys_[kNumKeys];
@@ -78,6 +81,7 @@ namespace util {
 
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;
+		ResourceManager::ShaderId particle_shader_id_;
 
 		// textures
 		ResourceManager::Texture2DId background_texture_id_;
@@ -86,6 +90,7 @@ namespace util {
 		ResourceManager::Texture2DId block_solid_texture_id_;
 		ResourceManager::Texture2DId paddle_texture_id_;
 		ResourceManager::Texture2DId ball_texture_id_;
+		ResourceManager::Texture2DId particle_texture_id_;
 
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
@@ -99,6 +104,10 @@ namespace util {
 		const glm::vec2 kInitialBallVelocity{ 100.0f, -350.0f };
 		static constexpr float kBallRadius{ 12.5f };
 		BallObject *ball_;
+
+		static constexpr size_t kMaxParticles{ 500 };
+		static constexpr size_t kNewParticlesPerUpdate{ 2 };
+		ParticleGenerator *particle_generator_;
 	}; // class Game
 
 } // namespace util
