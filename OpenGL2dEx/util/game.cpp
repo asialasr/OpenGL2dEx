@@ -20,6 +20,7 @@ namespace util
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
 		, particle_shader_id_{}
+		, effects_shader_id_{}
 		, background_texture_id_{}
 		, smiley_texture_id_{}
 		, block_texture_id_{}
@@ -30,6 +31,8 @@ namespace util
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
 		, particle_generator_{ nullptr }
+		, effects_{ nullptr }
+		, shake_time_{ 0.0f }
 	{
 	}
 
@@ -58,6 +61,12 @@ namespace util
 			delete particle_generator_;
 		}
 		particle_generator_ = nullptr;
+
+		if (effects_)
+		{
+			delete effects_;
+		}
+		effects_ = nullptr;
 	}
 
 	Game::~Game()
@@ -71,6 +80,7 @@ namespace util
 
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
 		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {});
+		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {});
 
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width_),
 			static_cast<float>(height_), 0.0f, -1.0f, 1.0f);
@@ -116,6 +126,12 @@ namespace util
 			ResourceManager::get_texture(particle_texture_id_),
 			kMaxParticles,
 			projection
+		);
+
+		effects_ = new PostProcessor(
+			ResourceManager::get_shader(effects_shader_id_),
+			width_,
+			height_
 		);
 
 		check_for_gl_errors();
@@ -193,6 +209,15 @@ namespace util
 		}
 
 		particle_generator_->update(dt, *ball_, kNewParticlesPerUpdate, glm::vec2(ball_->radius() / 2.0f));
+		
+		if (shake_time_ > 0.0f)
+		{
+			shake_time_ -= dt;
+			if (shake_time_ <= 0.0f)
+			{
+				effects_->set_shake(false);
+			}
+		}
 	}
 
 namespace {
@@ -295,6 +320,11 @@ namespace {
 					{
 						current_level.set_brick_destroyed(index, true);
 					}
+					else
+					{
+						shake_time_ = 0.05f;
+						effects_->set_shake(true);
+					}
 
 					const auto direction = std::get<1>(collision_tuple);
 					const auto diff_vector = std::get<2>(collision_tuple);
@@ -367,6 +397,8 @@ namespace {
 
 		if (GameState::kActive == state_)
 		{
+			effects_->begin_render();
+
 			sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
 				glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
 
@@ -374,6 +406,9 @@ namespace {
 			paddle_->draw(*sprite_renderer_);
 			particle_generator_->draw();
 			ball_->draw(*sprite_renderer_);
+
+			effects_->end_render();
+			effects_->render(glfwGetTime());
 
 			check_for_gl_errors();
 		}

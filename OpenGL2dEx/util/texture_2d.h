@@ -22,9 +22,17 @@ public:
 	{
 	}
 
-	void generate(unsigned int width, unsigned int height, unsigned char* data);
+	void generate(unsigned int width, 
+				  unsigned int height, 
+				  unsigned char* data,
+				  bool           allow_no_data = false);
 
 	void bind() const;
+
+	unsigned int id() const
+	{
+		return id_;
+	}
 
 	void set_internal_format(const unsigned int internal_format)
 	{

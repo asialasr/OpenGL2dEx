@@ -20,9 +20,10 @@ namespace util {
 
 	void Texture2D::generate(const unsigned int width, 
 							 const unsigned int height, 
-							 unsigned char		*data)
+							 unsigned char		*data,
+							 bool               allow_no_data)
 	{
-		ASSERT(data, "No image data");
+		ASSERT(data || allow_no_data, "No image data");
 
 		width_ = width;
 		height_ = height;

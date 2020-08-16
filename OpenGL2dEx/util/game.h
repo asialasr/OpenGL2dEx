@@ -3,6 +3,7 @@
 
 #include "game_level.h"
 #include "particle_generator.h"
+#include "post_processor.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
 
@@ -82,6 +83,7 @@ namespace util {
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;
 		ResourceManager::ShaderId particle_shader_id_;
+		ResourceManager::ShaderId effects_shader_id_;
 
 		// textures
 		ResourceManager::Texture2DId background_texture_id_;
@@ -91,7 +93,7 @@ namespace util {
 		ResourceManager::Texture2DId paddle_texture_id_;
 		ResourceManager::Texture2DId ball_texture_id_;
 		ResourceManager::Texture2DId particle_texture_id_;
-
+		
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
 
@@ -108,6 +110,9 @@ namespace util {
 		static constexpr size_t kMaxParticles{ 500 };
 		static constexpr size_t kNewParticlesPerUpdate{ 2 };
 		ParticleGenerator *particle_generator_;
+
+		PostProcessor *effects_;
+		float shake_time_;
 	}; // class Game
 
 } // namespace util

@@ -18,6 +18,11 @@ namespace util {
 
 		Shader(const char *vertex_path, const char *fragment_path, Optional<const char *> geometry_path);
 
+		unsigned int id() const
+		{
+			return id_;
+		}
+
 		void use() const;
 
 		void set_bool(const std::string &name, bool value, bool allow_invalid) const;
