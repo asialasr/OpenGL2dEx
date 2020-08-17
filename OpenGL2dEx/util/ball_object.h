@@ -32,9 +32,32 @@ public:
 		stuck_ = stuck;
 	}
 
+	bool sticky() const
+	{
+		return sticky_;
+	}
+
+	void set_sticky(const bool sticky)
+	{
+		sticky_ = sticky;
+	}
+
+	bool pass_through() const
+	{
+		return pass_through_;
+	}
+
+	void set_pass_through(const bool pass_through)
+	{
+		pass_through_ = pass_through;
+	}
+
 private:
 	float radius_;
 	bool  stuck_;
+
+	bool sticky_;
+	bool pass_through_;
 }; // class BallObject
 
 } // namespace util

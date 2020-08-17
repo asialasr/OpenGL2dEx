@@ -114,6 +114,16 @@ public:
 		velocity_ = velocity;
 	}
 
+	const glm::vec3& color() const
+	{
+		return color_;
+	}
+
+	void set_color(const glm::vec3& color)
+	{
+		color_ = color;
+	}
+
 	const glm::vec2& size() const
 	{
 		return size_;

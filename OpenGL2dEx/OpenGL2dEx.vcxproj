@@ -28,6 +28,7 @@
     <ClInclude Include="util\optional.h" />
     <ClInclude Include="util\particle_generator.h" />
     <ClInclude Include="util\post_processor.h" />
+    <ClInclude Include="util\power_up.h" />
     <ClInclude Include="util\resource_mgr.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
@@ -67,6 +68,12 @@
     <Image Include="textures\block_solid.png" />
     <Image Include="textures\paddle.png" />
     <Image Include="textures\particle.png" />
+    <Image Include="textures\power_ups\powerup_chaos.png" />
+    <Image Include="textures\power_ups\powerup_confuse.png" />
+    <Image Include="textures\power_ups\powerup_increase.png" />
+    <Image Include="textures\power_ups\powerup_passthrough.png" />
+    <Image Include="textures\power_ups\powerup_speed.png" />
+    <Image Include="textures\power_ups\powerup_sticky.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{781DCEDD-00BB-4977-8541-8CFC545308D7}</ProjectGuid>

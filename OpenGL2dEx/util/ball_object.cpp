@@ -15,6 +15,8 @@ BallObject::BallObject(const glm::vec2 &position,
 	: GameObject{ position, glm::vec2{radius * 2.0f, radius * 2.0f}, sprite, {}, {velocity} }
 	, radius_{ radius }
 	, stuck_{ true }
+	, sticky_{ false }
+	, pass_through_{ false }
 {
 }
 
@@ -57,6 +59,8 @@ void BallObject::reset(const glm::vec2 &position,
 	set_position(position);
 	set_velocity(velocity);
 	stuck_ = true;
+	sticky_ = false;
+	pass_through_ = false;
 }
 
 } // namespace util

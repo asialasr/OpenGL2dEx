@@ -16,14 +16,29 @@ public:
 	void end_render();
 	void render(float time);
 
+	bool confuse() const
+	{
+		return confuse_;
+	}
+
 	void set_confuse(bool confuse)
 	{
 		confuse_ = confuse;
 	}
 
+	bool chaos() const
+	{
+		return chaos_;
+	}
+
 	void set_chaos(bool chaos)
 	{
 		chaos_ = chaos;
+	}
+
+	bool shake() const
+	{
+		return shake_;
 	}
 
 	void set_shake(bool shake)

@@ -4,6 +4,7 @@
 #include "game_level.h"
 #include "particle_generator.h"
 #include "post_processor.h"
+#include "power_up.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
 
@@ -36,7 +37,6 @@ namespace util {
 
 		void process_input(float dt);
 		void update(float dt);
-		void check_collisions();
 		void render();
 
 		static constexpr size_t kNumKeys{ 1024 };
@@ -55,10 +55,29 @@ namespace util {
 		}
 
 	private:
+		void handle_ball_box_collision(const Collision &collision_tuple, const size_t box_index, const GameObject &box);
+		void activate_power_up(const PowerUp &power_up);
+		void check_collisions();
+
+		enum class PowerUpTypes : PowerUp::Type {
+			kSpeed,
+			kSticky,
+			kPassThrough,
+			kPadSizeIncrease,
+			kConfuse,
+			kChaos,
+			kNumTypes,
+			kUnknown,
+		};
+
 		void reset_level();
 		void reset_player();
 
 		void delete_dynamic_data();
+
+		void spawn_power_ups(const GameObject &block);
+		bool is_other_power_up_active(const PowerUpTypes type);
+		void update_power_ups(float dt);
 
 		static constexpr size_t kMaxLevels{ 4 };
 		const char * const kLevelPaths[kMaxLevels] = {
@@ -75,6 +94,13 @@ namespace util {
 		const char * const kPaddleImagePath = "textures/paddle.png";
 		const char * const kBallImagePath = "textures/awesomeface.png";
 		const char * const kParticleImagePath = "textures/particle.png";
+
+		const char * const kPupChaosImagePath = "textures/power_ups/powerup_chaos.png";
+		const char * const kPupConfuseImagePath = "textures/power_ups/powerup_confuse.png";
+		const char * const kPupIncreaseImagePath = "textures/power_ups/powerup_increase.png";
+		const char * const kPupPassThroughImagePath = "textures/power_ups/powerup_passthrough.png";
+		const char * const kPupSpeedImagePath = "textures/power_ups/powerup_speed.png";
+		const char * const kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
 
 		GameState state_;
 		bool      keys_[kNumKeys];
@@ -93,6 +119,13 @@ namespace util {
 		ResourceManager::Texture2DId paddle_texture_id_;
 		ResourceManager::Texture2DId ball_texture_id_;
 		ResourceManager::Texture2DId particle_texture_id_;
+
+		ResourceManager::Texture2DId pup_chaos_texture_id_;
+		ResourceManager::Texture2DId pup_confuse_texture_id_;
+		ResourceManager::Texture2DId pup_size_texture_id_;
+		ResourceManager::Texture2DId pup_pass_through_texture_id_;
+		ResourceManager::Texture2DId pup_speed_texture_id_;
+		ResourceManager::Texture2DId pup_sticky_texture_id_;
 		
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
@@ -113,6 +146,8 @@ namespace util {
 
 		PostProcessor *effects_;
 		float shake_time_;
+
+		std::vector<PowerUp> power_ups_;
 	}; // class Game
 
 } // namespace util
