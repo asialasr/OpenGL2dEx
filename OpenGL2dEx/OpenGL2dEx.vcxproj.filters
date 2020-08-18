@@ -149,4 +149,7 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="audio\breakout.mp3" />
+  </ItemGroup>
 </Project>

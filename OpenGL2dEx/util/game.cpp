@@ -11,6 +11,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <irrklang-32bit-1.6.0/irrKlang.h>
+
+// TODO(sasiala): deal with the .dll's and all for irrklang
+irrklang::ISoundEngine *sound_engine = irrklang::createIrrKlangDevice();
 
 namespace util
 {
@@ -311,6 +315,8 @@ namespace {
 		);
 
 		check_for_gl_errors();
+
+		sound_engine->play2D("audio/breakout.mp3", true);
 	}
 
 	void Game::process_input(float dt)
