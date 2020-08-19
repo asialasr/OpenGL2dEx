@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include "audio_manager.h"
 #include "ball_object.h"
 #include "logging.h"
 #include "gl_debug.h"
@@ -11,10 +12,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <irrklang-32bit-1.6.0/irrKlang.h>
-
-// TODO(sasiala): deal with the .dll's and all for irrklang
-irrklang::ISoundEngine *sound_engine = irrklang::createIrrKlangDevice();
 
 namespace util
 {
@@ -122,8 +119,9 @@ namespace {
 	}
 } // namespace
 
-	void Game::spawn_power_ups(const GameObject &block)
+	bool Game::spawn_power_ups(const GameObject &block)
 	{
+		auto power_up_spawned = false;
 		ASSERT(!block.is_solid(), "Don't spawn power ups for solid blocks");
 		if (should_spawn_speed())
 		{
@@ -132,6 +130,7 @@ namespace {
 						glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block.position(), 
 						ResourceManager::get_texture(pup_speed_texture_id_))
 			);
+			power_up_spawned = true;
 		}
 
 		if (should_spawn_sticky())
@@ -141,6 +140,7 @@ namespace {
 					glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block.position(),
 					ResourceManager::get_texture(pup_sticky_texture_id_))
 			);
+			power_up_spawned = true;
 		}
 
 		if (should_spawn_pass_through())
@@ -150,6 +150,7 @@ namespace {
 					glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block.position(),
 					ResourceManager::get_texture(pup_pass_through_texture_id_))
 			);
+			power_up_spawned = true;
 		}
 
 		if (should_spawn_size())
@@ -159,6 +160,7 @@ namespace {
 					glm::vec3(1.0f, 0.6f, 0.4f), 0.0f, block.position(),
 					ResourceManager::get_texture(pup_size_texture_id_))
 			);
+			power_up_spawned = true;
 		}
 
 		if (should_spawn_confuse())
@@ -168,6 +170,7 @@ namespace {
 					glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block.position(),
 					ResourceManager::get_texture(pup_confuse_texture_id_))
 			);
+			power_up_spawned = true;
 		}
 
 		if (should_spawn_chaos())
@@ -177,7 +180,10 @@ namespace {
 					glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block.position(),
 					ResourceManager::get_texture(pup_chaos_texture_id_))
 			);
+			power_up_spawned = true;
 		}
+
+		return power_up_spawned;
 	}
 
 	bool Game::is_other_power_up_active(const PowerUpTypes type)
@@ -316,7 +322,7 @@ namespace {
 
 		check_for_gl_errors();
 
-		sound_engine->play2D("audio/breakout.mp3", true);
+		AudioManager::play_background_music(AudioManager::GameState::kActive, true);
 	}
 
 	void Game::process_input(float dt)
@@ -512,12 +518,21 @@ namespace {
 		if (!box.is_solid())
 		{
 			current_level.set_brick_destroyed(box_index, true);
-			spawn_power_ups(box);
+			const auto power_ups_spawned = spawn_power_ups(box);
+			if (power_ups_spawned)
+			{
+				AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kPowerUp);
+			}
+			else
+			{
+				AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kNormal);
+			}
 		}
 		else
 		{
 			shake_time_ = 0.05f;
 			effects_->set_shake(true);
+			AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kSolid);
 		}
 
 		if (!ball_->pass_through())

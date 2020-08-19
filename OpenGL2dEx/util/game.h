@@ -75,32 +75,32 @@ namespace util {
 
 		void delete_dynamic_data();
 
-		void spawn_power_ups(const GameObject &block);
+		bool spawn_power_ups(const GameObject &block);
 		bool is_other_power_up_active(const PowerUpTypes type);
 		void update_power_ups(float dt);
 
 		static constexpr size_t kMaxLevels{ 4 };
-		const char * const kLevelPaths[kMaxLevels] = {
+		static constexpr const char *kLevelPaths[kMaxLevels] = {
 			"levels/one.lvl",
 			"levels/two.lvl",
 			"levels/three.lvl",
 			"levels/four.lvl"
 		};
 
-		const char * const kBackgroundImagePath = "textures/background.jpg";
-		const char * const kSmileyImagePath = "textures/awesomeface.png";
-		const char * const kBlockSolidImagePath = "textures/block_solid.png";
-		const char * const kBlockImagePath = "textures/block.png";
-		const char * const kPaddleImagePath = "textures/paddle.png";
-		const char * const kBallImagePath = "textures/awesomeface.png";
-		const char * const kParticleImagePath = "textures/particle.png";
+		static constexpr const char *kBackgroundImagePath = "textures/background.jpg";
+		static constexpr const char *kSmileyImagePath = "textures/awesomeface.png";
+		static constexpr const char *kBlockSolidImagePath = "textures/block_solid.png";
+		static constexpr const char *kBlockImagePath = "textures/block.png";
+		static constexpr const char *kPaddleImagePath = "textures/paddle.png";
+		static constexpr const char *kBallImagePath = "textures/awesomeface.png";
+		static constexpr const char *kParticleImagePath = "textures/particle.png";
 
-		const char * const kPupChaosImagePath = "textures/power_ups/powerup_chaos.png";
-		const char * const kPupConfuseImagePath = "textures/power_ups/powerup_confuse.png";
-		const char * const kPupIncreaseImagePath = "textures/power_ups/powerup_increase.png";
-		const char * const kPupPassThroughImagePath = "textures/power_ups/powerup_passthrough.png";
-		const char * const kPupSpeedImagePath = "textures/power_ups/powerup_speed.png";
-		const char * const kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
+		static constexpr const char *kPupChaosImagePath = "textures/power_ups/powerup_chaos.png";
+		static constexpr const char *kPupConfuseImagePath = "textures/power_ups/powerup_confuse.png";
+		static constexpr const char *kPupIncreaseImagePath = "textures/power_ups/powerup_increase.png";
+		static constexpr const char *kPupPassThroughImagePath = "textures/power_ups/powerup_passthrough.png";
+		static constexpr const char *kPupSpeedImagePath = "textures/power_ups/powerup_speed.png";
+		static constexpr const char *kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
 
 		GameState state_;
 		bool      keys_[kNumKeys];

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\audio_manager.h" />
     <ClInclude Include="util\ball_object.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stbi\stb_helper.cpp" />
+    <ClCompile Include="util\audio_manager.cpp" />
     <ClCompile Include="util\ball_object.cpp" />
     <ClCompile Include="util\game.cpp" />
     <ClCompile Include="util\game_level.cpp" />
@@ -76,7 +78,11 @@
     <Image Include="textures\power_ups\powerup_sticky.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="audio\bleep.mp3" />
+    <Media Include="audio\bleep.wav" />
     <Media Include="audio\breakout.mp3" />
+    <Media Include="audio\powerup.wav" />
+    <Media Include="audio\solid.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{781DCEDD-00BB-4977-8541-8CFC545308D7}</ProjectGuid>

@@ -57,6 +57,9 @@
     <ClInclude Include="util\power_up.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\audio_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">
@@ -96,6 +99,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util\post_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\audio_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,5 +157,15 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="audio\breakout.mp3" />
+    <Media Include="audio\bleep.mp3" />
+    <Media Include="audio\bleep.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\powerup.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="audio\solid.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
