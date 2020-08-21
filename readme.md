@@ -2,7 +2,16 @@
 This project is based on the 2D game example over at [Learn OpenGL](https://learnopengl.com).  I have kept the overall classes the same, but put my own touches on the way these classes are implemented and how they interact (e.g. instead of using string IDs that are hard-coded, I allow the ResourceManager to specify the ID of a loaded texture or shader, which is then passed through the other classes).  However, my implementation isn't crazy different from the implementation there.  I've only really tested this on a Windows 10 laptop and a Windows 10 desktop, so I'm not certain how well it behaves on other machines, although it worked nicely when I switched between the two so it should hopefully work on other machines without issue.
 
 ## Libraries
-This project uses libraries available in the [asialasr/Libraries](https://github.com/asialasr/Libraries) repo.  I intended to get the libraries set up as a project with separate repos and get the OpenGL2dEx project set up nicely before making the libraries public, but this project has gotten a couple views/clones which I wasn't expecting and I wanted to at least make the appropriate libraries available in case anyone cared to try building it.  I will be setting these up so that you should (hopefully) be able to just clone the repo and build soon, but for now you'll likely have to figure it out on your own (although if there is someone who cares to try it, feel free to message me with any issues).  The best resource is learnopengl.com until I get this all set up better.
+Here is a list of the libraries I currently use (not sure all of these are used in this project - I need to check): 
+assimp
+freetype-2.10.2
+glad
+GLFW
+glmirrklang-32bit-1.6.0
+KHR
+stb
+
+I'll try to figure out the best way to deal with these, but for now, the best resource is learnopengl.com until I get this all set up better.
 
 **Disclaimer: I haven't tested this out a ton and I know there are certainly some bugs with collisions.
 
