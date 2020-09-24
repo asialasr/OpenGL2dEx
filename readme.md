@@ -3,13 +3,13 @@ This project is based on the 2D game example over at [Learn OpenGL](https://lear
 
 ## Libraries
 Here is a list of the libraries I currently use (not sure all of these are used in this project - I need to check): 
-assimp
-freetype-2.10.2
-glad
-GLFW
-glmirrklang-32bit-1.6.0
-KHR
-stb
+ * assimp
+ * freetype-2.10.2
+ * glad
+ * GLFW
+ * glmirrklang-32bit-1.6.0
+ * KHR
+ * stb
 
 I'll try to figure out the best way to deal with these, but for now, the best resource is learnopengl.com until I get this all set up better.
 
