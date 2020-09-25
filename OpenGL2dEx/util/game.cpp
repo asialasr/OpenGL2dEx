@@ -16,8 +16,9 @@
 namespace util
 {
 	Game::Game(Dimension width, Dimension height) 
-		: state_{ GameState::kActive }
+		: state_{ GameState::kMenu }
 		, keys_{}
+		, keys_processed_{}
 		, width_{ width }
 		, height_{ height }
 		, sprite_renderer_{ nullptr }
@@ -349,6 +350,7 @@ namespace {
 						ball_->move_x(-velocity);
 					}
 				}
+				keys_processed_[GLFW_KEY_A] = true;
 			}
 			if (keys_[GLFW_KEY_D])
 			{
@@ -361,10 +363,41 @@ namespace {
 						ball_->move_x(velocity);
 					}
 				}
+				keys_processed_[GLFW_KEY_D] = true;
 			}
 			if (keys_[GLFW_KEY_SPACE])
 			{
 				ball_->set_stuck(false);
+				keys_processed_[GLFW_KEY_SPACE] = true;
+			}
+		}
+		else if (GameState::kMenu == state_)
+		{
+			if (keys_[GLFW_KEY_ENTER] && !keys_processed_[GLFW_KEY_ENTER])
+			{
+				state_ = GameState::kActive;
+				keys_processed_[GLFW_KEY_ENTER] = true;
+			}
+			else
+			{
+				if (keys_[GLFW_KEY_W] && !keys_processed_[GLFW_KEY_W])
+				{
+					current_level_ = (current_level_ + 1) % kMaxLevels;
+					keys_processed_[GLFW_KEY_W] = true;
+				}
+				if (keys_[GLFW_KEY_S] && !keys_processed_[GLFW_KEY_S])
+				{
+					if (current_level_ > 0)
+					{
+						--current_level_;
+					}
+					else
+					{
+						// wrap around
+						current_level_ = kMaxLevels - 1;
+					}
+					keys_processed_[GLFW_KEY_S] = true;
+				}
 			}
 		}
 	}
@@ -389,6 +422,19 @@ namespace {
 		ball_->reset(paddle_->position() + glm::vec2(paddle_->size().x / 2.0f - kBallRadius, -(kBallRadius * 2.0f)), kInitialBallVelocity);
 	}
 
+	void Game::kill_player()
+	{
+		ASSERT(lives_ > 0, "No lives to lose");
+
+		--lives_;
+		if (out_of_lives())
+		{
+			reset_level();
+			state_ = GameState::kMenu;
+		}
+		reset_player();
+	}
+
 	void Game::render_lives()
 	{
 		ResourceManager::get_font(default_font_id_).render_text("Lives: " + std::to_string(lives_), kLifeText.x_, kLifeText.y_, kLifeText.scale_, {});
@@ -396,77 +442,88 @@ namespace {
 
 	void Game::update(float dt)
 	{
-		ASSERT(ball_, "No ball defined");
-		ASSERT(particle_generator_, "No particle generator defined");
-
-		ball_->move(dt, width_);
-		check_collisions();
-
-		if (ball_->position().y >= height_)
+		if (state_ == GameState::kActive)
 		{
-			--lives_;
-			if (out_of_lives())
+			ASSERT(ball_, "No ball defined");
+			ASSERT(particle_generator_, "No particle generator defined");
+
+			ball_->move(dt, width_);
+			check_collisions();
+
+			if (ball_->position().y >= height_)
 			{
-				reset_level();
-				// TODO(asialasr) state_ = GameState::kMenu;
+				kill_player();
 			}
-			reset_player();
-		}
 
-		particle_generator_->update(dt, *ball_, kNewParticlesPerUpdate, glm::vec2(ball_->radius() / 2.0f));
+			particle_generator_->update(dt, *ball_, kNewParticlesPerUpdate, glm::vec2(ball_->radius() / 2.0f));
 
-		update_power_ups(dt);
-		
-		if (shake_time_ > 0.0f)
-		{
-			shake_time_ -= dt;
-			if (shake_time_ <= 0.0f)
+			update_power_ups(dt);
+
+			if (shake_time_ > 0.0f)
 			{
-				effects_->set_shake(false);
+				shake_time_ -= dt;
+				if (shake_time_ <= 0.0f)
+				{
+					effects_->set_shake(false);
+				}
 			}
 		}
 	}
 
 	void Game::render()
 	{
+		// render game
 		ASSERT(ball_, "No ball defined");
 		ASSERT(paddle_, "No paddle defined");
 
-		if (GameState::kActive == state_)
+		effects_->begin_render();
+
+		sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
+			glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
+
+		levels_.at(current_level_).draw(*sprite_renderer_);
+		paddle_->draw(*sprite_renderer_);
+		particle_generator_->draw();
+		ball_->draw(*sprite_renderer_);
+
+		for (auto &i : power_ups_)
 		{
-			effects_->begin_render();
-
-			sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
-				glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
-
-			levels_.at(current_level_).draw(*sprite_renderer_);
-			paddle_->draw(*sprite_renderer_);
-			particle_generator_->draw();
-			ball_->draw(*sprite_renderer_);
-
-			for (auto &i : power_ups_)
+			if (!i.is_destroyed())
 			{
-				if (!i.is_destroyed())
-				{
-					i.draw(*sprite_renderer_);
-				}
+				i.draw(*sprite_renderer_);
 			}
+		}
 
-			effects_->end_render();
-			effects_->render(glfwGetTime());
+		effects_->end_render();
+		effects_->render(glfwGetTime());
 
-			render_lives();
+		render_lives();
 
+		check_for_gl_errors();
+
+		// render menu on top
+		if (state_ == GameState::kMenu)
+		{
+			render_menu();
 			check_for_gl_errors();
 		}
-		//sprite_renderer_->draw(ResourceManager::get_texture(smiley_texture_id_),
-		//	glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	void Game::set_key(size_t key, bool val)
 	{
 		ASSERT(key < kNumKeys, "Key out of bounds");
 		keys_[key] = val;
+		if (!val)
+		{
+			keys_processed_[key] = false;
+		}
+	}
+
+	void Game::render_menu() const
+	{
+		auto &renderer = ResourceManager::get_font(default_font_id_);
+		renderer.render_text("Press ENTER to start", 250.0f, height_ / 2, 1.0f, {});
+		renderer.render_text("Press W or S to select level", 245.0f, height_ / 2 + 20.0f, 0.75f, {});
 	}
 
 namespace {

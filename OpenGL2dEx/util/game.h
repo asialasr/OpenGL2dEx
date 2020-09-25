@@ -56,6 +56,8 @@ namespace util {
 		}
 
 	private:
+		void render_menu() const;
+
 		void handle_ball_box_collision(const Collision &collision_tuple, const size_t box_index, const GameObject &box);
 		void activate_power_up(const PowerUp &power_up);
 		void check_collisions();
@@ -84,6 +86,8 @@ namespace util {
 		{
 			lives_ = kInitialLifeCount;
 		}
+
+		void kill_player();
 
 		static constexpr struct {
 			float x_;
@@ -123,6 +127,7 @@ namespace util {
 
 		GameState state_;
 		bool      keys_[kNumKeys];
+		bool      keys_processed_[kNumKeys];
 		Dimension width_, height_;
 
 		SpriteRenderer            *sprite_renderer_;
