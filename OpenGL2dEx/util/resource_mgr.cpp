@@ -7,10 +7,13 @@
 namespace util {
 
 	std::map<ResourceManager::ShaderId, Shader> ResourceManager::shaders_{};
-	ResourceManager::ShaderId ResourceManager::next_shader_id_{ 0 };
+	ResourceManager::ShaderId					ResourceManager::next_shader_id_{ 0 };
 
 	std::map<ResourceManager::Texture2DId, Texture2D> ResourceManager::textures_{};
-	ResourceManager::Texture2DId ResourceManager::next_texture_id_{0};
+	ResourceManager::Texture2DId					  ResourceManager::next_texture_id_{0};
+
+	std::map<ResourceManager::FontId, TextRenderer> ResourceManager::fonts_{};
+	ResourceManager::FontId							ResourceManager::next_font_id_{ 0 };
 
 	ResourceManager::ShaderId ResourceManager::load_shader(const char * vertex_path, const char * fragment_path, const Optional<const char *> geometry_path)
 	{
@@ -58,6 +61,24 @@ namespace {
 	{
 		ASSERT(textures_.find(texture_id) != textures_.end(), "Texture ID not found");
 		return textures_[texture_id];
+	}
+
+	ResourceManager::FontId ResourceManager::load_font(const char *font_path,
+													   const ShaderId               shader_id,
+													   const TextRenderer::FontSize font_size, 
+													   const TextRenderer::Dimension width, 
+													   const TextRenderer::Dimension height)
+	{
+		const auto font_id = next_font_id_++;
+		fonts_[font_id] = TextRenderer(get_shader(shader_id), width, height);
+		fonts_[font_id].load(font_path, font_size);
+		return font_id;
+	}
+
+	const TextRenderer &ResourceManager::get_font(const FontId font_id)
+	{
+		ASSERT(fonts_.find(font_id) != fonts_.end(), "Font not found");
+		return fonts_[font_id];
 	}
 
 	void ResourceManager::clear()

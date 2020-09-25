@@ -60,6 +60,9 @@
     <ClInclude Include="util\audio_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\text_renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">
@@ -104,6 +107,9 @@
     <ClCompile Include="util\audio_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="util\text_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\sprite.fs" />
@@ -116,6 +122,8 @@
     <None Include="shaders\particle.vs" />
     <None Include="shaders\effects.fs" />
     <None Include="shaders\effects.vs" />
+    <None Include="shaders\text_2d.fs" />
+    <None Include="shaders\text_2d.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png">
@@ -167,5 +175,8 @@
     <Media Include="audio\solid.wav">
       <Filter>Resource Files</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\OCRAEXT.TTF" />
   </ItemGroup>
 </Project>

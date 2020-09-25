@@ -3,14 +3,16 @@
 
 #include "shader.h"
 #include "texture_2d.h"
+#include "text_renderer.h"
 #include <map>
 
 namespace util {
 
 class ResourceManager {
 public:
-	typedef unsigned int ShaderId;
-	typedef unsigned int Texture2DId;
+	using ShaderId = unsigned int;
+	using Texture2DId = unsigned int;
+	using FontId = unsigned int;
 
 	// load/get shaders
 	static ShaderId load_shader(const char * vertex_path, const char * fragment_path, const Optional<const char *> geometry_path);
@@ -19,6 +21,14 @@ public:
 	// 2D Textures
 	static Texture2DId load_texture(const char *file, bool alpha);
 	static const Texture2D   &get_texture(Texture2DId texture_id);
+
+	// Fonts
+	static FontId load_font(const char *font_path, 
+							ShaderId               shader_id,
+						    TextRenderer::FontSize font_size, 
+							TextRenderer::Dimension width, 
+							TextRenderer::Dimension height);
+	static const TextRenderer &get_font(FontId font_id);
 
 	// de-allocate all resources
 	static void clear();
@@ -32,6 +42,9 @@ private:
 
 	static std::map<Texture2DId, Texture2D> textures_;
 	static Texture2DId                      next_texture_id_;
+
+	static std::map<FontId, TextRenderer> fonts_;
+	static FontId                         next_font_id_;
 };
 
 } // namespace util

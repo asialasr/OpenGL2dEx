@@ -35,8 +35,10 @@ namespace util
 		, pup_pass_through_texture_id_{}
 		, pup_speed_texture_id_{}
 		, pup_sticky_texture_id_{}
+		, default_font_id_{}
 		, levels_{}
 		, current_level_{0}
+		, lives_{kInitialLifeCount}
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
 		, particle_generator_{ nullptr }
@@ -260,6 +262,7 @@ namespace {
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
 		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {});
 		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {});
+		font_shader_id_ = ResourceManager::load_shader("shaders/text_2d.vs", "shaders/text_2d.fs", {});
 
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width_),
 			static_cast<float>(height_), 0.0f, -1.0f, 1.0f);
@@ -283,6 +286,8 @@ namespace {
 		pup_pass_through_texture_id_ = ResourceManager::load_texture(kPupPassThroughImagePath, true);
 		pup_speed_texture_id_ = ResourceManager::load_texture(kPupSpeedImagePath, true);
 		pup_sticky_texture_id_ = ResourceManager::load_texture(kPupStickyImagePath, true);
+
+		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, width_, height_);
 
 		for (size_t i = 0; i < kMaxLevels; ++i)
 		{
@@ -368,6 +373,8 @@ namespace {
 	{
 		ASSERT(kMaxLevels >= current_level_, "Invalid level");
 
+		reset_lives();
+
 		// TODO(sasiala): I think a "reset" function in level would be better
 		levels_[current_level_].load(kLevelPaths[current_level_], 
 			width_, height_ / 2, 
@@ -382,6 +389,11 @@ namespace {
 		ball_->reset(paddle_->position() + glm::vec2(paddle_->size().x / 2.0f - kBallRadius, -(kBallRadius * 2.0f)), kInitialBallVelocity);
 	}
 
+	void Game::render_lives()
+	{
+		ResourceManager::get_font(default_font_id_).render_text("Lives: " + std::to_string(lives_), kLifeText.x_, kLifeText.y_, kLifeText.scale_, {});
+	}
+
 	void Game::update(float dt)
 	{
 		ASSERT(ball_, "No ball defined");
@@ -392,7 +404,12 @@ namespace {
 
 		if (ball_->position().y >= height_)
 		{
-			reset_level();
+			--lives_;
+			if (out_of_lives())
+			{
+				reset_level();
+				// TODO(asialasr) state_ = GameState::kMenu;
+			}
 			reset_player();
 		}
 
@@ -437,6 +454,8 @@ namespace {
 
 			effects_->end_render();
 			effects_->render(glfwGetTime());
+
+			render_lives();
 
 			check_for_gl_errors();
 		}

@@ -27,9 +27,10 @@ namespace util {
 			kNumDirections,
 			kUnknown,
 		};
-		typedef unsigned int Dimension;
-		typedef std::tuple<bool, Direction, glm::vec2> Collision;
-		
+		using Dimension = unsigned int;
+		using Collision = std::tuple<bool, Direction, glm::vec2>;
+		using LifeCount = unsigned int;
+
 		Game(Dimension width, Dimension height);
 		~Game();
 
@@ -73,6 +74,24 @@ namespace util {
 		void reset_level();
 		void reset_player();
 
+		bool out_of_lives() const
+		{
+			return lives_ <= 0;
+		}
+
+		static constexpr LifeCount kInitialLifeCount{ 3 };
+		void reset_lives()
+		{
+			lives_ = kInitialLifeCount;
+		}
+
+		static constexpr struct {
+			float x_;
+			float y_;
+			float scale_;
+		} kLifeText{ 5.0f, 5.0f, 1.0f };
+		void render_lives();
+
 		void delete_dynamic_data();
 
 		bool spawn_power_ups(const GameObject &block);
@@ -110,6 +129,7 @@ namespace util {
 		ResourceManager::ShaderId sprite_shader_id_;
 		ResourceManager::ShaderId particle_shader_id_;
 		ResourceManager::ShaderId effects_shader_id_;
+		ResourceManager::ShaderId font_shader_id_;
 
 		// textures
 		ResourceManager::Texture2DId background_texture_id_;
@@ -127,8 +147,17 @@ namespace util {
 		ResourceManager::Texture2DId pup_speed_texture_id_;
 		ResourceManager::Texture2DId pup_sticky_texture_id_;
 		
+		// fonts
+		static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
+
+		static constexpr TextRenderer::FontSize kDefaultFontSize{ 24 };
+
+		ResourceManager::FontId default_font_id_;
+
 		std::vector<GameLevel> levels_;
 		size_t                 current_level_;
+
+		LifeCount lives_;
 
 		// TODO(sasiala): what's the deal with this not being able
 		// to be constexpr and/or static?

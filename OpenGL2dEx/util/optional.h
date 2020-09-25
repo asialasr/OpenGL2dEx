@@ -74,7 +74,7 @@ namespace util {
 			return *this;
 		}
 
-		operator bool()
+		operator bool() const
 		{
 			return has_data_;
 		}
@@ -85,7 +85,19 @@ namespace util {
 			return data_;
 		}
 
+		const T& operator*() const
+		{
+			assert(has_data_);
+			return data_;
+		}
+
 		T *operator->()
+		{
+			assert(has_data_);
+			return &data_;
+		}
+
+		const T *operator->() const
 		{
 			assert(has_data_);
 			return &data_;
