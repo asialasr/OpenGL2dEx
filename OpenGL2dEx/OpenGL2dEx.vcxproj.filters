@@ -63,6 +63,9 @@
     <ClInclude Include="util\text_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\count_of.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">

@@ -7,6 +7,7 @@
 #include "power_up.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
+#include "count_of.h"
 
 #include <vector>
 #include <tuple>
@@ -102,13 +103,13 @@ namespace util {
 		bool is_other_power_up_active(const PowerUpTypes type);
 		void update_power_ups(float dt);
 
-		static constexpr size_t kMaxLevels{ 4 };
-		static constexpr const char *kLevelPaths[kMaxLevels] = {
+		static constexpr const char *kLevelPaths[] = {
 			"levels/one.lvl",
 			"levels/two.lvl",
 			"levels/three.lvl",
 			"levels/four.lvl"
 		};
+		static constexpr size_t kMaxLevels{ util::count_of(kLevelPaths) };
 
 		static constexpr const char *kBackgroundImagePath = "textures/background.jpg";
 		static constexpr const char *kSmileyImagePath = "textures/awesomeface.png";
