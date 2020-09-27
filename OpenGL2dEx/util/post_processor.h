@@ -46,6 +46,11 @@ public:
 		shake_ = shake;
 	}
 
+	void clear_effects()
+	{
+		confuse_ = chaos_ = shake_ = false;
+	}
+
 private:
 	void initialize_render_data();
 

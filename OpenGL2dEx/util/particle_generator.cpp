@@ -5,6 +5,9 @@
 #include "game_object.h"
 #include "resource_mgr.h"
 
+#include <algorithm>
+#include <utility>
+
 namespace util {
 
 namespace {
@@ -72,6 +75,17 @@ void ParticleGenerator::draw()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	check_for_gl_errors();
+}
+
+void ParticleGenerator::clear_particles()
+{
+	unused_vertices_.clear();
+
+	auto next_ind = size_t{ 0 };
+	auto ptr = &unused_vertices_;
+	// reset particle and mark as unused
+	auto lambda = [&next_ind, ptr](Particle &p) { p = {}; ptr->push_back(next_ind++); };
+	std::for_each(particles_.begin(), particles_.end(), lambda);
 }
 
 void ParticleGenerator::initialize(const glm::mat4 &projection)
