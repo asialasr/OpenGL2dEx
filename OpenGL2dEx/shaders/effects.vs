@@ -3,6 +3,8 @@ layout (location = 0) in vec4 l_vertex_; // <vec2 position, vec2 tex_coords>
 
 out vec2 io_tex_coords_;
 
+uniform mat4 u_model_;
+uniform mat4 u_projection_;
 uniform bool u_chaos_;
 uniform bool u_confuse_;
 uniform bool u_shake_;
@@ -10,7 +12,7 @@ uniform float u_time_;
 
 void main()
 {
-	gl_Position = vec4(l_vertex_.xy, 0.0, 1.0);
+	gl_Position = u_projection_ * u_model_ * vec4(l_vertex_.xy, 0.0, 1.0);
 	vec2 texture = l_vertex_.zw;
 	if (u_chaos_)
 	{

@@ -31,6 +31,7 @@ namespace util {
 		, pup_sticky_texture_id_{}
 		, particle_shader_id_{}
 		, effects_shader_id_{}
+		, sprite_shader_id_{}
 		, lives_{ kInitialLifeCount }
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
@@ -65,7 +66,7 @@ namespace util {
 		particle_generator_->clear_particles();
 	}
 
-	void GameViewport::initialize_impl(const glm::mat4 &projection)
+	void GameViewport::initialize_impl(const glm::mat4 &screen_projection)
 	{
 		// textures
 		background_texture_id_ = ResourceManager::load_texture(kBackgroundImagePath, false);
@@ -85,6 +86,7 @@ namespace util {
 		// shaders
 		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {});
 		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {});
+		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
 
 		auto player_pos = glm::vec2(
 			width_ / 2.0f - kPlayerSize.x / 2.0f,
@@ -99,6 +101,9 @@ namespace util {
 		ball_ = new BallObject(ball_pos, kBallRadius, kInitialBallVelocity,
 			ResourceManager::get_texture(ball_texture_id_));
 
+		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width_),
+			static_cast<float>(height_), 0.0f, -1.0f, 1.0f);
+
 		particle_generator_ = new ParticleGenerator(
 			ResourceManager::get_shader(particle_shader_id_),
 			ResourceManager::get_texture(particle_texture_id_),
@@ -108,9 +113,17 @@ namespace util {
 
 		effects_ = new PostProcessor(
 			ResourceManager::get_shader(effects_shader_id_),
+			{ 0.0f, 0.0f },
 			width_,
-			height_
+			height_,
+			screen_projection
 		);
+
+		sprite_renderer_ = new SpriteRenderer{ ResourceManager::get_shader(sprite_shader_id_) };
+		auto &sprite_shader = ResourceManager::get_shader(sprite_shader_id_);
+		sprite_shader.use();
+		sprite_shader.set_int("u_image_", 0, false);
+		sprite_shader.set_mat4("u_projection_", projection, false);
 	}
 
 	void GameViewport::update_impl(Time dt)
@@ -140,26 +153,26 @@ namespace util {
 		}
 	}
 
-	void GameViewport::render_impl(Optional<SpriteRenderer*> sprite_renderer)
+	void GameViewport::render_impl(Optional<SpriteRenderer*> /*parent_sprite_renderer*/)
 	{
 		ASSERT(ball_, "No ball defined");
 		ASSERT(paddle_, "No paddle defined");
 
 		effects_->begin_render();
 
-		(*sprite_renderer)->draw(ResourceManager::get_texture(background_texture_id_),
+		sprite_renderer_->draw(ResourceManager::get_texture(background_texture_id_),
 			glm::vec2(0.0f, 0.0f), glm::vec2(width_, height_), 0.0f);
 
-		level_.draw(**sprite_renderer);
-		paddle_->draw(**sprite_renderer);
+		level_.draw(*sprite_renderer_);
+		paddle_->draw(*sprite_renderer_);
 		particle_generator_->draw();
-		ball_->draw(**sprite_renderer);
+		ball_->draw(*sprite_renderer_);
 
 		for (auto &i : power_ups_)
 		{
 			if (!i.is_destroyed())
 			{
-				i.draw(**sprite_renderer);
+				i.draw(*sprite_renderer_);
 			}
 		}
 

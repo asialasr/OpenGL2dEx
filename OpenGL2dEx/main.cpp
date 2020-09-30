@@ -23,16 +23,30 @@ Game g_breakout_{ kScreenWidth, kScreenHeight };
 int main(int argc, char *argv[])
 {
 	glfwInit();
+	// TODO(sasiala): debug callback requires >= 4.3
+#ifdef UTIL_GL_DEBUG
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#else
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+#endif
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 	glfwWindowHint(GLFW_RESIZABLE, false);
+#ifdef UTIL_GL_DEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
 
 	GLFWwindow* window = glfwCreateWindow(kScreenWidth, kScreenHeight, "Breakout", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
+	if (window == nullptr)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
 
 	// glad: load all OpenGL function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -44,6 +58,19 @@ int main(int argc, char *argv[])
 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+#ifdef UTIL_GL_DEBUG
+	// enable debug callback if debugging is enabled
+	int flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+	{
+		glEnable(GL_DEBUG_OUTPUT);
+		// make sure errors are displayed synchronously
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(util::gl_debug_output, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
+#endif
 
 	// OpenGL Configuration
 	glViewport(0, 0, kScreenWidth, kScreenHeight);

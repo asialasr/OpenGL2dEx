@@ -48,7 +48,7 @@ public:
 	private:
 		virtual void game_ended_impl(EndingReason reason) = 0;
 	};
-
+	// TODO(sasiala): allow changing dimensions & pos dynamically
 	GameViewport(Dimension width, Dimension height);
 
 	void set_game_state_callback(GameStateCallback &callback)
@@ -67,9 +67,9 @@ public:
 
 private:
 	// Element
-	void initialize_impl(const glm::mat4 &projection) override;
+	void initialize_impl(const glm::mat4 &screen_projection) override;
 	void update_impl(Time dt) override;
-	void render_impl(Optional<SpriteRenderer*> sprite_renderer) override;
+	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 
 	enum class ButtonsHandled {
 		kLeftButton = 0,
@@ -189,6 +189,7 @@ private:
 	// shaders
 	ResourceManager::ShaderId particle_shader_id_;
 	ResourceManager::ShaderId effects_shader_id_;
+	ResourceManager::ShaderId sprite_shader_id_;
 
 	LifeCount lives_;
 
@@ -211,6 +212,8 @@ private:
 	float shake_time_;
 
 	std::vector<PowerUp> power_ups_;
+
+	SpriteRenderer *sprite_renderer_;
 };
 
 } // namespace util

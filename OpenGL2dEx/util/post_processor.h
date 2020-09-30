@@ -4,13 +4,17 @@
 #include "resource_mgr.h"
 #include "shader.h"
 
+#include "glm/glm.hpp"
+
 namespace util {
 
 class PostProcessor {
 public:
-	PostProcessor(const Shader &post_processing_shader,
-				  unsigned int width,
-				  unsigned int height);
+	PostProcessor(const Shader       &post_processing_shader,
+				  glm::vec2          position,
+				  unsigned int       width,
+				  unsigned int       height,
+				  const glm::mat4    &projection);
 
 	void begin_render();
 	void end_render();
@@ -56,6 +60,7 @@ private:
 
 	Shader post_processing_shader_;
 	Texture2D texture_;
+	glm::vec2 position_;
 	unsigned int width_;
 	unsigned int height_;
 
