@@ -18,6 +18,7 @@ namespace util {
 class BallObject;
 class ParticleGenerator;
 class PostProcessor;
+class IResetGlProperties;
 
 class GameViewport : public Element {
 public:
@@ -49,7 +50,9 @@ public:
 		virtual void game_ended_impl(EndingReason reason) = 0;
 	};
 	// TODO(sasiala): allow changing dimensions & pos dynamically
-	GameViewport(Dimension width, Dimension height);
+	GameViewport(IResetGlProperties &gl_property_resetter,
+				 Dimension width, 
+				 Dimension height);
 
 	void set_game_state_callback(GameStateCallback &callback)
 	{
@@ -149,6 +152,7 @@ private:
 	bool is_other_power_up_active(const PowerUpTypes type);
 	void update_power_ups(float dt);
 
+	IResetGlProperties &gl_property_resetter_;
 	Dimension width_;
 	Dimension height_;
 

@@ -8,9 +8,12 @@
 
 namespace util {
 
+class IResetGlProperties;
+
 class PostProcessor {
 public:
-	PostProcessor(const Shader       &post_processing_shader,
+	PostProcessor(const IResetGlProperties& gl_property_resetter,
+				  const Shader       &post_processing_shader,
 				  glm::vec2          position,
 				  unsigned int       width,
 				  unsigned int       height,
@@ -58,6 +61,7 @@ public:
 private:
 	void initialize_render_data();
 
+	const IResetGlProperties& gl_property_resetter_;
 	Shader post_processing_shader_;
 	Texture2D texture_;
 	glm::vec2 position_;

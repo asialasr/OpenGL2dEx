@@ -2,16 +2,19 @@
 
 #include "logging.h"
 #include "gl_debug.h"
+#include "reset_gl_properties.h"
 
 namespace util {
 
 
-PostProcessor::PostProcessor(const Shader    &post_processing_shader,
+PostProcessor::PostProcessor(const IResetGlProperties& gl_property_resetter,
+							 const Shader    &post_processing_shader,
 							 glm::vec2       position,
 							 unsigned int    width,
 							 unsigned int    height,
 							 const glm::mat4 &projection)
-	: post_processing_shader_{ post_processing_shader }
+	: gl_property_resetter_{ gl_property_resetter }
+	, post_processing_shader_ { post_processing_shader }
 	, texture_{}
 	, position_{ position }
 	, width_{ width }
@@ -78,6 +81,7 @@ PostProcessor::PostProcessor(const Shader    &post_processing_shader,
 
 void PostProcessor::begin_render()
 {
+	glViewport(0, 0, width_, height_);
 	glBindFramebuffer(GL_FRAMEBUFFER, msfbo_);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -90,7 +94,9 @@ void PostProcessor::end_render()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msfbo_);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_);
 	glBlitFramebuffer(0, 0, width_, height_, 0, 0, width_, height_, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	gl_property_resetter_.reset_fbo();
+	gl_property_resetter_.reset_viewport();
 
 	check_for_gl_errors();
 }

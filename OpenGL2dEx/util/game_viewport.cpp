@@ -10,10 +10,13 @@
 #include <algorithm>
 
 namespace util {
-	GameViewport::GameViewport(Dimension width, Dimension height)
+	GameViewport::GameViewport(IResetGlProperties &gl_property_resetter,
+							   Dimension width, 
+							   Dimension height)
 		: Element{}
 		, keys_pressed_{}
 		, keys_processed_{}
+		, gl_property_resetter_{ gl_property_resetter }
 		, width_{ width }
 		, height_{ height }
 		, game_state_callback_{ nullptr }
@@ -112,6 +115,7 @@ namespace util {
 		);
 
 		effects_ = new PostProcessor(
+			gl_property_resetter_,
 			ResourceManager::get_shader(effects_shader_id_),
 			{ 0.0f, 0.0f },
 			width_,

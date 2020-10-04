@@ -12,13 +12,17 @@
 #include <tuple>
 
 namespace util {
+	
+	class IResetGlProperties;
 
 	class Game : public GameViewport::GameStateCallback
 	{
 	public:
 		using Dimension = unsigned int;
 
-		Game(Dimension width, Dimension height);
+		Game(IResetGlProperties &gl_property_resetter, 
+			 Dimension width, 
+			 Dimension height);
 		~Game();
 
 		void initialize();

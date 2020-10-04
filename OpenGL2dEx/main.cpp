@@ -2,6 +2,7 @@
 #include "util/logging.h"
 #include "util/gl_debug.h"
 #include "util/resource_mgr.h"
+#include "util/reset_gl_properties.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,7 +19,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 constexpr unsigned int kScreenWidth{ 800 };
 constexpr unsigned int kScreenHeight{ 600 };
 
-Game g_breakout_{ kScreenWidth, kScreenHeight };
+// TODO(sasiala): find a better way than a global variable
+class ResetGlProperties : public IResetGlProperties {
+private:
+	void reset_fbo_impl() const override
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void reset_viewport_impl() const override
+	{
+		glViewport(0, 0, kScreenWidth, kScreenHeight);
+	}
+} g_gl_property_resetter_; // class ResetGlProperties
+
+Game g_breakout_{ g_gl_property_resetter_, kScreenWidth, kScreenHeight };
 
 int main(int argc, char *argv[])
 {
@@ -73,7 +88,7 @@ int main(int argc, char *argv[])
 #endif
 
 	// OpenGL Configuration
-	glViewport(0, 0, kScreenWidth, kScreenHeight);
+	g_gl_property_resetter_.reset_viewport();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

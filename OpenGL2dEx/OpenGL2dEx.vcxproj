@@ -33,6 +33,7 @@
     <ClInclude Include="util\particle_generator.h" />
     <ClInclude Include="util\post_processor.h" />
     <ClInclude Include="util\power_up.h" />
+    <ClInclude Include="util\reset_gl_properties.h" />
     <ClInclude Include="util\resource_mgr.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />

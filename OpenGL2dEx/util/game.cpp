@@ -15,13 +15,15 @@
 
 namespace util
 {
-	Game::Game(Dimension width, Dimension height) 
+	Game::Game(IResetGlProperties &gl_property_resetter,
+			   Dimension width, 
+		       Dimension height)
 		: state_{ GameState::kMenu }
 		, keys_{}
 		, keys_processed_{}
 		, width_{ width }
 		, height_{ height }
-		, game_viewport_{ width, height }
+		, game_viewport_{ gl_property_resetter, width, height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
 		, smiley_texture_id_{}
