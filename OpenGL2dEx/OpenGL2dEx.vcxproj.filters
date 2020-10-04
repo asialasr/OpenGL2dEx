@@ -66,6 +66,18 @@
     <ClInclude Include="util\count_of.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\element.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\game_viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\reset_gl_properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">
@@ -81,9 +93,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util\resource_mgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stbi\stb_helper.cpp">
@@ -111,6 +120,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util\text_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\game_viewport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,15 +2,21 @@
 
 #include "logging.h"
 #include "gl_debug.h"
+#include "reset_gl_properties.h"
 
 namespace util {
 
 
-PostProcessor::PostProcessor(const Shader &post_processing_shader,
-							 unsigned int width,
-							 unsigned int height)
-	: post_processing_shader_{ post_processing_shader }
+PostProcessor::PostProcessor(const IResetGlProperties& gl_property_resetter,
+							 const Shader    &post_processing_shader,
+							 glm::vec2       position,
+							 unsigned int    width,
+							 unsigned int    height,
+							 const glm::mat4 &projection)
+	: gl_property_resetter_{ gl_property_resetter }
+	, post_processing_shader_ { post_processing_shader }
 	, texture_{}
+	, position_{ position }
 	, width_{ width }
 	, height_{ height }
 	, confuse_{ false }
@@ -31,6 +37,7 @@ PostProcessor::PostProcessor(const Shader &post_processing_shader,
 	// also initialize FBO/texture to blit multisampled color-buffer to
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo_);
 	texture_.generate(width, height, nullptr, true);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_.id(), 0);
 	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Failed to initialize FBO");
 	
@@ -39,7 +46,8 @@ PostProcessor::PostProcessor(const Shader &post_processing_shader,
 	initialize_render_data();
 	
 	post_processing_shader_.use();
-	post_processing_shader_.set_int("u_scene_", 0, true);
+	post_processing_shader_.set_mat4("u_projection_", projection, false);
+	post_processing_shader_.set_int("u_scene_", 0, false);
 	static constexpr float offset = 1.0f / 300.0f;
 	static const float offsets[9][2] = {
 		{ -offset, offset },
@@ -73,6 +81,7 @@ PostProcessor::PostProcessor(const Shader &post_processing_shader,
 
 void PostProcessor::begin_render()
 {
+	glViewport(0, 0, width_, height_);
 	glBindFramebuffer(GL_FRAMEBUFFER, msfbo_);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -85,14 +94,29 @@ void PostProcessor::end_render()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, msfbo_);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_);
 	glBlitFramebuffer(0, 0, width_, height_, 0, 0, width_, height_, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	gl_property_resetter_.reset_fbo();
+	gl_property_resetter_.reset_viewport();
 
 	check_for_gl_errors();
 }
 
 void PostProcessor::render(float time)
 {
+	// TODO(sasiala): I'm 90% sure there's a far better way to accomplish all of this.
+	// model & projection are used to allow this to behave as a window within a game.
+	// e.g. the game level could be displayed next to the list of levels instead of 
+	// as the background
+	auto model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3{ position_ + glm::vec2{width_ * .5, height_ * .5}, 0.0f });
+	
+	// without the rotation, the game is displayed upside-down
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3{ 1.0f, 0.0f, 0.0f });
+
+	model = glm::scale(model, glm::vec3{ width_ *.5, height_ * .5, 1.0f });
+
 	post_processing_shader_.use();
+	post_processing_shader_.set_mat4("u_model_", model, false);
 	post_processing_shader_.set_float("u_time_", time, false);
 	post_processing_shader_.set_bool("u_confuse_", confuse_, false);
 	post_processing_shader_.set_bool("u_chaos_", chaos_, false);

@@ -3,6 +3,8 @@
 
 #include <cassert>
 
+// TODO(sasiala): this optional ws just an initial thing to 
+// get things working.  It needs a lot of work.
 namespace util {
 	struct nullopt_t {
 		constexpr nullopt_t(int) {}

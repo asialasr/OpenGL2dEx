@@ -4,13 +4,20 @@
 #include "resource_mgr.h"
 #include "shader.h"
 
+#include "glm/glm.hpp"
+
 namespace util {
+
+class IResetGlProperties;
 
 class PostProcessor {
 public:
-	PostProcessor(const Shader &post_processing_shader,
-				  unsigned int width,
-				  unsigned int height);
+	PostProcessor(const IResetGlProperties& gl_property_resetter,
+				  const Shader       &post_processing_shader,
+				  glm::vec2          position,
+				  unsigned int       width,
+				  unsigned int       height,
+				  const glm::mat4    &projection);
 
 	void begin_render();
 	void end_render();
@@ -46,11 +53,18 @@ public:
 		shake_ = shake;
 	}
 
+	void clear_effects()
+	{
+		confuse_ = chaos_ = shake_ = false;
+	}
+
 private:
 	void initialize_render_data();
 
+	const IResetGlProperties& gl_property_resetter_;
 	Shader post_processing_shader_;
 	Texture2D texture_;
+	glm::vec2 position_;
 	unsigned int width_;
 	unsigned int height_;
 

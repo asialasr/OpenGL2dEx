@@ -43,6 +43,8 @@ public:
 	void update(float dt, GameObject &object, unsigned int new_particles, Optional<glm::vec2> offset);
 	void draw();
 
+	void clear_particles();
+
 private:
 	size_t pop_vertex()
 	{

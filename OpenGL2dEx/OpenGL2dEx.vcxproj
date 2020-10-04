@@ -22,8 +22,10 @@
     <ClInclude Include="util\audio_manager.h" />
     <ClInclude Include="util\ball_object.h" />
     <ClInclude Include="util\count_of.h" />
+    <ClInclude Include="util\element.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
+    <ClInclude Include="util\game_viewport.h" />
     <ClInclude Include="util\gl_debug.h" />
     <ClInclude Include="util\game_level.h" />
     <ClInclude Include="util\logging.h" />
@@ -31,11 +33,13 @@
     <ClInclude Include="util\particle_generator.h" />
     <ClInclude Include="util\post_processor.h" />
     <ClInclude Include="util\power_up.h" />
+    <ClInclude Include="util\reset_gl_properties.h" />
     <ClInclude Include="util\resource_mgr.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />
+    <ClInclude Include="util\types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
@@ -46,6 +50,7 @@
     <ClCompile Include="util\game.cpp" />
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
+    <ClCompile Include="util\game_viewport.cpp" />
     <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\post_processor.cpp" />
     <ClCompile Include="util\resource_mgr.cpp" />

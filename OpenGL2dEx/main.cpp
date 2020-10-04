@@ -2,6 +2,7 @@
 #include "util/logging.h"
 #include "util/gl_debug.h"
 #include "util/resource_mgr.h"
+#include "util/reset_gl_properties.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,21 +19,49 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 constexpr unsigned int kScreenWidth{ 800 };
 constexpr unsigned int kScreenHeight{ 600 };
 
-Game g_breakout_{ kScreenWidth, kScreenHeight };
+// TODO(sasiala): find a better way than a global variable
+class ResetGlProperties : public IResetGlProperties {
+private:
+	void reset_fbo_impl() const override
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void reset_viewport_impl() const override
+	{
+		glViewport(0, 0, kScreenWidth, kScreenHeight);
+	}
+} g_gl_property_resetter_; // class ResetGlProperties
+
+Game g_breakout_{ g_gl_property_resetter_, kScreenWidth, kScreenHeight };
 
 int main(int argc, char *argv[])
 {
 	glfwInit();
+	// TODO(sasiala): debug callback requires >= 4.3
+#ifdef UTIL_GL_DEBUG
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#else
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+#endif
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 	glfwWindowHint(GLFW_RESIZABLE, false);
+#ifdef UTIL_GL_DEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
 
 	GLFWwindow* window = glfwCreateWindow(kScreenWidth, kScreenHeight, "Breakout", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
+	if (window == nullptr)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
 
 	// glad: load all OpenGL function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -44,9 +73,22 @@ int main(int argc, char *argv[])
 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+#ifdef UTIL_GL_DEBUG
+	// enable debug callback if debugging is enabled
+	int flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+	{
+		glEnable(GL_DEBUG_OUTPUT);
+		// make sure errors are displayed synchronously
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(util::gl_debug_output, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
+#endif
 
 	// OpenGL Configuration
-	glViewport(0, 0, kScreenWidth, kScreenHeight);
+	g_gl_property_resetter_.reset_viewport();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

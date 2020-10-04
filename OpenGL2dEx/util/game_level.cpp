@@ -9,7 +9,6 @@
 
 namespace util {
 
-
 void GameLevel::load(const char                   *file,
 					 unsigned int                 level_width,
 					 unsigned int                 level_height,
