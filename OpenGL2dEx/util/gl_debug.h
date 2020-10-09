@@ -36,8 +36,15 @@ namespace util {
 
 	static void check_for_gl_errors()
 	{
-		const auto error = glGetError();
-		ASSERT(error == GL_NO_ERROR, "OpenGL Error: " + std::string{ error_string(error) });
+		bool gl_error_not_found = true;
+		auto error = glGetError();
+		while (error != GL_NO_ERROR)
+		{
+			LOG("OpenGL Error: " + std::string{ error_string(error) });
+			gl_error_not_found = false;
+			error = glGetError();
+		}
+		ASSERT(gl_error_not_found, "OpenGL Errors found and logged.  Exiting...");
 	}
 
 	static void APIENTRY gl_debug_output(GLenum source,
