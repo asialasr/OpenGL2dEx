@@ -45,7 +45,15 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 #endif
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// TODO(sasiala): using the core profile causes gladLoadGLLoader to
+	// give an error, GL_INVALID_ENUM, when it calls glGetIntegerV with
+	// GL_NUM_EXTENSIONS as input.  I figured this out, because it looks 
+	// like the core profile is more strict in that when something is 
+	// deprecated it isn't allowed, while the compatibility profile will
+	// keep some of this functionality around.  I think using compatibility
+	// should be OK, but look into the advantages and disadvantages more
+	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -55,13 +63,13 @@ int main(int argc, char *argv[])
 #endif
 
 	GLFWwindow* window = glfwCreateWindow(kScreenWidth, kScreenHeight, "Breakout", nullptr, nullptr);
-	glfwMakeContextCurrent(window);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
+	glfwMakeContextCurrent(window);
 
 	// glad: load all OpenGL function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
