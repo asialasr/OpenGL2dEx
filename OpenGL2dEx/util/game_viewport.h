@@ -161,6 +161,16 @@ private:
 	GameLevel level_;
 	const char * level_path_;
 
+	glm::vec2 paddle_size_from_viewport_size() const 
+	{
+		return{ kRelativePaddleSize.x * width_, kRelativePaddleSize.y * height_ };
+	}
+
+	float paddle_velocity_from_viewport_width() const
+	{
+		return kRelativePaddleVelocity * width_;
+	}
+
 	// textures
 	static constexpr const char *kBackgroundImagePath = "textures/background.jpg";
 	static constexpr const char *kBlockSolidImagePath = "textures/block_solid.png";
@@ -197,11 +207,9 @@ private:
 
 	LifeCount lives_;
 
-	// TODO(sasiala): what's the deal with this not being able
-	// to be constexpr and/or static?
-	// TODO(sasiala): should these sizes be relative to width & height?
-	const glm::vec2 kPlayerSize = glm::vec2(100.0f, 20.0f);
-	static constexpr float kPlayerVelocity{ 500.0f };
+	// speed/size based on initial values & width/height in tutorial
+	const glm::vec2 kRelativePaddleSize = glm::vec2(100.0f / 800.0f, 20.0f / 600.0f);
+	static constexpr float kRelativePaddleVelocity{ 500.0f / 800.0f };
 	GameObject *paddle_;
 
 	const glm::vec2 kInitialBallVelocity{ 100.0f, -350.0f };

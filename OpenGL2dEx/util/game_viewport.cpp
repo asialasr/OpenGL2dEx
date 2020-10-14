@@ -91,15 +91,16 @@ namespace util {
 		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {});
 		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
 
-		auto player_pos = glm::vec2(
-			width_ / 2.0f - kPlayerSize.x / 2.0f,
-			height_ - kPlayerSize.y
+		const auto paddle_size = paddle_size_from_viewport_size();
+		const auto player_pos = glm::vec2(
+			width_ / 2.0f - paddle_size.x / 2.0f,
+			height_ - paddle_size.y
 		);
-		paddle_ = new GameObject(player_pos, kPlayerSize,
+		paddle_ = new GameObject(player_pos, paddle_size,
 			ResourceManager::get_texture(paddle_texture_id_), {}, {});
 
-		auto ball_pos = player_pos +
-			glm::vec2(kPlayerSize.x / 2.0f - kBallRadius,
+		const auto ball_pos = player_pos +
+			glm::vec2(paddle_->size().x / 2.0f - kBallRadius,
 				-kBallRadius * 2.0f);
 		ball_ = new BallObject(ball_pos, kBallRadius, kInitialBallVelocity,
 			ResourceManager::get_texture(ball_texture_id_));
@@ -431,7 +432,7 @@ namespace util {
 		ASSERT(ball_, "No ball defined");
 		ASSERT(paddle_, "No paddle defined");
 
-		auto velocity = kPlayerVelocity * dt;
+		const auto velocity = paddle_velocity_from_viewport_width() * dt;
 		if (paddle_->position().x >= 0.0f)
 		{
 			paddle_->move_x(-velocity);
@@ -448,7 +449,7 @@ namespace util {
 		ASSERT(ball_, "No ball defined");
 		ASSERT(paddle_, "No paddle defined");
 
-		auto velocity = kPlayerVelocity * dt;
+		const auto velocity = paddle_velocity_from_viewport_width() * dt;
 		if (paddle_->position().x <= width_ - paddle_->size().x)
 		{
 			paddle_->move_x(velocity);
@@ -488,10 +489,12 @@ namespace util {
 
 	void GameViewport::reset_player()
 	{
-		paddle_->set_size(kPlayerSize);
-		paddle_->set_position(glm::vec2(width_ / 2.0f - kPlayerSize.x / 2.0f,
-			height_ - kPlayerSize.y));
-		ball_->reset(paddle_->position() + glm::vec2(paddle_->size().x / 2.0f - kBallRadius, -(kBallRadius * 2.0f)), kInitialBallVelocity);
+		const auto paddle_size = paddle_size_from_viewport_size();
+		paddle_->set_size(paddle_size);
+		paddle_->set_position(glm::vec2(width_ / 2.0f - paddle_size.x / 2.0f,
+			height_ - paddle_size.y));
+		ball_->reset(paddle_->position() + glm::vec2(paddle_->size().x / 2.0f - kBallRadius, 
+												-(kBallRadius * 2.0f)), kInitialBallVelocity);
 	}
 
 	void GameViewport::kill_player()
