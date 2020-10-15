@@ -171,6 +171,16 @@ private:
 		return kRelativePaddleVelocity * width_;
 	}
 
+	float ball_radius_from_viewport_width() const
+	{
+		return kBallRadiusRatio * width_;
+	}
+
+	glm::vec2 initial_ball_velocity() const
+	{
+		return glm::vec2{ kInitialBallVelocityRatio.x * width_, kInitialBallVelocityRatio.y * height_ };
+	}
+
 	// textures
 	static constexpr const char *kBackgroundImagePath = "textures/background.jpg";
 	static constexpr const char *kBlockSolidImagePath = "textures/block_solid.png";
@@ -212,8 +222,8 @@ private:
 	static constexpr float kRelativePaddleVelocity{ 500.0f / 800.0f };
 	GameObject *paddle_;
 
-	const glm::vec2 kInitialBallVelocity{ 100.0f, -350.0f };
-	static constexpr float kBallRadius{ 12.5f };
+	const glm::vec2 kInitialBallVelocityRatio{ 100.0f / 800.0f, -350.0f / 600.0f };
+	static constexpr float kBallRadiusRatio{ 12.5f / 800.0f };
 	BallObject *ball_;
 
 	static constexpr size_t kMaxParticles{ 500 };
