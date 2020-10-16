@@ -121,11 +121,6 @@ namespace util
 		}
 	}
 
-	void Game::render_lives()
-	{
-		ResourceManager::get_font(default_font_id_).render_text("Lives: " + std::to_string(game_viewport_.lives()), kLifeText.x_, kLifeText.y_, kLifeText.scale_, {});
-	}
-
 	void Game::update(float dt)
 	{
 		if (state_ == GameState::kActive)
@@ -137,8 +132,6 @@ namespace util
 	void Game::render()
 	{
 		game_viewport_.render(sprite_renderer_);
-
-		render_lives();
 
 		check_for_gl_errors();
 

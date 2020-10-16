@@ -35,6 +35,8 @@ namespace util {
 		, particle_shader_id_{}
 		, effects_shader_id_{}
 		, sprite_shader_id_{}
+		, font_shader_id_{}
+		, default_font_id_{}
 		, lives_{ kInitialLifeCount }
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
@@ -87,10 +89,13 @@ namespace util {
 		pup_sticky_texture_id_ = ResourceManager::load_texture(kPupStickyImagePath, true);
 
 		// shaders
-		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {});
-		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {});
-		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {});
+		particle_shader_id_ = ResourceManager::load_shader("shaders/particle.vs", "shaders/particle.fs", {util::nullopt});
+		effects_shader_id_ = ResourceManager::load_shader("shaders/effects.vs", "shaders/effects.fs", {util::nullopt});
+		sprite_shader_id_ = ResourceManager::load_shader("shaders/sprite.vs", "shaders/sprite.fs", {util::nullopt});
+		font_shader_id_ = ResourceManager::load_shader("shaders/text_2d.vs", "shaders/text_2d.fs", {util::nullopt});
 
+		// fonts
+		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, font_size(), width_, height_);
 		const auto paddle_size = paddle_size_from_viewport_size();
 		const auto player_pos = glm::vec2(
 			width_ / 2.0f - paddle_size.x / 2.0f,
@@ -183,6 +188,8 @@ namespace util {
 			}
 		}
 
+		render_lives();
+
 		effects_->end_render();
 		effects_->render(glfwGetTime());
 
@@ -256,6 +263,11 @@ namespace util {
 		if (!box.is_solid())
 		{
 			level_.set_brick_destroyed(box_index, true);
+			if (level_.is_completed())
+			{
+				level_complete();
+			}
+
 			const auto power_ups_spawned = spawn_power_ups(box);
 			if (power_ups_spawned)
 			{
@@ -489,6 +501,13 @@ namespace util {
 		}
 	}
 
+	void GameViewport::render_lives()
+	{
+		ResourceManager::get_font(default_font_id_).render_text("Lives: " + 
+			std::to_string(lives_), kLifeText.relative_x_ * width_, 
+			kLifeText.relative_y_ * height_, kLifeText.scale_, { glm::vec3{1.0f, 1.0f, 1.0f} });
+	}
+
 	void GameViewport::reset_player()
 	{
 		const auto paddle_size = paddle_size_from_viewport_size();
@@ -709,6 +728,11 @@ namespace util {
 		power_ups_.erase(std::remove_if(power_ups_.begin(), power_ups_.end(),
 			[](const PowerUp &power_up) {return power_up.is_destroyed() && !power_up.activated(); }),
 			power_ups_.end());
+	}
+
+	void GameViewport::level_complete()
+	{
+		// TODO(sasiala)
 	}
 
 }

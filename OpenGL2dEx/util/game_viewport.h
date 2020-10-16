@@ -123,6 +123,11 @@ private:
 	void handle_launch_button();
 	void process_input_impl(float dt) override;
 
+	static constexpr struct {
+		float relative_x_;
+		float relative_y_;
+		float scale_;
+	} kLifeText{ 5.0f / 800.0f, 5.0f / 600.0f, 1.0f };
 	static constexpr LifeCount kInitialLifeCount{ 3 };
 	void reset_lives()
 	{
@@ -132,6 +137,7 @@ private:
 	{
 		return lives_ <= 0;
 	}
+	void render_lives();
 
 	void reset_player();
 	void kill_player();
@@ -151,17 +157,10 @@ private:
 	bool spawn_power_ups(const GameObject &block);
 	bool is_other_power_up_active(const PowerUpTypes type);
 	void update_power_ups(float dt);
+	
+	void level_complete();
 
-	IResetGlProperties &gl_property_resetter_;
-	Dimension width_;
-	Dimension height_;
-
-	GameStateCallback *game_state_callback_;
-
-	GameLevel level_;
-	const char * level_path_;
-
-	glm::vec2 paddle_size_from_viewport_size() const 
+	glm::vec2 paddle_size_from_viewport_size() const
 	{
 		return{ kRelativePaddleSize.x * width_, kRelativePaddleSize.y * height_ };
 	}
@@ -181,6 +180,20 @@ private:
 		return glm::vec2{ kInitialBallVelocityRatio.x * width_, kInitialBallVelocityRatio.y * height_ };
 	}
 
+	TextRenderer::FontSize font_size() const
+	{
+		return kDefaultRelativeFontSize * height_;
+	}
+
+	IResetGlProperties &gl_property_resetter_;
+	Dimension width_;
+	Dimension height_;
+
+	GameStateCallback *game_state_callback_;
+
+	GameLevel level_;
+	const char * level_path_;
+
 	// textures
 	static constexpr const char *kBackgroundImagePath = "textures/background.jpg";
 	static constexpr const char *kBlockSolidImagePath = "textures/block_solid.png";
@@ -195,6 +208,9 @@ private:
 	static constexpr const char *kPupPassThroughImagePath = "textures/power_ups/powerup_passthrough.png";
 	static constexpr const char *kPupSpeedImagePath = "textures/power_ups/powerup_speed.png";
 	static constexpr const char *kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
+
+	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
+	static constexpr double kDefaultRelativeFontSize{ 24.0 / 600.0 };
 
 	ResourceManager::Texture2DId background_texture_id_;
 	ResourceManager::Texture2DId block_texture_id_;
@@ -214,6 +230,10 @@ private:
 	ResourceManager::ShaderId particle_shader_id_;
 	ResourceManager::ShaderId effects_shader_id_;
 	ResourceManager::ShaderId sprite_shader_id_;
+	ResourceManager::ShaderId font_shader_id_;
+	
+	// fonts
+	ResourceManager::FontId default_font_id_;
 
 	LifeCount lives_;
 

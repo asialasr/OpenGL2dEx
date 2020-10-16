@@ -25,7 +25,7 @@ TextRenderer::TextRenderer(const Shader &shader, const Dimension width, const Di
 	shader_ = &shader;
 
 	shader_->use();
-	shader_->set_mat4("u_projection_", make_ortho(width, height), false);
+	update_size(width, height);
 	shader_->set_int("u_text_", 0, false);
 
 	// TODO(sasiala): I think I could make some utility functions which would
@@ -104,6 +104,11 @@ void TextRenderer::load(const char *font_path,
 	glBindTexture(GL_TEXTURE_2D, 0);
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
+}
+
+void TextRenderer::update_size(float width, float height)
+{
+	shader_->set_mat4("u_projection_", make_ortho(width, height), false);
 }
 
 void TextRenderer::render_text(const std::string &text, 
