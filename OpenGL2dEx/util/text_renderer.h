@@ -53,6 +53,7 @@ public:
 	}
 
 	void load(const char *font_path, FontSize font_size);
+	void update_size(float width, float height);
 	void render_text(const std::string &text, 
 					 float x, 
 					 float y, 

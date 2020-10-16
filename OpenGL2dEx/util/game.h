@@ -54,13 +54,6 @@ namespace util {
 
 		void render_menu() const;
 
-		static constexpr struct {
-			float x_;
-			float y_;
-			float scale_;
-		} kLifeText{ 5.0f, 5.0f, 1.0f };
-		void render_lives();
-
 		void delete_dynamic_data();
 
 		static constexpr const char *kLevelPaths[] = {
