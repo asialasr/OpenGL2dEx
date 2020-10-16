@@ -47,6 +47,19 @@ namespace util {
 	{
 	}
 
+	void GameViewport::set_size(Dimension width, Dimension height)
+	{
+		// TODO(sasiala): should make separation between loaded height/width (width_ & height_)
+		// and render height/width (set here) very clear.  ball, paddle, brick size should all remain
+		// the same since being loaded, but the rendered width and height can change (which will just
+		// stretch the texture)
+		effects_->set_size(width, height);
+	}
+
+	void GameViewport::set_position(const glm::vec2 &position)
+	{
+		effects_->set_position(position);
+	}
 
 	void GameViewport::load_level(const char * const path)
 	{

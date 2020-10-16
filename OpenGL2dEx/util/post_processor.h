@@ -58,6 +58,18 @@ public:
 		confuse_ = chaos_ = shake_ = false;
 	}
 
+	void set_size(const float width, const float height)
+	{
+		width_ = width;
+		height_ = height;
+		texture_.generate(width, height, nullptr, true);
+	}
+
+	void set_position(const glm::vec2 &position)
+	{
+		position_ = position;
+	}
+
 private:
 	void initialize_render_data();
 
