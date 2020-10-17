@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
 	{
 		// calculate delta time
 		auto current_frame = glfwGetTime();
-		delta_time = current_frame - last_frame;
-		last_frame = current_frame;
+		delta_time = static_cast<float>(current_frame) - last_frame;
+		last_frame = static_cast<float>(current_frame);
 		glfwPollEvents();
 
 		// manage user input

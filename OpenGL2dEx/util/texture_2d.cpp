@@ -18,8 +18,8 @@ namespace util {
 		ASSERT(id_ != 0, "Texture not properly generated");
 	}
 
-	void Texture2D::generate(const unsigned int width, 
-							 const unsigned int height, 
+	void Texture2D::generate(const Dimension width, 
+							 const Dimension height, 
 							 unsigned char		*data,
 							 bool               allow_no_data)
 	{

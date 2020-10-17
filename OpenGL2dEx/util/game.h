@@ -48,7 +48,7 @@ namespace util {
 
 	private:
 		// GameViewport::GameStateCallback
-		void game_ended_impl(const EndingReason reason) override;
+		void game_ended_impl(EndingReason reason) override;
 
 		void load_current_level();
 

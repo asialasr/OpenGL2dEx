@@ -106,7 +106,7 @@ void TextRenderer::load(const char *font_path,
 	FT_Done_FreeType(ft);
 }
 
-void TextRenderer::update_size(float width, float height) const
+void TextRenderer::update_size(Dimension width, Dimension height) const
 {
 	shader_->use();
 	shader_->set_mat4("u_projection_", make_ortho(width, height), false);

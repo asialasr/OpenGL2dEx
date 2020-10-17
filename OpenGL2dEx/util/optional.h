@@ -54,7 +54,7 @@ namespace util {
 
 		// TODO(sasiala): implement comparison operators
 
-		constexpr Optional& operator=(const Optional &other)
+		constexpr Optional& operator=(const Optional &other) const
 		{
 			if (!has_data_ && !other.has_data_)
 			{
