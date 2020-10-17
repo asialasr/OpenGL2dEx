@@ -19,7 +19,6 @@ SpriteRenderer::~SpriteRenderer()
 void SpriteRenderer::draw(const Texture2D &texture, glm::vec2 position,
 						  glm::vec2 size, float rotate, glm::vec3 color)
 {
-	shader_.use();
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 
@@ -29,6 +28,7 @@ void SpriteRenderer::draw(const Texture2D &texture, glm::vec2 position,
 
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
+	shader_.use();
 	shader_.set_mat4("u_model_", model, false);
 	shader_.set_vec3("u_sprite_color_", color, false);
 

@@ -59,6 +59,9 @@ public:
 		game_state_callback_ = &callback;
 	}
 
+	void set_size(Dimension width, Dimension height);
+	void set_position(const glm::vec2 &position);
+
 	void load_level(const char * const path);
 	void reset_level();
 	void reset();
@@ -186,6 +189,7 @@ private:
 	}
 
 	IResetGlProperties &gl_property_resetter_;
+	// TODO(sasiala): these are loaded width/height, not rendered width/height
 	Dimension width_;
 	Dimension height_;
 
