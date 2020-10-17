@@ -3,6 +3,7 @@
 
 #include "resource_mgr.h"
 #include "shader.h"
+#include "types.h"
 
 #include "glm/glm.hpp"
 
@@ -58,7 +59,7 @@ public:
 		confuse_ = chaos_ = shake_ = false;
 	}
 
-	void set_size(const float width, const float height)
+	void set_size(const Dimension width, const Dimension height)
 	{
 		width_ = width;
 		height_ = height;
@@ -77,8 +78,8 @@ private:
 	Shader post_processing_shader_;
 	Texture2D texture_;
 	glm::vec2 position_;
-	unsigned int width_;
-	unsigned int height_;
+	Dimension width_;
+	Dimension height_;
 
 	bool confuse_;
 	bool chaos_;

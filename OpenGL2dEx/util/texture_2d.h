@@ -1,6 +1,8 @@
 #ifndef TEXTURE_2D_H
 #define TEXTURE_2D_H
 
+#include "types.h"
+
 namespace util {
 
 // Texture2D is able to store and configure a texture in OpenGL.
@@ -22,8 +24,8 @@ public:
 	{
 	}
 
-	void generate(unsigned int width, 
-				  unsigned int height, 
+	void generate(Dimension      width, 
+				  Dimension      height, 
 				  unsigned char* data,
 				  bool           allow_no_data = false);
 
@@ -70,8 +72,8 @@ private:
 	unsigned int id_;
 
 	// texture image dimensions
-	unsigned int width_; // width of loaded image in pixels
-	unsigned int height_; // height of loaded image in pixels
+	Dimension width_; // width of loaded image in pixels
+	Dimension height_; // height of loaded image in pixels
 
 	// texture format
 	unsigned int internal_format_; // format of texture object

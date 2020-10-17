@@ -204,7 +204,7 @@ namespace util {
 		render_lives();
 
 		effects_->end_render();
-		effects_->render(glfwGetTime());
+		effects_->render(static_cast<float>(glfwGetTime()));
 
 		check_for_gl_errors();
 	}

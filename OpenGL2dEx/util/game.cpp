@@ -165,8 +165,8 @@ namespace util
 	{
 		auto &renderer = ResourceManager::get_font(default_font_id_);
 		// TODO(sasiala): pos x should be based off of width
-		renderer.render_text("Press ENTER to start", 250.0f, height_ / 2, 1.0f, {});
-		renderer.render_text("Press W or S to select level", 245.0f, height_ / 2 + 20.0f, 0.75f, {});
+		renderer.render_text("Press ENTER to start", 250.0f, height_ / 2.0f, 1.0f, {});
+		renderer.render_text("Press W or S to select level", 245.0f, height_ / 2.0f + 20.0f, 0.75f, {});
 	}
 
 } // namespace util

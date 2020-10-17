@@ -41,7 +41,7 @@ public:
 			kNumReasons,
 			kUnknown,
 		};
-		void game_ended(const EndingReason reason)
+		void game_ended(EndingReason reason)
 		{
 			game_ended_impl(reason);
 		}
@@ -185,7 +185,7 @@ private:
 
 	TextRenderer::FontSize font_size() const
 	{
-		return kDefaultRelativeFontSize * height_;
+		return static_cast<TextRenderer::FontSize>(kDefaultRelativeFontSize * height_);
 	}
 
 	IResetGlProperties &gl_property_resetter_;
