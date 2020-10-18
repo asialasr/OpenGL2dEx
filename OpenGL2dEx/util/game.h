@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "menu.h"
 #include "game_level.h"
 #include "game_viewport.h"
 #include "power_up.h"
@@ -16,6 +17,7 @@ namespace util {
 	class IResetGlProperties;
 
 	class Game : public GameViewport::GameStateCallback
+			   , public Menu::MenuButtonHandler
 	{
 	public:
 		using Dimension = unsigned int;
@@ -50,9 +52,15 @@ namespace util {
 		// GameViewport::GameStateCallback
 		void game_ended_impl(EndingReason reason) override;
 
+		// Menu::MenuButtonHandler
+		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+
 		void load_current_level();
 
-		void render_menu() const;
+		void open_main_menu();
+		void close_main_menu();
+		void render_menu();
 
 		void delete_dynamic_data();
 
@@ -61,6 +69,12 @@ namespace util {
 			"levels/two.lvl",
 			"levels/three.lvl",
 			"levels/four.lvl"
+		};
+		const std::vector<std::string> kLevelNames{
+			"One",
+			"Two",
+			"Three",
+			"Four"
 		};
 		static constexpr size_t kMaxLevels{ util::count_of(kLevelPaths) };
 
@@ -72,6 +86,7 @@ namespace util {
 		Dimension width_, height_;
 
 		GameViewport game_viewport_;
+		Menu         main_menu_;
 
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;
