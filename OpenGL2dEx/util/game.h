@@ -17,6 +17,7 @@ namespace util {
 	class IResetGlProperties;
 
 	class Game : public GameViewport::GameStateCallback
+			   , public Menu::MenuButtonHandler
 	{
 	public:
 		using Dimension = unsigned int;
@@ -51,6 +52,10 @@ namespace util {
 		// GameViewport::GameStateCallback
 		void game_ended_impl(EndingReason reason) override;
 
+		// Menu::MenuButtonHandler
+		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+
 		void load_current_level();
 
 		void open_main_menu();
@@ -64,6 +69,12 @@ namespace util {
 			"levels/two.lvl",
 			"levels/three.lvl",
 			"levels/four.lvl"
+		};
+		const std::vector<std::string> kLevelNames{
+			"One",
+			"Two",
+			"Three",
+			"Four"
 		};
 		static constexpr size_t kMaxLevels{ util::count_of(kLevelPaths) };
 

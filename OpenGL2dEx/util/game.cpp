@@ -75,6 +75,7 @@ namespace util
 		game_viewport_.set_game_state_callback(*this);
 
 		main_menu_.initialize(projection);
+		main_menu_.set_menu_handler(*this);
 
 		current_level_ = 0;
 
@@ -95,35 +96,7 @@ namespace util
 		}
 		else if (GameState::kMenu == state_)
 		{
-			if (keys_[GLFW_KEY_ENTER] && !keys_processed_[GLFW_KEY_ENTER])
-			{
-				state_ = GameState::kActive;
-				close_main_menu();
-				keys_processed_[GLFW_KEY_ENTER] = true;
-			}
-			else
-			{
-				if (keys_[GLFW_KEY_W] && !keys_processed_[GLFW_KEY_W])
-				{
-					current_level_ = (current_level_ + 1) % kMaxLevels;
-					load_current_level();
-					keys_processed_[GLFW_KEY_W] = true;
-				}
-				if (keys_[GLFW_KEY_S] && !keys_processed_[GLFW_KEY_S])
-				{
-					if (current_level_ > 0)
-					{
-						--current_level_;
-					}
-					else
-					{
-						// wrap around
-						current_level_ = kMaxLevels - 1;
-					}
-					load_current_level();
-					keys_processed_[GLFW_KEY_S] = true;
-				}
-			}
+			main_menu_.process_input(dt);
 		}
 	}
 
@@ -163,6 +136,7 @@ namespace util
 		}
 
 		game_viewport_.set_key(key, val);
+		main_menu_.set_key(key, val);
 	}
 
 	void Game::game_ended_impl(const EndingReason /*reason*/)
@@ -172,11 +146,25 @@ namespace util
 		open_main_menu();
 	}
 
+	void Game::handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
+	{
+		ASSERT(submenu_level == 0, "Unexpected submenu level");
+		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
+		game_viewport_.load_level(kLevelPaths[index]);
+		current_level_ = index;
+	}
+
+	void Game::handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
+	{
+		close_main_menu();
+	}
+
 	void Game::open_main_menu()
 	{
-		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ "A", "B", "C" });
+		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
 		game_viewport_.set_size(.5 * width_, .5 * height_);
 		game_viewport_.set_position({ .45 * width_, .25 * height_ });
+		state_ = GameState::kMenu;
 	}
 
 	void Game::close_main_menu()
@@ -184,6 +172,7 @@ namespace util
 		game_viewport_.set_size(width_, height_);
 		game_viewport_.set_position({ 0.0f, 0.0f });
 		main_menu_.deactivate();
+		state_ = GameState::kActive;
 	}
 
 	void Game::render_menu()
