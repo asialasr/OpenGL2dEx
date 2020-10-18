@@ -53,6 +53,8 @@ namespace util {
 
 		void load_current_level();
 
+		void open_main_menu();
+		void close_main_menu();
 		void render_menu();
 
 		void delete_dynamic_data();

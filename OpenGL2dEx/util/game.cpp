@@ -80,9 +80,11 @@ namespace util
 
 		load_current_level();
 
-		check_for_gl_errors();
-
 		AudioManager::play_background_music(AudioManager::GameState::kActive, true);
+
+		open_main_menu();
+
+		check_for_gl_errors();
 	}
 
 	void Game::process_input(float dt)
@@ -96,6 +98,7 @@ namespace util
 			if (keys_[GLFW_KEY_ENTER] && !keys_processed_[GLFW_KEY_ENTER])
 			{
 				state_ = GameState::kActive;
+				close_main_menu();
 				keys_processed_[GLFW_KEY_ENTER] = true;
 			}
 			else
@@ -130,20 +133,24 @@ namespace util
 		{
 			game_viewport_.update(dt);
 		}
+		else if (state_ == GameState::kMenu)
+		{
+			main_menu_.update(dt);
+		}
 	}
 
 	void Game::render()
 	{
-		game_viewport_.render(sprite_renderer_);
-
-		check_for_gl_errors();
-
-		// render menu on top
+		// render menu on bottom
 		if (state_ == GameState::kMenu)
 		{
 			render_menu();
 			check_for_gl_errors();
 		}
+
+		game_viewport_.render(sprite_renderer_);
+
+		check_for_gl_errors();
 	}
 
 	void Game::set_key(size_t key, bool val)
@@ -162,18 +169,26 @@ namespace util
 	{
 		// TODO(sasiala): handle various ending reasons
 		state_ = GameState::kMenu;
+		open_main_menu();
+	}
+
+	void Game::open_main_menu()
+	{
+		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ "A", "B", "C" });
+		game_viewport_.set_size(.5 * width_, .5 * height_);
+		game_viewport_.set_position({ .45 * width_, .25 * height_ });
+	}
+
+	void Game::close_main_menu()
+	{
+		game_viewport_.set_size(width_, height_);
+		game_viewport_.set_position({ 0.0f, 0.0f });
+		main_menu_.deactivate();
 	}
 
 	void Game::render_menu()
 	{
-		auto &renderer = ResourceManager::get_font(default_font_id_);
-		// TODO(sasiala): pos x should be based off of width
-		renderer.render_text("Press ENTER to start", 250.0f, height_ / 2.0f, 1.0f, {});
-		renderer.render_text("Press W or S to select level", 245.0f, height_ / 2.0f + 20.0f, 0.75f, {});
-
-		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ "A", "B", "C" });
 		main_menu_.render(sprite_renderer_);
-
 	}
 
 } // namespace util
