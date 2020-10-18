@@ -24,6 +24,7 @@ namespace util
 		, width_{ width }
 		, height_{ height }
 		, game_viewport_{ gl_property_resetter, width, height }
+		, main_menu_{ width, height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
 		, smiley_texture_id_{}
@@ -72,6 +73,8 @@ namespace util
 
 		game_viewport_.initialize(projection);
 		game_viewport_.set_game_state_callback(*this);
+
+		main_menu_.initialize(projection);
 
 		current_level_ = 0;
 
@@ -161,12 +164,16 @@ namespace util
 		state_ = GameState::kMenu;
 	}
 
-	void Game::render_menu() const
+	void Game::render_menu()
 	{
 		auto &renderer = ResourceManager::get_font(default_font_id_);
 		// TODO(sasiala): pos x should be based off of width
 		renderer.render_text("Press ENTER to start", 250.0f, height_ / 2.0f, 1.0f, {});
 		renderer.render_text("Press W or S to select level", 245.0f, height_ / 2.0f + 20.0f, 0.75f, {});
+
+		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ "A", "B", "C" });
+		main_menu_.render(sprite_renderer_);
+
 	}
 
 } // namespace util

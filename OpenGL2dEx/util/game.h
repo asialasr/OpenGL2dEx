@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "menu.h"
 #include "game_level.h"
 #include "game_viewport.h"
 #include "power_up.h"
@@ -52,7 +53,7 @@ namespace util {
 
 		void load_current_level();
 
-		void render_menu() const;
+		void render_menu();
 
 		void delete_dynamic_data();
 
@@ -72,6 +73,7 @@ namespace util {
 		Dimension width_, height_;
 
 		GameViewport game_viewport_;
+		Menu         main_menu_;
 
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;
