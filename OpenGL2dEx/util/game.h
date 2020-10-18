@@ -61,6 +61,7 @@ namespace util {
 		void open_main_menu();
 		void close_main_menu();
 		void render_menu();
+		void animate_game_viewport(float dt);
 
 		void delete_dynamic_data();
 
@@ -103,6 +104,18 @@ namespace util {
 		ResourceManager::FontId default_font_id_;
 
 		size_t                 current_level_;
+
+		struct {
+			bool  animation_in_progress_;
+			// TODO(sasiala): these are all unsigned - could result in
+			// weird behavior
+			float dx_;
+			float dy_;
+			Dimension target_x_;
+			Dimension target_y_;
+			Dimension current_x_;
+			Dimension current_y_;
+		} viewport_animation_;
 	}; // class Game
 
 } // namespace util

@@ -30,6 +30,7 @@ namespace util
 		, smiley_texture_id_{}
 		, default_font_id_{}
 		, current_level_{0}
+		, viewport_animation_{ false, 0, 0, 0, 0, 0, 0 }
 	{
 	}
 
@@ -110,6 +111,11 @@ namespace util
 		{
 			main_menu_.update(dt);
 		}
+
+		if (viewport_animation_.animation_in_progress_)
+		{
+			animate_game_viewport(dt);
+		}
 	}
 
 	void Game::render()
@@ -162,22 +168,89 @@ namespace util
 	void Game::open_main_menu()
 	{
 		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
-		game_viewport_.set_size(.5 * width_, .5 * height_);
 		game_viewport_.set_position({ .45 * width_, .25 * height_ });
+
+		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
+		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
+		const float dx = 1.5 * width_;
+		const float dy = 1.5 * height_;
+		viewport_animation_ = { true, -dx, -dy, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
 		state_ = GameState::kMenu;
 	}
 
 	void Game::close_main_menu()
 	{
-		game_viewport_.set_size(width_, height_);
 		game_viewport_.set_position({ 0.0f, 0.0f });
 		main_menu_.deactivate();
+
+		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
+		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
+		const float dx = 1.5 * width_;
+		const float dy = 1.5 * height_;
+		viewport_animation_ = { true, dx, dy, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
 		state_ = GameState::kActive;
 	}
 
 	void Game::render_menu()
 	{
 		main_menu_.render(sprite_renderer_);
+	}
+
+	namespace {
+		Dimension animate_dimension(Dimension current, Dimension target, int dx)
+		{
+			if (current < target)
+			{
+				if (current + dx >= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+			else
+			{
+				if (std::abs(dx) > current || current + dx <= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+
+			return current;
+		}
+	}
+
+	void Game::animate_game_viewport(float dt)
+	{
+		ASSERT(viewport_animation_.animation_in_progress_, "No animation in progress");
+
+		viewport_animation_.current_x_ = animate_dimension(viewport_animation_.current_x_, 
+			viewport_animation_.target_x_, static_cast<int>(dt * viewport_animation_.dx_));
+		viewport_animation_.current_y_ = animate_dimension(viewport_animation_.current_y_, 
+			viewport_animation_.target_y_, static_cast<int>(dt * viewport_animation_.dy_));
+
+		const auto x_complete = (viewport_animation_.current_x_ == viewport_animation_.target_x_);
+		const auto y_complete = (viewport_animation_.current_y_ == viewport_animation_.target_y_);
+		if (x_complete && y_complete)
+		{
+			viewport_animation_.animation_in_progress_ = false;
+		}
+		if (x_complete)
+		{
+			viewport_animation_.dx_ = 0;
+		}
+		if (y_complete)
+		{
+			viewport_animation_.dy_ = 0;
+		}
+
+		game_viewport_.set_size(viewport_animation_.current_x_, viewport_animation_.current_y_);
 	}
 
 } // namespace util
