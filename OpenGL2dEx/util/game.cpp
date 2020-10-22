@@ -15,6 +15,37 @@
 
 namespace util
 {
+
+	namespace {
+		Dimension animate_dimension(Dimension current, Dimension target, int dx)
+		{
+			if (current < target)
+			{
+				if (current + dx >= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+			else
+			{
+				if (static_cast<unsigned int>(std::abs(dx)) > current || current + dx <= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+
+			return current;
+		}
+	} // namespace
+
 	Game::Game(IResetGlProperties &gl_property_resetter,
 			   Dimension width, 
 		       Dimension height)
@@ -30,7 +61,7 @@ namespace util
 		, smiley_texture_id_{}
 		, default_font_id_{}
 		, current_level_{0}
-		, viewport_animation_{ false, 0, 0, 0, 0, 0, 0 }
+		, viewport_animation_{ false, 0, 0, {0.0f, 0.0f}, {0.0f, 0.0f}, 0, 0, 0, 0 }
 	{
 	}
 
@@ -112,7 +143,7 @@ namespace util
 			main_menu_.update(dt);
 		}
 
-		if (viewport_animation_.animation_in_progress_)
+		if (viewport_animation_.in_progress())
 		{
 			animate_game_viewport(dt);
 		}
@@ -172,9 +203,11 @@ namespace util
 
 		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
 		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
-		const float dx = 1.5 * width_;
-		const float dy = 1.5 * height_;
-		viewport_animation_ = { true, -dx, -dy, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
+		const float dw = 1.5f * width_;
+		const float dh = 1.5f * height_;
+		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
+		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
 		state_ = GameState::kMenu;
 	}
 
@@ -185,9 +218,11 @@ namespace util
 
 		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
 		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
-		const float dx = 1.5 * width_;
-		const float dy = 1.5 * height_;
-		viewport_animation_ = { true, dx, dy, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
+		const float dw = 1.5f * width_;
+		const float dh = 1.5f * height_;
+		const auto start_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		const auto end_pos = glm::vec2{ 0.0f, 0.0f };
+		viewport_animation_ = { true, dw, dh, end_pos, start_pos, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
 		state_ = GameState::kActive;
 	}
 
@@ -196,61 +231,43 @@ namespace util
 		main_menu_.render(sprite_renderer_);
 	}
 
-	namespace {
-		Dimension animate_dimension(Dimension current, Dimension target, int dx)
-		{
-			if (current < target)
-			{
-				if (current + dx >= target)
-				{
-					current = target;
-				}
-				else
-				{
-					current += dx;
-				}
-			}
-			else
-			{
-				if (std::abs(dx) > current || current + dx <= target)
-				{
-					current = target;
-				}
-				else
-				{
-					current += dx;
-				}
-			}
-
-			return current;
-		}
-	}
-
 	void Game::animate_game_viewport(float dt)
 	{
-		ASSERT(viewport_animation_.animation_in_progress_, "No animation in progress");
+		ASSERT(viewport_animation_.in_progress(), "No animation in progress");
 
-		viewport_animation_.current_x_ = animate_dimension(viewport_animation_.current_x_, 
-			viewport_animation_.target_x_, static_cast<int>(dt * viewport_animation_.dx_));
-		viewport_animation_.current_y_ = animate_dimension(viewport_animation_.current_y_, 
-			viewport_animation_.target_y_, static_cast<int>(dt * viewport_animation_.dy_));
+		viewport_animation_.update(dt);
+		game_viewport_.set_size(viewport_animation_.width(), viewport_animation_.height());
+		game_viewport_.set_position(viewport_animation_.position());
+	}
 
-		const auto x_complete = (viewport_animation_.current_x_ == viewport_animation_.target_x_);
-		const auto y_complete = (viewport_animation_.current_y_ == viewport_animation_.target_y_);
+	void Game::ViewportAnimation::update(const float dt)
+	{
+		ASSERT(animation_in_progress_, "No animation in progress");
+
+		current_width_ = animate_dimension(current_width_,
+			target_width_, static_cast<int>(dt * dw_));
+		current_height_ = animate_dimension(current_height_,
+			target_height_, static_cast<int>(dt * dh_));
+
+		const auto x_complete = (current_width_ == target_width_);
+		const auto y_complete = (current_height_ == target_height_);
 		if (x_complete && y_complete)
 		{
-			viewport_animation_.animation_in_progress_ = false;
+			animation_in_progress_ = false;
 		}
 		if (x_complete)
 		{
-			viewport_animation_.dx_ = 0;
+			dw_ = 0;
 		}
 		if (y_complete)
 		{
-			viewport_animation_.dy_ = 0;
+			dh_ = 0;
 		}
 
-		game_viewport_.set_size(viewport_animation_.current_x_, viewport_animation_.current_y_);
+		// update position
+		const auto pos_x = slope_pos_x_ * current_width_ + offset_pos_x_;
+		const auto pos_y = slope_pos_y_ * current_height_ + offset_pos_y_;
+		current_position_ = { pos_x, pos_y };
 	}
 
 } // namespace util
