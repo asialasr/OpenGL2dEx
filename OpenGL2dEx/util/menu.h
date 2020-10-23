@@ -114,18 +114,28 @@ private:
 
 	static constexpr const char *kBackgroundTexturePath = "textures/background.jpg";
 
+	// TODO(sasiala): I don't like these methods of converting ratios, but it's the easiest
+	// way so far to make sure things scale with size.  Reconsider a better way
+	float convert_ratio_from_height(const float ratio) const
+	{
+		return ratio * loaded_height_;
+	}
+	float convert_ratio_from_width(const float ratio) const
+	{
+		return ratio * loaded_width_;
+	}
 	const struct {
-		float x_;
-		float y_;
-		float scale_;
+		float x_ratio_from_width_;
+		float y_ratio_from_height_;
+		float scale_ratio_from_height_;
 		glm::vec3 color_;
-	} kTitleText{ 5.0f, 15.0f, 1.5f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
+	} kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
 	const struct {
-		float x_;
-		float y_;
-		float scale_;
+		float x_ratio_from_width_;
+		float y_ratio_from_height_;
+		float scale_ratio_from_height_;
 		glm::vec3 color_;
-	} kSubtitleText{ 5.0f, 60.0f, 1.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
+	} kSubtitleText{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
 	static constexpr util::TextRenderer::FontSize kDefaultFontSize{ 24 };
 
@@ -138,7 +148,7 @@ private:
 		static constexpr auto kRowHeightRatio{ 0.10f };
 		static constexpr auto kMaxRows{ static_cast<int>((kYBottomRatio - kYTopRatio) / kRowHeightRatio) };
 		static constexpr auto kXRatio{ 0.05f };
-		static constexpr auto kTextScale{ 1.0f };
+		static constexpr auto kTextScaleFromHeight{ 1.0f / 600.0f };
 
 		const glm::vec3 kSelectedColor{ 1.0f, 1.0f, 1.0f };
 		const glm::vec3 kDeselectedColor{ 0.0f, 1.0f, 0.0f };
