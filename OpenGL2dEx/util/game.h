@@ -91,8 +91,6 @@ namespace util {
 		};
 		static constexpr size_t kMaxLevels{ util::count_of(kLevelPaths) };
 
-		static constexpr const char *kSmileyImagePath = "textures/awesomeface.png";
-
 		GameState state_;
 		bool      keys_[kNumKeys];
 		bool      keys_processed_[kNumKeys];
@@ -104,16 +102,6 @@ namespace util {
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;
 		ResourceManager::ShaderId font_shader_id_;
-
-		// textures
-		ResourceManager::Texture2DId smiley_texture_id_;
-		
-		// fonts
-		static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
-
-		static constexpr TextRenderer::FontSize kDefaultFontSize{ 24 };
-
-		ResourceManager::FontId default_font_id_;
 
 		size_t                 current_level_;
 

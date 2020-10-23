@@ -108,7 +108,7 @@ namespace util {
 		font_shader_id_ = ResourceManager::load_shader("shaders/text_2d.vs", "shaders/text_2d.fs", {util::nullopt});
 
 		// fonts
-		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, font_size(), width_, height_);
+		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, width_, height_);
 		const auto paddle_size = paddle_size_from_viewport_size();
 		const auto player_pos = glm::vec2(
 			width_ / 2.0f - paddle_size.x / 2.0f,
@@ -517,8 +517,11 @@ namespace util {
 	void GameViewport::render_lives()
 	{
 		ResourceManager::get_font(default_font_id_).render_text("Lives: " + 
-			std::to_string(lives_), kLifeText.relative_x_ * width_, 
-			kLifeText.relative_y_ * height_, kLifeText.scale_, { glm::vec3{1.0f, 1.0f, 1.0f} });
+			std::to_string(lives_), 
+			convert_ratio_from_width(kLifeText.relative_x_), 
+			convert_ratio_from_height(kLifeText.relative_y_), 
+			convert_ratio_from_height(kLifeText.scale_ratio_from_height_), 
+			{ glm::vec3{1.0f, 1.0f, 1.0f} });
 	}
 
 	void GameViewport::reset_player()

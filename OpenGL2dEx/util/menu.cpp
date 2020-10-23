@@ -173,7 +173,11 @@ void Menu::render_title()
 {
 	// TOOD(sasiala): center text
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_text(text_renderer, title_, kTitleText.x_, kTitleText.y_, kTitleText.scale_, kTitleText.color_);
+	render_text(text_renderer, title_, 
+		convert_ratio_from_width(kTitleText.x_ratio_from_width_), 
+		convert_ratio_from_height(kTitleText.y_ratio_from_height_), 
+		convert_ratio_from_height(kTitleText.scale_ratio_from_height_), 
+		kTitleText.color_);
 }
 
 void Menu::render_options(const OptionList &options, const OptionIndex selected_item)
@@ -186,8 +190,11 @@ void Menu::render_options(const OptionList &options, const OptionIndex selected_
 	for (auto i = size_t{ 0 }; i < options.size(); ++i)
 	{
 		const auto color = (i == selected_item) ? kMenuList.kSelectedColor : kMenuList.kDeselectedColor;
-		render_text(text_renderer, options.at(i), kMenuList.kXRatio * loaded_width_, 
-			pos_y_ratio * loaded_height_, kMenuList.kTextScale, { color });
+		render_text(text_renderer, options.at(i), 
+			convert_ratio_from_width(kMenuList.kXRatio), 
+			convert_ratio_from_height(pos_y_ratio), 
+			convert_ratio_from_height(kMenuList.kTextScaleFromHeight), 
+			{ color });
 		pos_y_ratio += kMenuList.kRowHeightRatio;
 	}
 }
@@ -201,7 +208,11 @@ void Menu::render_submenu()
 
 	// TOOD(sasiala): center text for subtitle
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_text(text_renderer, subtitle, kSubtitleText.x_, kSubtitleText.y_, kSubtitleText.scale_, kSubtitleText.color_);
+	render_text(text_renderer, subtitle, 
+		convert_ratio_from_width(kSubtitleText.x_ratio_from_width_), 
+		convert_ratio_from_height(kSubtitleText.y_ratio_from_height_), 
+		convert_ratio_from_height(kSubtitleText.scale_ratio_from_height_),
+		kSubtitleText.color_);
 	render_options(options, selected_item);
 }
 
