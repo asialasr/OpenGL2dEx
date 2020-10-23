@@ -15,6 +15,37 @@
 
 namespace util
 {
+
+	namespace {
+		Dimension animate_dimension(Dimension current, Dimension target, int dx)
+		{
+			if (current < target)
+			{
+				if (current + dx >= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+			else
+			{
+				if (static_cast<unsigned int>(std::abs(dx)) > current || current + dx <= target)
+				{
+					current = target;
+				}
+				else
+				{
+					current += dx;
+				}
+			}
+
+			return current;
+		}
+	} // namespace
+
 	Game::Game(IResetGlProperties &gl_property_resetter,
 			   Dimension width, 
 		       Dimension height)
@@ -30,6 +61,7 @@ namespace util
 		, smiley_texture_id_{}
 		, default_font_id_{}
 		, current_level_{0}
+		, viewport_animation_{ false, 0, 0, {0.0f, 0.0f}, {0.0f, 0.0f}, 0, 0, 0, 0 }
 	{
 	}
 
@@ -110,6 +142,11 @@ namespace util
 		{
 			main_menu_.update(dt);
 		}
+
+		if (viewport_animation_.in_progress())
+		{
+			animate_game_viewport(dt);
+		}
 	}
 
 	void Game::render()
@@ -162,22 +199,69 @@ namespace util
 	void Game::open_main_menu()
 	{
 		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
-		game_viewport_.set_size(.5 * width_, .5 * height_);
-		game_viewport_.set_position({ .45 * width_, .25 * height_ });
+
+		const float dw = viewport_animation_dw();
+		const float dh = viewport_animation_dh();
+		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
+		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
 		state_ = GameState::kMenu;
 	}
 
 	void Game::close_main_menu()
 	{
-		game_viewport_.set_size(width_, height_);
-		game_viewport_.set_position({ 0.0f, 0.0f });
 		main_menu_.deactivate();
+
+		const float dw = viewport_animation_dw();
+		const float dh = viewport_animation_dh();
+		const auto start_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		const auto end_pos = glm::vec2{ 0.0f, 0.0f };
+		viewport_animation_ = { true, dw, dh, end_pos, start_pos, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
 		state_ = GameState::kActive;
 	}
 
 	void Game::render_menu()
 	{
 		main_menu_.render(sprite_renderer_);
+	}
+
+	void Game::animate_game_viewport(float dt)
+	{
+		ASSERT(viewport_animation_.in_progress(), "No animation in progress");
+
+		viewport_animation_.update(dt);
+		game_viewport_.set_size(viewport_animation_.width(), viewport_animation_.height());
+		game_viewport_.set_position(viewport_animation_.position());
+	}
+
+	void Game::ViewportAnimation::update(const float dt)
+	{
+		ASSERT(animation_in_progress_, "No animation in progress");
+
+		current_width_ = animate_dimension(current_width_,
+			target_width_, static_cast<int>(dt * dw_));
+		current_height_ = animate_dimension(current_height_,
+			target_height_, static_cast<int>(dt * dh_));
+
+		const auto x_complete = (current_width_ == target_width_);
+		const auto y_complete = (current_height_ == target_height_);
+		if (x_complete && y_complete)
+		{
+			animation_in_progress_ = false;
+		}
+		if (x_complete)
+		{
+			dw_ = 0;
+		}
+		if (y_complete)
+		{
+			dh_ = 0;
+		}
+
+		// update position
+		const auto pos_x = slope_pos_x_ * current_width_ + offset_pos_x_;
+		const auto pos_y = slope_pos_y_ * current_height_ + offset_pos_y_;
+		current_position_ = { pos_x, pos_y };
 	}
 
 } // namespace util
