@@ -129,8 +129,8 @@ private:
 	static constexpr struct {
 		float relative_x_;
 		float relative_y_;
-		float scale_;
-	} kLifeText{ 5.0f / 800.0f, 5.0f / 600.0f, 1.0f };
+		float scale_ratio_from_height_;
+	} kLifeText{ 5.0f / 800.0f, 5.0f / 600.0f, 1.0f / 600.0f };
 	static constexpr LifeCount kInitialLifeCount{ 3 };
 	void reset_lives()
 	{
@@ -183,9 +183,14 @@ private:
 		return glm::vec2{ kInitialBallVelocityRatio.x * width_, kInitialBallVelocityRatio.y * height_ };
 	}
 
-	TextRenderer::FontSize font_size() const
+	float convert_ratio_from_height(const float ratio) const
 	{
-		return static_cast<TextRenderer::FontSize>(kDefaultRelativeFontSize * height_);
+		return ratio * height_;
+	}
+
+	float convert_ratio_from_width(const float ratio) const
+	{
+		return ratio * width_;
 	}
 
 	IResetGlProperties &gl_property_resetter_;
@@ -214,7 +219,7 @@ private:
 	static constexpr const char *kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
 
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
-	static constexpr double kDefaultRelativeFontSize{ 24.0 / 600.0 };
+	static constexpr double kDefaultFontSize{ 24.0 };
 
 	ResourceManager::Texture2DId background_texture_id_;
 	ResourceManager::Texture2DId block_texture_id_;
@@ -240,6 +245,9 @@ private:
 	ResourceManager::FontId default_font_id_;
 
 	LifeCount lives_;
+
+	// TODO(sasiala): the usage of "relative" vs "ratio_from_height_" differs across
+	// classes.  Make this consistent
 
 	// speed/size based on initial values & width/height in tutorial
 	const glm::vec2 kRelativePaddleSize = glm::vec2(100.0f / 800.0f, 20.0f / 600.0f);
