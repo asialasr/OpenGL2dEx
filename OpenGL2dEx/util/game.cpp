@@ -199,12 +199,9 @@ namespace util
 	void Game::open_main_menu()
 	{
 		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
-		game_viewport_.set_position({ .45 * width_, .25 * height_ });
 
-		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
-		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
-		const float dw = 1.5f * width_;
-		const float dh = 1.5f * height_;
+		const float dw = viewport_animation_dw();
+		const float dh = viewport_animation_dh();
 		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
 		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
 		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
@@ -213,13 +210,10 @@ namespace util
 
 	void Game::close_main_menu()
 	{
-		game_viewport_.set_position({ 0.0f, 0.0f });
 		main_menu_.deactivate();
 
-		// TODO(sasiala): centralize dx/dy values & come up with better values - these were simply trial/error
-		// TODO(sasiala): centralize the viewport animation constants/max & min values/etc.
-		const float dw = 1.5f * width_;
-		const float dh = 1.5f * height_;
+		const float dw = viewport_animation_dw();
+		const float dh = viewport_animation_dh();
 		const auto start_pos = glm::vec2{ .45 * width_, .25 * height_ };
 		const auto end_pos = glm::vec2{ 0.0f, 0.0f };
 		viewport_animation_ = { true, dw, dh, end_pos, start_pos, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };

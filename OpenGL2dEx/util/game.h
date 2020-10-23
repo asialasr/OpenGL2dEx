@@ -65,6 +65,18 @@ namespace util {
 
 		void delete_dynamic_data();
 
+		// TODO(sasiala): Come up with better values for dw/dh?  These were simply trial/error
+		static constexpr auto kViewportAnimationDwMultiplier{ 1.5f };
+		float viewport_animation_dw() const
+		{
+			return kViewportAnimationDwMultiplier * width_;
+		}
+		static constexpr auto kViewportAnimationDhMultiplier{ 1.5f };
+		float viewport_animation_dh() const
+		{
+			return kViewportAnimationDhMultiplier * height_;
+		}
+
 		static constexpr const char *kLevelPaths[] = {
 			"levels/one.lvl",
 			"levels/two.lvl",
