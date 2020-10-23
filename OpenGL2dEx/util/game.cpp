@@ -58,8 +58,6 @@ namespace util
 		, main_menu_{ width, height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
-		, smiley_texture_id_{}
-		, default_font_id_{}
 		, current_level_{0}
 		, viewport_animation_{ false, 0, 0, {0.0f, 0.0f}, {0.0f, 0.0f}, 0, 0, 0, 0 }
 	{
@@ -98,10 +96,6 @@ namespace util
 		ResourceManager::get_shader(sprite_shader_id_).set_mat4("u_projection_", projection, false);
 
 		sprite_renderer_ = new SpriteRenderer{ ResourceManager::get_shader(sprite_shader_id_) };
-
-		smiley_texture_id_ = ResourceManager::load_texture(kSmileyImagePath, true);
-
-		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, width_, height_);
 
 		game_viewport_.initialize(projection);
 		game_viewport_.set_game_state_callback(*this);
