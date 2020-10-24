@@ -56,7 +56,6 @@ public:
 
 	Menu(Dimension load_width, Dimension load_height);
 
-	void set_background_color(const glm::vec3 &background_color);
 	void set_menu_handler(MenuButtonHandler &handler);
 
 	void activate(const std::string &title, const std::string &subtitle, OptionList &options, OptionIndex selected_item);
@@ -111,7 +110,6 @@ private:
 	void set_key_impl(KeyId key_id, bool val) override;
 	void process_input_impl(float dt) override;
 
-	void render_background();
 	void render_title();
 	void render_options(const OptionList &options, const OptionIndex selected_item);
 	void render_submenu();
@@ -128,8 +126,6 @@ private:
 					 float						y, 
 					 float						scale, 
 					 const Optional<glm::vec3> &color);
-
-	static constexpr const char *kBackgroundTexturePath = "textures/background.jpg";
 
 	// TODO(sasiala): I don't like these methods of converting ratios, but it's the easiest
 	// way so far to make sure things scale with size.  Reconsider a better way
@@ -164,15 +160,9 @@ private:
 
 	std::string title_;
 
-	ResourceManager::Texture2DId background_texture_id_;
-
-	ResourceManager::ShaderId sprite_shader_id_;
 	ResourceManager::ShaderId font_shader_id_;
 
 	ResourceManager::FontId default_font_id_;
-
-	glm::vec3 background_color_;
-	SpriteRenderer *sprite_renderer_;
 
 	MenuList menu_stack_;
 

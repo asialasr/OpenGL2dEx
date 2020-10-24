@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "menu.h"
+#include "main_menu.h"
 #include "game_level.h"
 #include "game_viewport.h"
 #include "power_up.h"
@@ -17,7 +17,7 @@ namespace util {
 	class IResetGlProperties;
 
 	class Game : public GameViewport::GameStateCallback
-			   , public Menu::MenuButtonHandler
+			   , public MainMenu::MenuButtonHandler
 	{
 	public:
 		using Dimension = unsigned int;
@@ -100,7 +100,7 @@ namespace util {
 		Dimension width_, height_;
 
 		GameViewport game_viewport_;
-		Menu         main_menu_;
+		MainMenu         main_menu_;
 
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;

@@ -29,6 +29,7 @@
     <ClInclude Include="util\gl_debug.h" />
     <ClInclude Include="util\game_level.h" />
     <ClInclude Include="util\logging.h" />
+    <ClInclude Include="util\main_menu.h" />
     <ClInclude Include="util\menu.h" />
     <ClInclude Include="util\optional.h" />
     <ClInclude Include="util\particle_generator.h" />
@@ -52,6 +53,7 @@
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
     <ClCompile Include="util\game_viewport.cpp" />
+    <ClCompile Include="util\main_menu.cpp" />
     <ClCompile Include="util\menu.cpp" />
     <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\post_processor.cpp" />
