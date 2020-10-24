@@ -43,9 +43,15 @@ public:
 			handle_menu_option_acceptance_impl(index, submenu_level);
 		}
 
+		void handle_submenu_dismiss()
+		{
+			handle_submenu_dismiss_impl();
+		}
+
 	private:
 		virtual void handle_menu_option_highlight_impl(OptionIndex index, SubmenuLevel submenu_level) = 0;
 		virtual void handle_menu_option_acceptance_impl(OptionIndex index, SubmenuLevel submenu_level) = 0;
+		virtual void handle_submenu_dismiss_impl() = 0;
 	};
 
 	Menu(Dimension load_width, Dimension load_height);
@@ -67,6 +73,7 @@ private:
 		kUpButton = 0,
 		kDownButton,
 		kEnterButton,
+		kBackButton,
 		kNumButtons,
 		kUnknown,
 	};
@@ -91,6 +98,9 @@ private:
 		case GLFW_KEY_ENTER:
 			converted_id = ButtonsHandled::kEnterButton;
 			break;
+		case GLFW_KEY_B:
+			converted_id = ButtonsHandled::kBackButton;
+			break;
 		default:
 			LOG("Unknown button id: " + std::to_string(button));
 			break;
@@ -105,6 +115,13 @@ private:
 	void render_title();
 	void render_options(const OptionList &options, const OptionIndex selected_item);
 	void render_submenu();
+	const struct Label {
+		float x_ratio_from_width_;
+		float y_ratio_from_height_;
+		float scale_ratio_from_height_;
+		glm::vec3 color_;
+	};
+	void render_label(const util::TextRenderer &text_renderer, const std::string &text, const Label &label);
 	void render_text(const TextRenderer		   &text_renderer,
 					 const std::string		   &text,
 					 float						x, 
@@ -124,18 +141,9 @@ private:
 	{
 		return ratio * loaded_width_;
 	}
-	const struct {
-		float x_ratio_from_width_;
-		float y_ratio_from_height_;
-		float scale_ratio_from_height_;
-		glm::vec3 color_;
-	} kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
-	const struct {
-		float x_ratio_from_width_;
-		float y_ratio_from_height_;
-		float scale_ratio_from_height_;
-		glm::vec3 color_;
-	} kSubtitleText{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
+	Label kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
+	Label kSubtitleText{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
+	Label kBackText{ 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f} };
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
 	static constexpr util::TextRenderer::FontSize kDefaultFontSize{ 24 };
 
@@ -143,7 +151,7 @@ private:
 	const Dimension loaded_height_;
 
 	const struct {
-		static constexpr auto kYTopRatio{ 0.20f };
+		static constexpr auto kYTopRatio{ 0.25f };
 		static constexpr auto kYBottomRatio{ 0.90f };
 		static constexpr auto kRowHeightRatio{ 0.10f };
 		static constexpr auto kMaxRows{ static_cast<int>((kYBottomRatio - kYTopRatio) / kRowHeightRatio) };

@@ -38,7 +38,8 @@ namespace util {
 
 		enum class GameState {
 			kActive,
-			kMenu,
+			kMainMenu,
+			kLevelSelection,
 			kWin,
 			kUnknown,
 			kNumStates,
@@ -55,10 +56,12 @@ namespace util {
 		// Menu::MenuButtonHandler
 		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
 		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+		void handle_submenu_dismiss_impl() override;
 
 		void load_current_level();
 
 		void open_main_menu();
+		void open_level_selection_menu();
 		void close_main_menu();
 		void render_menu();
 		void animate_game_viewport(float dt);

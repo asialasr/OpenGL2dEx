@@ -49,7 +49,7 @@ namespace util
 	Game::Game(IResetGlProperties &gl_property_resetter,
 			   Dimension width, 
 		       Dimension height)
-		: state_{ GameState::kMenu }
+		: state_{ GameState::kLevelSelection }
 		, keys_{}
 		, keys_processed_{}
 		, width_{ width }
@@ -120,7 +120,8 @@ namespace util
 		{
 			game_viewport_.process_input(dt);
 		}
-		else if (GameState::kMenu == state_)
+		else if (GameState::kLevelSelection == state_ ||
+				 GameState::kMainMenu == state_)
 		{
 			main_menu_.process_input(dt);
 		}
@@ -132,7 +133,8 @@ namespace util
 		{
 			game_viewport_.update(dt);
 		}
-		else if (state_ == GameState::kMenu)
+		else if (state_ == GameState::kLevelSelection ||
+				 state_ == GameState::kMainMenu)
 		{
 			main_menu_.update(dt);
 		}
@@ -146,13 +148,17 @@ namespace util
 	void Game::render()
 	{
 		// render menu on bottom
-		if (state_ == GameState::kMenu)
+		if (state_ == GameState::kLevelSelection ||
+			state_ == GameState::kMainMenu)
 		{
 			render_menu();
 			check_for_gl_errors();
 		}
 
-		game_viewport_.render(sprite_renderer_);
+		if (state_ != GameState::kMainMenu)
+		{
+			game_viewport_.render(sprite_renderer_);
+		}
 
 		check_for_gl_errors();
 	}
@@ -173,33 +179,69 @@ namespace util
 	void Game::game_ended_impl(const EndingReason /*reason*/)
 	{
 		// TODO(sasiala): handle various ending reasons
-		state_ = GameState::kMenu;
 		open_main_menu();
+		open_level_selection_menu();
 	}
 
 	void Game::handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
 	{
-		ASSERT(submenu_level == 0, "Unexpected submenu level");
+		ASSERT(submenu_level < 2, "Unexpected submenu level");
 		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
-		game_viewport_.load_level(kLevelPaths[index]);
-		current_level_ = index;
+		if (state_ == GameState::kLevelSelection)
+		{
+			game_viewport_.load_level(kLevelPaths[index]);
+			current_level_ = index;
+		}
 	}
 
 	void Game::handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
 	{
-		close_main_menu();
+		// TODO(sasiala): improve event handling
+		if (submenu_level == 0)
+		{
+			switch (index)
+			{
+			case 0:
+				open_level_selection_menu();
+				break;
+			default:
+				break;
+			}
+		}
+		else if (submenu_level == 1)
+		{
+			close_main_menu();
+		}
+	}
+
+	void Game::handle_submenu_dismiss_impl()
+	{
+		switch (state_)
+		{
+		case GameState::kLevelSelection:
+			state_ = GameState::kMainMenu;
+			break;
+		default:
+			ASSERT(false, "Unknown submenu being dismissed");
+			break;
+		}
 	}
 
 	void Game::open_main_menu()
 	{
-		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
+		main_menu_.activate("MAIN MENU", "", Menu::OptionList{ "LEVEL SELECTION", "SETTINGS", "HELP" }, 0);
+		state_ = GameState::kMainMenu;
+	}
 
+	void Game::open_level_selection_menu()
+	{
+		main_menu_.open_sub_menu("LEVEL SELECTION", Menu::OptionList{ kLevelNames }, current_level_);
 		const float dw = viewport_animation_dw();
 		const float dh = viewport_animation_dh();
 		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
 		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
 		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
-		state_ = GameState::kMenu;
+		state_ = GameState::kLevelSelection;
 	}
 
 	void Game::close_main_menu()

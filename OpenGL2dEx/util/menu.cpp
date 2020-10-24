@@ -97,6 +97,7 @@ void Menu::set_key_impl(KeyId key_id, bool val)
 	case ButtonsHandled::kUpButton:
 	case ButtonsHandled::kDownButton:
 	case ButtonsHandled::kEnterButton:
+	case ButtonsHandled::kBackButton:
 		key_ptr = &keys_pressed_[to_index(convert_id(key_id))];
 		key_processed_ptr = &keys_processed_[to_index(convert_id(key_id))];
 		break;
@@ -127,6 +128,17 @@ void Menu::process_input_impl(float dt)
 		const auto level = menu_stack_.size() - 1;
 		menu_button_handler_->handle_menu_option_acceptance(index, level);
 		keys_processed_[to_index(ButtonsHandled::kEnterButton)] = true;
+	}
+	else if (keys_pressed_[to_index(ButtonsHandled::kBackButton)]
+		&& !keys_processed_[to_index(ButtonsHandled::kBackButton)])
+	{
+		const auto level = menu_stack_.size() - 1;
+		if (level > 0)
+		{
+			menu_stack_.pop_back();
+			menu_button_handler_->handle_submenu_dismiss();
+		}
+		keys_processed_[to_index(ButtonsHandled::kBackButton)] = true;
 	}
 	else
 	{
@@ -173,11 +185,7 @@ void Menu::render_title()
 {
 	// TOOD(sasiala): center text
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_text(text_renderer, title_, 
-		convert_ratio_from_width(kTitleText.x_ratio_from_width_), 
-		convert_ratio_from_height(kTitleText.y_ratio_from_height_), 
-		convert_ratio_from_height(kTitleText.scale_ratio_from_height_), 
-		kTitleText.color_);
+	render_label(text_renderer, title_, kTitleText);
 }
 
 void Menu::render_options(const OptionList &options, const OptionIndex selected_item)
@@ -195,6 +203,7 @@ void Menu::render_options(const OptionList &options, const OptionIndex selected_
 			convert_ratio_from_height(pos_y_ratio), 
 			convert_ratio_from_height(kMenuList.kTextScaleFromHeight), 
 			{ color });
+
 		pos_y_ratio += kMenuList.kRowHeightRatio;
 	}
 }
@@ -208,12 +217,23 @@ void Menu::render_submenu()
 
 	// TOOD(sasiala): center text for subtitle
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_text(text_renderer, subtitle, 
-		convert_ratio_from_width(kSubtitleText.x_ratio_from_width_), 
-		convert_ratio_from_height(kSubtitleText.y_ratio_from_height_), 
-		convert_ratio_from_height(kSubtitleText.scale_ratio_from_height_),
-		kSubtitleText.color_);
+	render_label(text_renderer, subtitle, kSubtitleText);
+
+	if (menu_stack_.size() > 1)
+	{
+		render_label(text_renderer, "(B) Back", kBackText);
+	}
+
 	render_options(options, selected_item);
+}
+
+void Menu::render_label(const util::TextRenderer &text_renderer, const std::string &text, const Label &label)
+{
+	render_text(text_renderer, text,
+		convert_ratio_from_width(label.x_ratio_from_width_),
+		convert_ratio_from_height(label.y_ratio_from_height_),
+		convert_ratio_from_height(label.scale_ratio_from_height_),
+		label.color_);
 }
 
 void Menu::render_text(const TextRenderer		 &text_renderer, 
