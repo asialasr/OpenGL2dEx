@@ -61,7 +61,7 @@ namespace util {
 		void load_current_level();
 
 		void open_main_menu();
-		void open_level_selection_menu();
+		void open_level_selection_menu(bool animate);
 		void close_main_menu();
 		void render_menu();
 		void animate_game_viewport(float dt);

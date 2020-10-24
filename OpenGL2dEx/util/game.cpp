@@ -180,7 +180,7 @@ namespace util
 	{
 		// TODO(sasiala): handle various ending reasons
 		open_main_menu();
-		open_level_selection_menu();
+		open_level_selection_menu(true);
 	}
 
 	void Game::handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
@@ -202,7 +202,7 @@ namespace util
 			switch (index)
 			{
 			case 0:
-				open_level_selection_menu();
+				open_level_selection_menu(false);
 				break;
 			default:
 				break;
@@ -233,14 +233,25 @@ namespace util
 		state_ = GameState::kMainMenu;
 	}
 
-	void Game::open_level_selection_menu()
+	void Game::open_level_selection_menu(const bool animate)
 	{
 		main_menu_.open_sub_menu("LEVEL SELECTION", Menu::OptionList{ kLevelNames }, current_level_);
-		const float dw = viewport_animation_dw();
-		const float dh = viewport_animation_dh();
-		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
-		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
-		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
+
+		const auto target_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		const auto target_width = static_cast<Dimension>(.5 * width_);
+		const auto target_height = static_cast<Dimension>(.5 * height_);
+		if (animate)
+		{
+			const float dw = viewport_animation_dw();
+			const float dh = viewport_animation_dh();
+			const auto start_pos = glm::vec2{ 0.0f, 0.0f };
+			viewport_animation_ = { true, -dw, -dh, target_pos, start_pos, target_width, target_height, width_, height_ };
+		}
+		else
+		{
+			game_viewport_.set_size(target_width, target_height);
+			game_viewport_.set_position(target_pos);
+		}
 		state_ = GameState::kLevelSelection;
 	}
 
