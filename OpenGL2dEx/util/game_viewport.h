@@ -219,7 +219,7 @@ private:
 	static constexpr const char *kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
 
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
-	static constexpr double kDefaultFontSize{ 24.0 };
+	static constexpr TextRenderer::FontSize kDefaultFontSize{ 24 };
 
 	ResourceManager::Texture2DId background_texture_id_;
 	ResourceManager::Texture2DId block_texture_id_;

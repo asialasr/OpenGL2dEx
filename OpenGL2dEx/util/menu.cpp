@@ -48,6 +48,11 @@ void Menu::initialize_impl(const glm::mat4 &projection)
 
 	// text
 	default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, loaded_width_, loaded_height_);
+	
+	// label fonts
+	kTitleText.set_font(default_font_id_);
+	subtitle_.set_font(default_font_id_);
+	kBackText.set_font(default_font_id_);
 }
 
 void Menu::update_impl(Time /*dt*/)
@@ -159,7 +164,7 @@ void Menu::render_title()
 {
 	// TOOD(sasiala): center text
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_label(text_renderer, title_, kTitleText);
+	kTitleText.render(loaded_width_, loaded_height_);
 }
 
 void Menu::render_options(const OptionList &options, const OptionIndex selected_item)
@@ -169,14 +174,14 @@ void Menu::render_options(const OptionList &options, const OptionIndex selected_
 
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
 	auto pos_y_ratio = kMenuList.kYTopRatio;
+	Label option_label{ kMenuList.kXRatio, kMenuList.kYTopRatio, kMenuList.kTextScaleFromHeight, kMenuList.kDeselectedColor, "" };
 	for (auto i = size_t{ 0 }; i < options.size(); ++i)
 	{
 		const auto color = (i == selected_item) ? kMenuList.kSelectedColor : kMenuList.kDeselectedColor;
-		render_text(text_renderer, options.at(i), 
-			convert_ratio_from_width(kMenuList.kXRatio), 
-			convert_ratio_from_height(pos_y_ratio), 
-			convert_ratio_from_height(kMenuList.kTextScaleFromHeight), 
-			{ color });
+		option_label.set_text(options.at(i));
+		option_label.set_y_ratio(pos_y_ratio);
+		option_label.set_color(color);
+		option_label.render(loaded_width_, loaded_height_);
 
 		pos_y_ratio += kMenuList.kRowHeightRatio;
 	}
@@ -190,35 +195,15 @@ void Menu::render_submenu()
 	const auto &selected_item = menu_stack_.back().selected_item_;
 
 	// TOOD(sasiala): center text for subtitle
-	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	render_label(text_renderer, subtitle, kSubtitleText);
+	subtitle_.set_text(subtitle);
+	subtitle_.render(loaded_width_, loaded_height_);
 
 	if (menu_stack_.size() > 1)
 	{
-		render_label(text_renderer, "(B) Back", kBackText);
+		kBackText.render(loaded_width_, loaded_height_);
 	}
 
 	render_options(options, selected_item);
-}
-
-void Menu::render_label(const util::TextRenderer &text_renderer, const std::string &text, const Label &label)
-{
-	render_text(text_renderer, text,
-		convert_ratio_from_width(label.x_ratio_from_width_),
-		convert_ratio_from_height(label.y_ratio_from_height_),
-		convert_ratio_from_height(label.scale_ratio_from_height_),
-		label.color_);
-}
-
-void Menu::render_text(const TextRenderer		 &text_renderer, 
-					   const std::string		 &text,
-					   const float				  x, 
-					   const float				  y, 
-					   const float				  scale, 
-					   const Optional<glm::vec3> &color)
-{
-	text_renderer.update_size(loaded_width_, loaded_height_);
-	text_renderer.render_text(text, x, y, scale, color);
 }
 
 } // namespace util

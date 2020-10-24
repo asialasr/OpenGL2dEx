@@ -42,6 +42,7 @@
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />
     <ClInclude Include="util\types.h" />
+    <ClInclude Include="util\label.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />

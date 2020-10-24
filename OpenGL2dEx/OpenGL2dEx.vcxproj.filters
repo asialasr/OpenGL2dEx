@@ -84,6 +84,9 @@
     <ClInclude Include="util\main_menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\label.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">

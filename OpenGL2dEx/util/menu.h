@@ -8,6 +8,7 @@
 #include "text_renderer.h"
 #include "types.h"
 #include "optional.h"
+#include "label.h"
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -113,19 +114,6 @@ private:
 	void render_title();
 	void render_options(const OptionList &options, const OptionIndex selected_item);
 	void render_submenu();
-	const struct Label {
-		float x_ratio_from_width_;
-		float y_ratio_from_height_;
-		float scale_ratio_from_height_;
-		glm::vec3 color_;
-	};
-	void render_label(const util::TextRenderer &text_renderer, const std::string &text, const Label &label);
-	void render_text(const TextRenderer		   &text_renderer,
-					 const std::string		   &text,
-					 float						x, 
-					 float						y, 
-					 float						scale, 
-					 const Optional<glm::vec3> &color);
 
 	// TODO(sasiala): I don't like these methods of converting ratios, but it's the easiest
 	// way so far to make sure things scale with size.  Reconsider a better way
@@ -137,9 +125,9 @@ private:
 	{
 		return ratio * loaded_width_;
 	}
-	Label kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
-	Label kSubtitleText{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f } };
-	Label kBackText{ 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f} };
+	util::Label kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU" };
+	util::Label subtitle_{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "LEVEL SELECTION" };
+	util::Label kBackText{ 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f}, "(B) BACK"};
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
 	static constexpr util::TextRenderer::FontSize kDefaultFontSize{ 24 };
 
