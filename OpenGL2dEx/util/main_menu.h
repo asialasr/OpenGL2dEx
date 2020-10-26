@@ -2,13 +2,13 @@
 #define MAIN_MENU_H
 
 #include "element.h"
-#include "menu.h"
+#include "opening_menu.h"
 #include "resource_mgr.h"
 
 namespace util {
 
 class MainMenu : public Element
-			   , public Menu::MenuButtonHandler {
+			   , public OpeningMenu::Handler {
 public:
 	class MenuButtonHandler {
 	public:
@@ -57,22 +57,19 @@ private:
 	void process_input_impl(float dt) override;
 
 	// Menu::MenuButtonHandler
-	void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override
+	void open_level_selection_impl() override
 	{
-		ASSERT(menu_button_handler_, "No menu button handler");
-		menu_button_handler_->handle_menu_option_highlight(index, submenu_level);
+		// TODO(sasiala)
 	}
 
-	void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override
+	void open_settings_impl() override
 	{
-		ASSERT(menu_button_handler_, "No menu button handler");
-		menu_button_handler_->handle_menu_option_acceptance(index, submenu_level);
+		// TODO(sasiala)
 	}
 
-	void handle_submenu_dismiss_impl() override
+	void open_help_impl() override
 	{
-		ASSERT(menu_button_handler_, "No menu button handler");
-		menu_button_handler_->handle_submenu_dismiss();
+		// TODO(sasiala)
 	}
 
 	void render_background();
@@ -90,7 +87,7 @@ private:
 
 	MenuButtonHandler *menu_button_handler_;
 
-	Menu opening_menu_;
+	OpeningMenu opening_menu_;
 }; // class MainMenu
 
 } // namespace util

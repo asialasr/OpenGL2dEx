@@ -17,12 +17,12 @@ namespace util {
 
 	void MainMenu::activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
 	{
-		opening_menu_.activate(title, subtitle, options, selected_item);
+		opening_menu_.activate();
 	}
 
 	void MainMenu::open_sub_menu(const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
 	{
-		opening_menu_.open_sub_menu(subtitle, options, selected_item);
+		//opening_menu_.open_sub_menu(subtitle, options, selected_item);
 	}
 
 	void MainMenu::deactivate()
@@ -43,7 +43,8 @@ namespace util {
 		sprite_shader.set_int("u_image_", 0, false);
 		sprite_shader.set_mat4("u_projection_", projection, false);
 
-		opening_menu_.set_menu_handler(*this);
+		opening_menu_.initialize(projection);
+		opening_menu_.set_handler(*this);
 	}
 
 	void MainMenu::update_impl(Time dt)
