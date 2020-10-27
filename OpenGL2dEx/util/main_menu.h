@@ -2,13 +2,15 @@
 #define MAIN_MENU_H
 
 #include "element.h"
+#include "level_selection_menu.h"
 #include "opening_menu.h"
 #include "resource_mgr.h"
 
 namespace util {
 
 class MainMenu : public Element
-			   , public OpeningMenu::Handler {
+			   , public OpeningMenu::Handler
+			   , public LevelSelectionMenu::Handler {
 public:
 	class MenuButtonHandler {
 	public:
@@ -27,10 +29,22 @@ public:
 			handle_submenu_dismiss_impl();
 		}
 
+		void change_level(const LevelSelectionMenu::LevelIndex level)
+		{
+			change_level_impl(level);
+		}
+
+		void start_game()
+		{
+			start_game_impl();
+		}
+
 	private:
 		virtual void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) = 0;
 		virtual void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) = 0;
 		virtual void handle_submenu_dismiss_impl() = 0;
+		virtual void change_level_impl(LevelSelectionMenu::LevelIndex level) = 0;
+		virtual void start_game_impl() = 0;
 	};
 	MainMenu(Dimension load_width, Dimension load_height);
 
@@ -42,6 +56,16 @@ public:
 	void set_background_color(const glm::vec3 &background_color)
 	{
 		background_color_ = background_color;
+	}
+
+	void update_current_level(const LevelSelectionMenu::LevelIndex current_level)
+	{
+		level_selection_menu_.update_current_level(current_level);
+	}
+
+	void update_levels(const LevelSelectionMenu::LevelList &levels, const LevelSelectionMenu::LevelIndex current_level)
+	{
+		level_selection_menu_.update_levels(levels, current_level);
 	}
 
 	void activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item);
@@ -59,7 +83,8 @@ private:
 	// Menu::MenuButtonHandler
 	void open_level_selection_impl() override
 	{
-		// TODO(sasiala)
+		opening_menu_.deactivate();
+		level_selection_menu_.activate();
 	}
 
 	void open_settings_impl() override
@@ -70,6 +95,25 @@ private:
 	void open_help_impl() override
 	{
 		// TODO(sasiala)
+	}
+
+	// LevelSelectionMenu::Handler
+	void change_level_impl(const LevelSelectionMenu::LevelIndex level_index) override
+	{
+		ASSERT(menu_button_handler_, "No menu handler");
+		menu_button_handler_->change_level(level_index);
+	}
+
+	void start_game_impl() override
+	{
+		ASSERT(menu_button_handler_, "No menu handler");
+		menu_button_handler_->start_game();
+	}
+
+	void close_level_selection_impl() override
+	{
+		level_selection_menu_.deactivate();
+		opening_menu_.activate();
 	}
 
 	void render_background();
@@ -88,6 +132,8 @@ private:
 	MenuButtonHandler *menu_button_handler_;
 
 	OpeningMenu opening_menu_;
+	LevelSelectionMenu level_selection_menu_;
+
 }; // class MainMenu
 
 } // namespace util

@@ -12,12 +12,14 @@ namespace util {
 		, sprite_renderer_{ nullptr }
 		, menu_button_handler_{ nullptr }
 		, opening_menu_{ load_width, load_height }
+		, level_selection_menu_{ load_width, load_height }
 	{
 	}
 
 	void MainMenu::activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
 	{
 		opening_menu_.activate();
+		level_selection_menu_.deactivate();
 	}
 
 	void MainMenu::open_sub_menu(const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
@@ -28,6 +30,7 @@ namespace util {
 	void MainMenu::deactivate()
 	{
 		opening_menu_.deactivate();
+		level_selection_menu_.deactivate();
 	}
 
 	void MainMenu::initialize_impl(const glm::mat4 &projection)
@@ -45,27 +48,34 @@ namespace util {
 
 		opening_menu_.initialize(projection);
 		opening_menu_.set_handler(*this);
+
+		level_selection_menu_.initialize(projection);
+		level_selection_menu_.set_handler(*this);
 	}
 
 	void MainMenu::update_impl(Time dt)
 	{
 		opening_menu_.update(dt);
+		level_selection_menu_.update(dt);
 	}
 
 	void MainMenu::render_impl(Optional<SpriteRenderer*> parent_sprite_renderer)
 	{
 		render_background();
 		opening_menu_.render(parent_sprite_renderer);
+		level_selection_menu_.render(parent_sprite_renderer);
 	}
 
 	void MainMenu::set_key_impl(KeyId key_id, bool val)
 	{
 		opening_menu_.set_key(key_id, val);
+		level_selection_menu_.set_key(key_id, val);
 	}
 
 	void MainMenu::process_input_impl(float dt)
 	{
 		opening_menu_.process_input(dt);
+		level_selection_menu_.process_input(dt);
 	}
 
 	void MainMenu::render_background()

@@ -57,6 +57,8 @@ namespace util {
 		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
 		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
 		void handle_submenu_dismiss_impl() override;
+		void change_level_impl(LevelSelectionMenu::LevelIndex index) override;
+		void start_game_impl() override;
 
 		void load_current_level();
 

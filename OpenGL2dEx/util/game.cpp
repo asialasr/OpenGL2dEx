@@ -107,6 +107,8 @@ namespace util
 
 		load_current_level();
 
+		main_menu_.update_levels(kLevelNames, current_level_);
+
 		AudioManager::play_background_music(AudioManager::GameState::kActive, true);
 
 		open_main_menu();
@@ -225,6 +227,21 @@ namespace util
 			ASSERT(false, "Unknown submenu being dismissed");
 			break;
 		}
+	}
+
+	void Game::change_level_impl(const LevelSelectionMenu::LevelIndex index)
+	{
+		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
+		if (state_ == GameState::kLevelSelection)
+		{
+			game_viewport_.load_level(kLevelPaths[index]);
+			current_level_ = index;
+		}
+	}
+
+	void Game::start_game_impl()
+	{
+		close_main_menu();
 	}
 
 	void Game::open_main_menu()

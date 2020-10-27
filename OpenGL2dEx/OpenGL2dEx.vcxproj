@@ -28,6 +28,7 @@
     <ClInclude Include="util\game_viewport.h" />
     <ClInclude Include="util\gl_debug.h" />
     <ClInclude Include="util\game_level.h" />
+    <ClInclude Include="util\level_selection_menu.h" />
     <ClInclude Include="util\logging.h" />
     <ClInclude Include="util\main_menu.h" />
     <ClInclude Include="util\menu.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
     <ClCompile Include="util\game_viewport.cpp" />
+    <ClCompile Include="util\level_selection_menu.cpp" />
     <ClCompile Include="util\main_menu.cpp" />
     <ClCompile Include="util\menu.cpp" />
     <ClCompile Include="util\opening_menu.cpp" />
