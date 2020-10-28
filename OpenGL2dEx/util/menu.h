@@ -52,17 +52,18 @@ public:
 
 	void set_menu_handler(MenuButtonHandler &handler);
 
-	void activate(const std::string &title, 
-				  const std::string &subtitle, 
-				  bool               show_back_label,
-				  const OptionList  &options, 
-				  OptionIndex        selected_item);
-	void deactivate();
+	void update_info(const std::string &title,
+		             const std::string &subtitle,
+		             bool               show_back_label,
+		             const OptionList  &options,
+		             OptionIndex        selected_item);
 
 private:
 	// Element
 	void initialize_impl(const glm::mat4 &projection) override;
 	void update_impl(Time dt) override;
+	void activate_impl() override;
+	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 
 	enum class ButtonsHandled {
@@ -154,7 +155,6 @@ private:
 	bool keys_pressed_[static_cast<size_t>(ButtonsHandled::kNumButtons)];
 	bool keys_processed_[static_cast<size_t>(ButtonsHandled::kNumButtons)];
 
-	bool is_open_;
 	bool render_back_button_;
 }; // class Menu
 

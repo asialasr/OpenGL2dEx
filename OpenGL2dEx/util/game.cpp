@@ -214,7 +214,8 @@ namespace util
 
 	void Game::open_main_menu()
 	{
-		main_menu_.activate("MAIN MENU", "", Menu::OptionList{ "LEVEL SELECTION", "SETTINGS", "HELP" }, 0);
+		game_viewport_.deactivate();
+		main_menu_.activate();
 		state_ = GameState::kMainMenu;
 	}
 
@@ -235,6 +236,7 @@ namespace util
 			game_viewport_.set_size(target_width, target_height);
 			game_viewport_.set_position(target_pos);
 		}
+		game_viewport_.activate();
 	}
 
 	void Game::close_main_menu()
@@ -247,6 +249,7 @@ namespace util
 		const auto end_pos = glm::vec2{ 0.0f, 0.0f };
 		viewport_animation_ = { true, dw, dh, end_pos, start_pos, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
 		state_ = GameState::kActive;
+		game_viewport_.activate();
 	}
 
 	void Game::render_menu()

@@ -63,12 +63,12 @@ public:
 		level_selection_menu_.update_levels(levels, current_level);
 	}
 
-	void activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item);
-	void deactivate();
 private:
 	// Element
 	void initialize_impl(const glm::mat4 &projection) override;
 	void update_impl(Time dt) override;
+	void activate_impl() override;
+	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 	void set_key_impl(KeyId key_id, bool val) override;
 	// TODO(sasiala): improve event handling
@@ -139,7 +139,6 @@ private:
 
 	OpeningMenu opening_menu_;
 	LevelSelectionMenu level_selection_menu_;
-
 }; // class MainMenu
 
 } // namespace util

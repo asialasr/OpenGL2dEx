@@ -6,7 +6,8 @@
 #include "sprite_renderer.h"
 
 namespace util {
-
+	// TODO(sasiala): add is_active_ to element class and a getter function
+	// for the classes which inherit from this.  Can set it in activate &deactivate
 class Element {
 public:
 	Element() = default;
@@ -17,11 +18,24 @@ public:
 	void initialize(const glm::mat4 &projection)
 	{
 		initialize_impl(projection);
+		is_active_ = false;
 	}
 
 	void update(const Time dt)
 	{
 		update_impl(dt);
+	}
+
+	void activate()
+	{
+		activate_impl();
+		is_active_ = true;
+	}
+
+	void deactivate()
+	{
+		deactivate_impl();
+		is_active_ = false;
 	}
 
 	// TODO(sasiala): when optional is improved, swith back to 
@@ -41,13 +55,22 @@ public:
 		process_input_impl(dt);
 	}
 
+	bool is_active() const
+	{
+		return is_active_;
+	}
+
 private:
 	virtual void initialize_impl(const glm::mat4 &projection) = 0;
 	virtual void update_impl(Time dt) = 0;
+	virtual void activate_impl() = 0;
+	virtual void deactivate_impl() = 0;
 	virtual void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) = 0;
 	virtual void set_key_impl(KeyId key_id, bool val) = 0;
 	// TODO(sasiala): improve event handling
 	virtual void process_input_impl(float dt) = 0;
+
+	bool is_active_;
 }; // class Element
 
 } // namespace util

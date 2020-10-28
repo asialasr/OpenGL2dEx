@@ -5,21 +5,8 @@ namespace util {
 
 	OpeningMenu::OpeningMenu(const Dimension load_width, const Dimension load_height)
 		: menu_options_{ load_width, load_height }
-		, is_open_{ false }
 		, handler_{ nullptr }
 	{
-	}
-
-	void OpeningMenu::activate()
-	{
-		menu_options_.activate("", "", false, kOptions, 0);
-		is_open_ = true;
-	}
-
-	void OpeningMenu::deactivate()
-	{
-		menu_options_.deactivate();
-		is_open_ = false;
 	}
 
 	void OpeningMenu::initialize_impl(const glm::mat4 &projection)
@@ -33,28 +20,45 @@ namespace util {
 		menu_options_.update(dt);
 	}
 
+	void OpeningMenu::activate_impl()
+	{
+		menu_options_.update_info("", "", false, kOptions, 0);
+		menu_options_.activate();
+	}
+
+	void OpeningMenu::deactivate_impl()
+	{
+		menu_options_.deactivate();
+	}
+
 	void OpeningMenu::render_impl(Optional<SpriteRenderer*> parent_sprite_renderer)
 	{
-		if (is_open_)
+		if (!is_active())
 		{
-			menu_options_.render(parent_sprite_renderer);
+			return;
 		}
+
+		menu_options_.render(parent_sprite_renderer);
 	}
 
 	void OpeningMenu::set_key_impl(KeyId key_id, bool val)
 	{
-		if (is_open_)
+		if (!is_active())
 		{
-			menu_options_.set_key(key_id, val);
+			return;
 		}
+		
+		menu_options_.set_key(key_id, val);
 	}
 
 	void OpeningMenu::process_input_impl(float dt)
 	{
-		if (is_open_)
+		if (!is_active())
 		{
-			menu_options_.process_input(dt);
+			return;
 		}
+
+		menu_options_.process_input(dt);
 	}
 
 	void OpeningMenu::handle_menu_option_highlight_impl(Menu::OptionIndex /*index*/)

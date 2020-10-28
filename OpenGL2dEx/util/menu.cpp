@@ -1,21 +1,11 @@
 #include "menu.h"
 
 #include "logging.h"
+#include "array_helpers.h"
 
 #include "GLFW/glfw3.h"
 
 namespace util {
-
-namespace {
-	template <size_t COUNT>
-	void clear_values(bool (&arr)[COUNT])
-	{
-		for (auto i = size_t{ 0 }; i < COUNT; ++i)
-		{
-			arr[i] = false;
-		}
-	}
-} // namespace
 
 Menu::Menu(Dimension load_width, Dimension load_height)
 	: title_{ "" }
@@ -28,7 +18,6 @@ Menu::Menu(Dimension load_width, Dimension load_height)
 	, menu_button_handler_{ nullptr }
 	, keys_pressed_{}
 	, keys_processed_{}
-	, is_open_{ false }
 	, render_back_button_{ false }
 {
 }
@@ -38,30 +27,17 @@ void Menu::set_menu_handler(MenuButtonHandler &handler)
 	menu_button_handler_ = &handler;
 }
 
-void Menu::activate(const std::string &title, 
-					const std::string &subtitle,
-					const bool         show_back_label,
-					const OptionList  &options, 
-					const OptionIndex  selected_item)
+void Menu::update_info(const std::string &title,
+	                   const std::string &subtitle,
+	                   const bool         show_back_label,
+	                   const OptionList  &options,
+	                   const OptionIndex  selected_item)
 {
-	clear_values(keys_pressed_);
-	clear_values(keys_processed_);
-
 	title_ = title;
 	subtitle_label_.set_text(subtitle);
 	render_back_button_ = show_back_label;
 	selected_item_ = selected_item;
 	option_list_ = options;
-
-	is_open_ = true;
-}
-
-void Menu::deactivate()
-{
-	title_.clear();
-	option_list_.clear();
-
-	is_open_ = false;
 }
 
 void Menu::initialize_impl(const glm::mat4 &projection)
@@ -81,6 +57,18 @@ void Menu::update_impl(Time /*dt*/)
 {
 }
 
+void Menu::activate_impl()
+{
+	fill(keys_pressed_, false);
+	fill(keys_processed_, false);
+}
+
+void Menu::deactivate_impl()
+{
+	title_.clear();
+	option_list_.clear();
+}
+
 void Menu::render_impl(Optional<SpriteRenderer*> /*parent_sprite_renderer*/)
 {
 	render_title();
@@ -98,7 +86,7 @@ void Menu::render_impl(Optional<SpriteRenderer*> /*parent_sprite_renderer*/)
 
 void Menu::set_key_impl(KeyId key_id, bool val)
 {
-	if (!is_open_)
+	if (!is_active())
 	{
 		return;
 	}
@@ -129,7 +117,7 @@ void Menu::set_key_impl(KeyId key_id, bool val)
 
 void Menu::process_input_impl(float dt)
 {
-	if (!is_open_)
+	if (!is_active())
 	{
 		return;
 	}

@@ -16,18 +16,6 @@ namespace util {
 	{
 	}
 
-	void MainMenu::activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
-	{
-		opening_menu_.activate();
-		level_selection_menu_.deactivate();
-	}
-
-	void MainMenu::deactivate()
-	{
-		opening_menu_.deactivate();
-		level_selection_menu_.deactivate();
-	}
-
 	void MainMenu::initialize_impl(const glm::mat4 &projection)
 	{
 		background_texture_id_ = ResourceManager::load_texture(kBackgroundTexturePath, false);
@@ -54,8 +42,25 @@ namespace util {
 		level_selection_menu_.update(dt);
 	}
 
+	void MainMenu::activate_impl()
+	{
+		opening_menu_.activate();
+		level_selection_menu_.deactivate();
+	}
+
+	void MainMenu::deactivate_impl()
+	{
+		opening_menu_.deactivate();
+		level_selection_menu_.deactivate();
+	}
+
 	void MainMenu::render_impl(Optional<SpriteRenderer*> parent_sprite_renderer)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		render_background();
 		opening_menu_.render(parent_sprite_renderer);
 		level_selection_menu_.render(parent_sprite_renderer);
@@ -63,12 +68,22 @@ namespace util {
 
 	void MainMenu::set_key_impl(KeyId key_id, bool val)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		opening_menu_.set_key(key_id, val);
 		level_selection_menu_.set_key(key_id, val);
 	}
 
 	void MainMenu::process_input_impl(float dt)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		opening_menu_.process_input(dt);
 		level_selection_menu_.process_input(dt);
 	}

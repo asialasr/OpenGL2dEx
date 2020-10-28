@@ -63,9 +63,6 @@
     <ClInclude Include="util\text_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util\count_of.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util\element.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,6 +88,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util\level_selection_menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\array_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

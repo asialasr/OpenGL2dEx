@@ -75,6 +75,8 @@ private:
 	// Element
 	void initialize_impl(const glm::mat4 &screen_projection) override;
 	void update_impl(Time dt) override;
+	void activate_impl() override;
+	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 
 	enum class ButtonsHandled {

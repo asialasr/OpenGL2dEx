@@ -7,7 +7,7 @@
 #include "power_up.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
-#include "count_of.h"
+#include "array_helpers.h"
 
 #include <vector>
 #include <tuple>

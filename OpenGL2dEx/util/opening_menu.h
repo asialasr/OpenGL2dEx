@@ -38,12 +38,12 @@ public:
 		handler_ = &handler;
 	}
 
-	void activate();
-	void deactivate();
 private:
 	// Element
 	void initialize_impl(const glm::mat4 &projection) override;
 	void update_impl(Time dt) override;
+	void activate_impl() override;
+	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 	void set_key_impl(KeyId key_id, bool val) override;
 	// TODO(sasiala): improve event handling
@@ -72,7 +72,6 @@ private:
 		"Help"
 	};
 
-	bool is_open_;
 	Menu menu_options_;
 
 	Handler *handler_;

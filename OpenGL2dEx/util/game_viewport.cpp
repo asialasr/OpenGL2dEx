@@ -2,6 +2,7 @@
 
 #include "audio_manager.h"
 #include "ball_object.h"
+#include "array_helpers.h"
 #include "logging.h"
 #include "gl_debug.h"
 #include "particle_generator.h"
@@ -153,6 +154,11 @@ namespace util {
 
 	void GameViewport::update_impl(Time dt)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		ASSERT(ball_, "No ball defined");
 		ASSERT(particle_generator_, "No particle generator defined");
 
@@ -178,10 +184,25 @@ namespace util {
 		}
 	}
 
+	void GameViewport::activate_impl()
+	{
+		fill(keys_pressed_, false);
+		fill(keys_processed_, false);
+	}
+
+	void GameViewport::deactivate_impl()
+	{
+	}
+
 	void GameViewport::render_impl(Optional<SpriteRenderer*> /*parent_sprite_renderer*/)
 	{
 		ASSERT(ball_, "No ball defined");
 		ASSERT(paddle_, "No paddle defined");
+
+		if (!is_active())
+		{
+			return;
+		}
 
 		effects_->begin_render();
 
@@ -431,6 +452,11 @@ namespace util {
 
 	void GameViewport::set_key_impl(KeyId key_id, bool val)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		bool *key_ptr = nullptr;
 		bool *key_processed_ptr = nullptr;
 		switch (convert_id(key_id))
@@ -497,6 +523,11 @@ namespace util {
 
 	void GameViewport::process_input_impl(float dt)
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		if (keys_pressed_[to_index(convert_id(GLFW_KEY_A))])
 		{
 			handle_left_button(dt);
@@ -698,7 +729,6 @@ namespace util {
 
 	void GameViewport::update_power_ups(float dt)
 	{
-
 		for (auto &i : power_ups_)
 		{
 			i.progress_time(dt);

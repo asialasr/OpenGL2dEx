@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="util\audio_manager.h" />
     <ClInclude Include="util\ball_object.h" />
-    <ClInclude Include="util\count_of.h" />
+    <ClInclude Include="util\array_helpers.h" />
     <ClInclude Include="util\element.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />

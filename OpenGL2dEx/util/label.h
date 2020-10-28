@@ -7,6 +7,7 @@
 
 namespace util {
 
+// TODO(sasiala): shouldn't the label be an element?
 class Label {
 public:
 	Label(const float      x_ratio,
