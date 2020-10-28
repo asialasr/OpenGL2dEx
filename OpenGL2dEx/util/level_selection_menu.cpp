@@ -14,13 +14,17 @@ namespace util {
 	void LevelSelectionMenu::activate()
 	{
 		ASSERT(!levels_.empty(), "No levels to display");
-		menu_options_.activate("", kSubtitle, levels_, current_level_);
+		ASSERT(handler_, "No handler for menu");
+		menu_options_.activate("", kSubtitle, true, levels_, current_level_);
+		handler_->show_level_preview();
 		is_open_ = true;
 	}
 
 	void LevelSelectionMenu::deactivate()
 	{
+		ASSERT(handler_, "No handler for menu");
 		menu_options_.deactivate();
+		handler_->hide_level_preview();
 		is_open_ = false;
 	}
 
@@ -72,7 +76,7 @@ namespace util {
 		handler_->start_game();
 	}
 
-	void LevelSelectionMenu::handle_submenu_dismiss_impl()
+	void LevelSelectionMenu::handle_back_button_impl()
 	{
 		handler_->close_level_selection();
 	}

@@ -37,15 +37,15 @@ public:
 			handle_menu_option_acceptance_impl(index);
 		}
 
-		void handle_submenu_dismiss()
+		void handle_back_button()
 		{
-			handle_submenu_dismiss_impl();
+			handle_back_button_impl();
 		}
 
 	private:
 		virtual void handle_menu_option_highlight_impl(OptionIndex index) = 0;
 		virtual void handle_menu_option_acceptance_impl(OptionIndex index) = 0;
-		virtual void handle_submenu_dismiss_impl() = 0;
+		virtual void handle_back_button_impl() = 0;
 	};
 
 	Menu(Dimension load_width, Dimension load_height);
@@ -54,6 +54,7 @@ public:
 
 	void activate(const std::string &title, 
 				  const std::string &subtitle, 
+				  bool               show_back_label,
 				  const OptionList  &options, 
 				  OptionIndex        selected_item);
 	void deactivate();

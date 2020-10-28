@@ -12,7 +12,7 @@ namespace util {
 
 	void OpeningMenu::activate()
 	{
-		menu_options_.activate("", "", kOptions, 0);
+		menu_options_.activate("", "", false, kOptions, 0);
 		is_open_ = true;
 	}
 
@@ -81,9 +81,9 @@ namespace util {
 		}
 	}
 
-	void OpeningMenu::handle_submenu_dismiss_impl()
+	void OpeningMenu::handle_back_button_impl()
 	{
-
+		ASSERT(false, "Back button not allowed on opening menu");
 	}
 
 } // namespace util

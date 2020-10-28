@@ -54,16 +54,15 @@ namespace util {
 		void game_ended_impl(EndingReason reason) override;
 
 		// Menu::MenuButtonHandler
-		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
-		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
-		void handle_submenu_dismiss_impl() override;
 		void change_level_impl(LevelSelectionMenu::LevelIndex index) override;
 		void start_game_impl() override;
+		void show_level_preview_impl() override;
+		void hide_level_preview_impl() override;
 
 		void load_current_level();
 
 		void open_main_menu();
-		void open_level_selection_menu(bool animate);
+		void show_small_game_viewport(bool animate);
 		void close_main_menu();
 		void render_menu();
 		void animate_game_viewport(float dt);

@@ -6,6 +6,17 @@
 
 namespace util {
 
+namespace {
+	template <size_t COUNT>
+	void clear_values(bool (&arr)[COUNT])
+	{
+		for (auto i = size_t{ 0 }; i < COUNT; ++i)
+		{
+			arr[i] = false;
+		}
+	}
+} // namespace
+
 Menu::Menu(Dimension load_width, Dimension load_height)
 	: title_{ "" }
 	, selected_item_{}
@@ -28,14 +39,17 @@ void Menu::set_menu_handler(MenuButtonHandler &handler)
 }
 
 void Menu::activate(const std::string &title, 
-					const std::string &subtitle, 
+					const std::string &subtitle,
+					const bool         show_back_label,
 					const OptionList  &options, 
 					const OptionIndex  selected_item)
 {
-	deactivate();
+	clear_values(keys_pressed_);
+	clear_values(keys_processed_);
 
 	title_ = title;
 	subtitle_label_.set_text(subtitle);
+	render_back_button_ = show_back_label;
 	selected_item_ = selected_item;
 	option_list_ = options;
 
@@ -129,7 +143,10 @@ void Menu::process_input_impl(float dt)
 	else if (keys_pressed_[to_index(ButtonsHandled::kBackButton)]
 		&& !keys_processed_[to_index(ButtonsHandled::kBackButton)])
 	{
-		// TODO(sasiala): handle back button
+		if (render_back_button_)
+		{
+			menu_button_handler_->handle_back_button();
+		}
 		keys_processed_[to_index(ButtonsHandled::kBackButton)] = true;
 	}
 	else

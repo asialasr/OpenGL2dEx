@@ -28,10 +28,22 @@ public:
 			close_level_selection_impl();
 		}
 
+		void show_level_preview()
+		{
+			show_level_preview_impl();
+		}
+
+		void hide_level_preview()
+		{
+			hide_level_preview_impl();
+		}
+
 	private:
 		virtual void change_level_impl(LevelIndex level_index) = 0;
 		virtual void start_game_impl() = 0;
 		virtual void close_level_selection_impl() = 0;
+		virtual void show_level_preview_impl() = 0;
+		virtual void hide_level_preview_impl() = 0;
 	};
 	LevelSelectionMenu(Dimension load_width, Dimension load_height);
 
@@ -65,7 +77,7 @@ private:
 	// Menu::MenuButtonHandler
 	void handle_menu_option_highlight_impl(Menu::OptionIndex index) override;
 	void handle_menu_option_acceptance_impl(Menu::OptionIndex index) override;
-	void handle_submenu_dismiss_impl() override;
+	void handle_back_button_impl() override;
 
 	bool is_open_;
 	Menu menu_options_;

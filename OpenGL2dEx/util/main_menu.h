@@ -10,25 +10,11 @@ namespace util {
 
 class MainMenu : public Element
 			   , public OpeningMenu::Handler
-			   , public LevelSelectionMenu::Handler {
+			   , public LevelSelectionMenu::Handler 
+{
 public:
 	class MenuButtonHandler {
 	public:
-		void handle_menu_option_highlight(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
-		{
-			handle_menu_option_highlight_impl(index, submenu_level);
-		}
-
-		void handle_menu_option_acceptance(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
-		{
-			handle_menu_option_acceptance_impl(index, submenu_level);
-		}
-
-		void handle_submenu_dismiss()
-		{
-			handle_submenu_dismiss_impl();
-		}
-
 		void change_level(const LevelSelectionMenu::LevelIndex level)
 		{
 			change_level_impl(level);
@@ -39,12 +25,21 @@ public:
 			start_game_impl();
 		}
 
+		void show_level_preview()
+		{
+			show_level_preview_impl();
+		}
+
+		void hide_level_preview()
+		{
+			hide_level_preview_impl();
+		}
+
 	private:
-		virtual void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) = 0;
-		virtual void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) = 0;
-		virtual void handle_submenu_dismiss_impl() = 0;
 		virtual void change_level_impl(LevelSelectionMenu::LevelIndex level) = 0;
 		virtual void start_game_impl() = 0;
+		virtual void show_level_preview_impl() = 0;
+		virtual void hide_level_preview_impl() = 0;
 	};
 	MainMenu(Dimension load_width, Dimension load_height);
 
@@ -69,7 +64,6 @@ public:
 	}
 
 	void activate(const std::string &title, const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item);
-	void open_sub_menu(const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item);
 	void deactivate();
 private:
 	// Element
@@ -114,6 +108,18 @@ private:
 	{
 		level_selection_menu_.deactivate();
 		opening_menu_.activate();
+	}
+
+	void show_level_preview_impl() override
+	{
+		ASSERT(menu_button_handler_, "No menu handler");
+		menu_button_handler_->show_level_preview();
+	}
+
+	void hide_level_preview_impl() override
+	{
+		ASSERT(menu_button_handler_, "No menu handler");
+		menu_button_handler_->hide_level_preview();
 	}
 
 	void render_background();

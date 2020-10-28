@@ -22,11 +22,6 @@ namespace util {
 		level_selection_menu_.deactivate();
 	}
 
-	void MainMenu::open_sub_menu(const std::string &subtitle, Menu::OptionList &options, Menu::OptionIndex selected_item)
-	{
-		//opening_menu_.open_sub_menu(subtitle, options, selected_item);
-	}
-
 	void MainMenu::deactivate()
 	{
 		opening_menu_.deactivate();

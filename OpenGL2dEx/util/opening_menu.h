@@ -52,7 +52,7 @@ private:
 	// Menu::MenuButtonHandler
 	void handle_menu_option_highlight_impl(Menu::OptionIndex index) override;
 	void handle_menu_option_acceptance_impl(Menu::OptionIndex index) override;
-	void handle_submenu_dismiss_impl() override;
+	void handle_back_button_impl() override;
 
 	enum class Index {
 		kLevelSelection,
