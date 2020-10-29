@@ -49,7 +49,7 @@ namespace util
 	Game::Game(IResetGlProperties &gl_property_resetter,
 		Dimension width,
 		Dimension height)
-		: state_{ GameState::kLevelSelection }
+		: state_{ GameState::kMainMenu }
 		, keys_{}
 		, keys_processed_{}
 		, width_{ width }
@@ -122,8 +122,7 @@ namespace util
 		{
 			game_viewport_.process_input(dt);
 		}
-		else if (GameState::kLevelSelection == state_ ||
-			GameState::kMainMenu == state_)
+		else if (GameState::kMainMenu == state_)
 		{
 			main_menu_.process_input(dt);
 		}
@@ -135,8 +134,7 @@ namespace util
 		{
 			game_viewport_.update(dt);
 		}
-		else if (state_ == GameState::kLevelSelection ||
-			state_ == GameState::kMainMenu)
+		else if (state_ == GameState::kMainMenu)
 		{
 			main_menu_.update(dt);
 		}
@@ -150,17 +148,13 @@ namespace util
 	void Game::render()
 	{
 		// render menu on bottom
-		if (state_ == GameState::kLevelSelection ||
-			state_ == GameState::kMainMenu)
+		if (state_ == GameState::kMainMenu)
 		{
 			render_menu();
 			check_for_gl_errors();
 		}
 
-		if (state_ != GameState::kMainMenu)
-		{
-			game_viewport_.render(sprite_renderer_);
-		}
+		game_viewport_.render(sprite_renderer_);
 
 		check_for_gl_errors();
 	}
@@ -181,18 +175,18 @@ namespace util
 	void Game::game_ended_impl(const EndingReason /*reason*/)
 	{
 		// TODO(sasiala): handle various ending reasons
-		open_main_menu();
+		main_menu_.update_current_level(current_level_);
+		main_menu_.open_level_selection_next_activate();
+		main_menu_.activate();
+		state_ = GameState::kMainMenu;
 		show_small_game_viewport(true);
 	}
 
 	void Game::change_level_impl(const LevelSelectionMenu::LevelIndex index)
 	{
 		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
-		if (state_ == GameState::kLevelSelection)
-		{
-			game_viewport_.load_level(kLevelPaths[index]);
-			current_level_ = index;
-		}
+		game_viewport_.load_level(kLevelPaths[index]);
+		current_level_ = index;
 	}
 
 	void Game::start_game_impl()
@@ -204,11 +198,11 @@ namespace util
 	void Game::show_level_preview_impl()
 	{
 		show_small_game_viewport(false);
-		state_ = GameState::kLevelSelection;
 	}
 	
 	void Game::hide_level_preview_impl()
 	{
+		game_viewport_.deactivate();
 		state_ = GameState::kMainMenu;
 	}
 

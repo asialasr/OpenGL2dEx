@@ -43,6 +43,14 @@ public:
 	};
 	MainMenu(Dimension load_width, Dimension load_height);
 
+	void open_level_selection_next_activate()
+	{
+		ASSERT(menu_stack_.empty() && !is_active(), "Invalid state for opening level selection from outside source");
+
+		open_menu(opening_menu_);
+		open_menu(level_selection_menu_);
+	}
+
 	void set_menu_handler(MenuButtonHandler &handler)
 	{
 		menu_button_handler_ = &handler;
@@ -74,11 +82,32 @@ private:
 	// TODO(sasiala): improve event handling
 	void process_input_impl(float dt) override;
 
+	void open_menu(Element &menu)
+	{
+		if (!menu_stack_.empty())
+		{
+			menu_stack_.back()->deactivate();
+		}
+		menu_stack_.push_back(&menu);
+		menu_stack_.back()->activate();
+	}
+
+	void close_menu()
+	{
+		ASSERT(!menu_stack_.empty(), "No menu to close");
+		menu_stack_.back()->deactivate();
+		menu_stack_.pop_back();
+
+		if (!menu_stack_.empty())
+		{
+			menu_stack_.back()->activate();
+		}
+	}
+
 	// Menu::MenuButtonHandler
 	void open_level_selection_impl() override
 	{
-		opening_menu_.deactivate();
-		level_selection_menu_.activate();
+		open_menu(level_selection_menu_);
 	}
 
 	void open_settings_impl() override
@@ -106,8 +135,7 @@ private:
 
 	void close_level_selection_impl() override
 	{
-		level_selection_menu_.deactivate();
-		opening_menu_.activate();
+		close_menu();
 	}
 
 	void show_level_preview_impl() override
@@ -139,6 +167,8 @@ private:
 
 	OpeningMenu opening_menu_;
 	LevelSelectionMenu level_selection_menu_;
+
+	std::vector<Element*> menu_stack_;
 }; // class MainMenu
 
 } // namespace util

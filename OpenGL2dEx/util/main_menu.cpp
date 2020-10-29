@@ -1,5 +1,7 @@
 #include "main_menu.h"
 
+#include <algorithm>
+
 namespace util {
 
 
@@ -13,6 +15,7 @@ namespace util {
 		, menu_button_handler_{ nullptr }
 		, opening_menu_{ load_width, load_height }
 		, level_selection_menu_{ load_width, load_height }
+		, menu_stack_{}
 	{
 	}
 
@@ -36,22 +39,29 @@ namespace util {
 		level_selection_menu_.set_handler(*this);
 	}
 
-	void MainMenu::update_impl(Time dt)
+	void MainMenu::update_impl(const Time dt)
 	{
-		opening_menu_.update(dt);
-		level_selection_menu_.update(dt);
+		if (!is_active())
+		{
+			return;
+		}
+
+		ASSERT(!menu_stack_.empty(), "No menu to update");
+		menu_stack_.back()->update(dt);
 	}
 
 	void MainMenu::activate_impl()
 	{
-		opening_menu_.activate();
-		level_selection_menu_.deactivate();
+		if (menu_stack_.empty())
+		{
+			open_menu(opening_menu_);
+		}
 	}
 
 	void MainMenu::deactivate_impl()
 	{
-		opening_menu_.deactivate();
-		level_selection_menu_.deactivate();
+		menu_stack_.back()->deactivate();
+		menu_stack_.clear();
 	}
 
 	void MainMenu::render_impl(Optional<SpriteRenderer*> parent_sprite_renderer)
@@ -62,30 +72,30 @@ namespace util {
 		}
 
 		render_background();
-		opening_menu_.render(parent_sprite_renderer);
-		level_selection_menu_.render(parent_sprite_renderer);
+		ASSERT(!menu_stack_.empty(), "No menu to render");
+		menu_stack_.back()->render(parent_sprite_renderer);
 	}
 
-	void MainMenu::set_key_impl(KeyId key_id, bool val)
+	void MainMenu::set_key_impl(const KeyId key_id, const bool val)
 	{
 		if (!is_active())
 		{
 			return;
 		}
 
-		opening_menu_.set_key(key_id, val);
-		level_selection_menu_.set_key(key_id, val);
+		ASSERT(!menu_stack_.empty(), "No menu open to set key");
+		menu_stack_.back()->set_key(key_id, val);
 	}
 
-	void MainMenu::process_input_impl(float dt)
+	void MainMenu::process_input_impl(const float dt)
 	{
 		if (!is_active())
 		{
 			return;
 		}
 
-		opening_menu_.process_input(dt);
-		level_selection_menu_.process_input(dt);
+		ASSERT(!menu_stack_.empty(), "No menu open to process input");
+		menu_stack_.back()->process_input(dt);
 	}
 
 	void MainMenu::render_background()

@@ -39,7 +39,6 @@ namespace util {
 		enum class GameState {
 			kActive,
 			kMainMenu,
-			kLevelSelection,
 			kWin,
 			kUnknown,
 			kNumStates,

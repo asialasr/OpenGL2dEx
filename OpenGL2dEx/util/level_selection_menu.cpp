@@ -73,7 +73,8 @@ namespace util {
 
 	void LevelSelectionMenu::handle_menu_option_highlight_impl(Menu::OptionIndex index)
 	{
-		handler_->change_level(static_cast<LevelIndex>(index));
+		current_level_ = static_cast<LevelIndex>(index);
+		handler_->change_level(current_level_);
 	}
 
 	void LevelSelectionMenu::handle_menu_option_acceptance_impl(Menu::OptionIndex /*index*/)
