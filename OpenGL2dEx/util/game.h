@@ -1,13 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "menu.h"
+#include "main_menu.h"
 #include "game_level.h"
 #include "game_viewport.h"
 #include "power_up.h"
 #include "resource_mgr.h"
 #include "sprite_renderer.h"
-#include "count_of.h"
+#include "array_helpers.h"
 
 #include <vector>
 #include <tuple>
@@ -17,7 +17,7 @@ namespace util {
 	class IResetGlProperties;
 
 	class Game : public GameViewport::GameStateCallback
-			   , public Menu::MenuButtonHandler
+			   , public MainMenu::MenuButtonHandler
 	{
 	public:
 		using Dimension = unsigned int;
@@ -38,7 +38,7 @@ namespace util {
 
 		enum class GameState {
 			kActive,
-			kMenu,
+			kMainMenu,
 			kWin,
 			kUnknown,
 			kNumStates,
@@ -53,12 +53,15 @@ namespace util {
 		void game_ended_impl(EndingReason reason) override;
 
 		// Menu::MenuButtonHandler
-		void handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
-		void handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level) override;
+		void change_level_impl(LevelSelectionMenu::LevelIndex index) override;
+		void start_game_impl() override;
+		void show_level_preview_impl() override;
+		void hide_level_preview_impl() override;
 
 		void load_current_level();
 
 		void open_main_menu();
+		void show_small_game_viewport(bool animate);
 		void close_main_menu();
 		void render_menu();
 		void animate_game_viewport(float dt);
@@ -97,7 +100,7 @@ namespace util {
 		Dimension width_, height_;
 
 		GameViewport game_viewport_;
-		Menu         main_menu_;
+		MainMenu         main_menu_;
 
 		SpriteRenderer            *sprite_renderer_;
 		ResourceManager::ShaderId sprite_shader_id_;

@@ -21,15 +21,18 @@
   <ItemGroup>
     <ClInclude Include="util\audio_manager.h" />
     <ClInclude Include="util\ball_object.h" />
-    <ClInclude Include="util\count_of.h" />
+    <ClInclude Include="util\array_helpers.h" />
     <ClInclude Include="util\element.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
     <ClInclude Include="util\game_viewport.h" />
     <ClInclude Include="util\gl_debug.h" />
     <ClInclude Include="util\game_level.h" />
+    <ClInclude Include="util\level_selection_menu.h" />
     <ClInclude Include="util\logging.h" />
+    <ClInclude Include="util\main_menu.h" />
     <ClInclude Include="util\menu.h" />
+    <ClInclude Include="util\opening_menu.h" />
     <ClInclude Include="util\optional.h" />
     <ClInclude Include="util\particle_generator.h" />
     <ClInclude Include="util\post_processor.h" />
@@ -41,6 +44,7 @@
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />
     <ClInclude Include="util\types.h" />
+    <ClInclude Include="util\label.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
@@ -52,7 +56,10 @@
     <ClCompile Include="util\game_level.cpp" />
     <ClCompile Include="util\game_object.cpp" />
     <ClCompile Include="util\game_viewport.cpp" />
+    <ClCompile Include="util\level_selection_menu.cpp" />
+    <ClCompile Include="util\main_menu.cpp" />
     <ClCompile Include="util\menu.cpp" />
+    <ClCompile Include="util\opening_menu.cpp" />
     <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\post_processor.cpp" />
     <ClCompile Include="util\resource_mgr.cpp" />

@@ -63,9 +63,6 @@
     <ClInclude Include="util\text_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util\count_of.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util\element.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,6 +76,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util\menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\main_menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\label.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\opening_menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\level_selection_menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\array_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -132,6 +144,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\main_menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\opening_menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\level_selection_menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

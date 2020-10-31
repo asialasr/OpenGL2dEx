@@ -47,9 +47,9 @@ namespace util
 	} // namespace
 
 	Game::Game(IResetGlProperties &gl_property_resetter,
-			   Dimension width, 
-		       Dimension height)
-		: state_{ GameState::kMenu }
+		Dimension width,
+		Dimension height)
+		: state_{ GameState::kMainMenu }
 		, keys_{}
 		, keys_processed_{}
 		, width_{ width }
@@ -58,7 +58,7 @@ namespace util
 		, main_menu_{ width, height }
 		, sprite_renderer_{ nullptr }
 		, sprite_shader_id_{}
-		, current_level_{0}
+		, current_level_{ 0 }
 		, viewport_animation_{ false, 0, 0, {0.0f, 0.0f}, {0.0f, 0.0f}, 0, 0, 0, 0 }
 	{
 	}
@@ -107,6 +107,8 @@ namespace util
 
 		load_current_level();
 
+		main_menu_.update_levels(kLevelNames, current_level_);
+
 		AudioManager::play_background_music(AudioManager::GameState::kActive, true);
 
 		open_main_menu();
@@ -120,7 +122,7 @@ namespace util
 		{
 			game_viewport_.process_input(dt);
 		}
-		else if (GameState::kMenu == state_)
+		else if (GameState::kMainMenu == state_)
 		{
 			main_menu_.process_input(dt);
 		}
@@ -132,7 +134,7 @@ namespace util
 		{
 			game_viewport_.update(dt);
 		}
-		else if (state_ == GameState::kMenu)
+		else if (state_ == GameState::kMainMenu)
 		{
 			main_menu_.update(dt);
 		}
@@ -146,7 +148,7 @@ namespace util
 	void Game::render()
 	{
 		// render menu on bottom
-		if (state_ == GameState::kMenu)
+		if (state_ == GameState::kMainMenu)
 		{
 			render_menu();
 			check_for_gl_errors();
@@ -173,45 +175,75 @@ namespace util
 	void Game::game_ended_impl(const EndingReason /*reason*/)
 	{
 		// TODO(sasiala): handle various ending reasons
-		state_ = GameState::kMenu;
-		open_main_menu();
+		main_menu_.update_current_level(current_level_);
+		main_menu_.open_level_selection_next_activate();
+		main_menu_.activate();
+		state_ = GameState::kMainMenu;
+		show_small_game_viewport(true);
 	}
 
-	void Game::handle_menu_option_highlight_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
+	void Game::change_level_impl(const LevelSelectionMenu::LevelIndex index)
 	{
-		ASSERT(submenu_level == 0, "Unexpected submenu level");
 		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
 		game_viewport_.load_level(kLevelPaths[index]);
 		current_level_ = index;
 	}
 
-	void Game::handle_menu_option_acceptance_impl(Menu::OptionIndex index, Menu::SubmenuLevel submenu_level)
+	void Game::start_game_impl()
 	{
 		close_main_menu();
 	}
 
+	// TODO(sasiala): show & hide should not change state
+	void Game::show_level_preview_impl()
+	{
+		show_small_game_viewport(false);
+	}
+	
+	void Game::hide_level_preview_impl()
+	{
+		game_viewport_.deactivate();
+		state_ = GameState::kMainMenu;
+	}
+
 	void Game::open_main_menu()
 	{
-		main_menu_.activate("MAIN MENU", "LEVELS", Menu::OptionList{ kLevelNames }, current_level_);
+		game_viewport_.deactivate();
+		main_menu_.activate();
+		state_ = GameState::kMainMenu;
+	}
 
-		const float dw = viewport_animation_dw();
-		const float dh = viewport_animation_dh();
-		const auto start_pos = glm::vec2{ 0.0f, 0.0f };
-		const auto end_pos = glm::vec2{ .45 * width_, .25 * height_ };
-		viewport_animation_ = { true, -dw, -dh, end_pos, start_pos, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_), width_, height_ };
-		state_ = GameState::kMenu;
+	void Game::show_small_game_viewport(const bool animate)
+	{
+		const auto target_pos = glm::vec2{ .45 * width_, .25 * height_ };
+		const auto target_width = static_cast<Dimension>(.5 * width_);
+		const auto target_height = static_cast<Dimension>(.5 * height_);
+		if (animate)
+		{
+			const float dw = viewport_animation_dw();
+			const float dh = viewport_animation_dh();
+			const auto start_pos = glm::vec2{ 0.0f, 0.0f };
+			viewport_animation_ = { true, -dw, -dh, target_pos, start_pos, target_width, target_height, width_, height_ };
+		}
+		else
+		{
+			game_viewport_.set_size(target_width, target_height);
+			game_viewport_.set_position(target_pos);
+		}
+		game_viewport_.activate();
 	}
 
 	void Game::close_main_menu()
 	{
 		main_menu_.deactivate();
-
+		
 		const float dw = viewport_animation_dw();
 		const float dh = viewport_animation_dh();
 		const auto start_pos = glm::vec2{ .45 * width_, .25 * height_ };
 		const auto end_pos = glm::vec2{ 0.0f, 0.0f };
 		viewport_animation_ = { true, dw, dh, end_pos, start_pos, width_, height_, static_cast<Dimension>(.5 * width_), static_cast<Dimension>(.5 * height_) };
 		state_ = GameState::kActive;
+		game_viewport_.activate();
 	}
 
 	void Game::render_menu()
@@ -219,7 +251,7 @@ namespace util
 		main_menu_.render(sprite_renderer_);
 	}
 
-	void Game::animate_game_viewport(float dt)
+	void Game::animate_game_viewport(const float dt)
 	{
 		ASSERT(viewport_animation_.in_progress(), "No animation in progress");
 

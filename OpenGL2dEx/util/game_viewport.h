@@ -75,6 +75,8 @@ private:
 	// Element
 	void initialize_impl(const glm::mat4 &screen_projection) override;
 	void update_impl(Time dt) override;
+	void activate_impl() override;
+	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 
 	enum class ButtonsHandled {
@@ -219,7 +221,7 @@ private:
 	static constexpr const char *kPupStickyImagePath = "textures/power_ups/powerup_sticky.png";
 
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
-	static constexpr double kDefaultFontSize{ 24.0 };
+	static constexpr TextRenderer::FontSize kDefaultFontSize{ 24 };
 
 	ResourceManager::Texture2DId background_texture_id_;
 	ResourceManager::Texture2DId block_texture_id_;
