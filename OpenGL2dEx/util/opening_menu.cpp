@@ -4,7 +4,8 @@ namespace util {
 
 
 	OpeningMenu::OpeningMenu(const Dimension load_width, const Dimension load_height)
-		: menu_options_{ load_width, load_height }
+		: Element{ false }
+		, menu_options_ { load_width, load_height }
 		, handler_{ nullptr }
 	{
 	}

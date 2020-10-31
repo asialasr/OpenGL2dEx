@@ -3,7 +3,8 @@
 
 namespace util {
 	LevelSelectionMenu::LevelSelectionMenu(Dimension load_width, Dimension load_height)
-		: menu_options_{ load_width, load_height }
+		: Element{ false }
+		, menu_options_ {load_width, load_height}
 		, handler_{ nullptr }
 		, levels_{}
 		, current_level_{}

@@ -108,8 +108,7 @@ private:
 	void set_key_impl(KeyId key_id, bool val) override;
 	void process_input_impl(float dt) override;
 
-	void render_title();
-	void render_options();
+	void render_options(Optional<SpriteRenderer*> parent_sprite_renderer);
 
 	// TODO(sasiala): I don't like these methods of converting ratios, but it's the easiest
 	// way so far to make sure things scale with size.  Reconsider a better way
@@ -121,14 +120,15 @@ private:
 	{
 		return ratio * loaded_width_;
 	}
-	util::Label kTitleText{ 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU" };
-	util::Label subtitle_label_{ 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "LEVEL SELECTION" };
-	util::Label kBackText{ 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f}, "(B) BACK"};
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
 	static constexpr util::TextRenderer::FontSize kDefaultFontSize{ 24 };
 
 	const Dimension loaded_width_;
 	const Dimension loaded_height_;
+
+	util::Label kTitleText;
+	util::Label subtitle_label_;
+	util::Label kBackText;
 
 	const struct {
 		static constexpr auto kYTopRatio{ 0.25f };
@@ -154,8 +154,6 @@ private:
 
 	bool keys_pressed_[static_cast<size_t>(ButtonsHandled::kNumButtons)];
 	bool keys_processed_[static_cast<size_t>(ButtonsHandled::kNumButtons)];
-
-	bool render_back_button_;
 }; // class Menu
 
 } // namespace util

@@ -7,18 +7,51 @@
 
 namespace util {
 
+namespace {
+	enum class MenuLabelId {
+		kTitle,
+		kSubtitle,
+		kBack,
+		kNumIds,
+		kUnknown
+	};
+	util::Label make_label(const MenuLabelId label_id, 
+						   const Dimension   viewport_width, 
+						   const Dimension   viewport_height)
+	{
+		switch (label_id)
+		{
+		case MenuLabelId::kTitle:
+			return { true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU", viewport_width, viewport_height};
+		case MenuLabelId::kSubtitle:
+			return { true, 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "LEVEL SELECTION", viewport_width, viewport_height };
+		case MenuLabelId::kBack:
+			return { true, 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f }, "(B) BACK", viewport_width, viewport_height };
+		default:
+			ASSERT(false, "Unknown label type");
+			break;
+		}
+
+		// return something; should not reach, but avoid warnings/static analysis findings (if added)
+		return{ true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU", viewport_width, viewport_height };
+	}
+} // namespace
+
 Menu::Menu(Dimension load_width, Dimension load_height)
-	: title_{ "" }
+	: Element{false}
+	, title_ { "" }
 	, selected_item_{}
 	, option_list_{}
 	, loaded_width_{ load_width }
 	, loaded_height_{ load_height }
+	, kTitleText{make_label(MenuLabelId::kTitle, load_width, load_height)}
+	, subtitle_label_{make_label(MenuLabelId::kSubtitle, load_width, load_height)}
+	, kBackText{make_label(MenuLabelId::kBack, load_width, load_height)}
 	, font_shader_id_{}
 	, default_font_id_{}
 	, menu_button_handler_{ nullptr }
 	, keys_pressed_{}
 	, keys_processed_{}
-	, render_back_button_{ false }
 {
 }
 
@@ -35,7 +68,7 @@ void Menu::update_info(const std::string &title,
 {
 	title_ = title;
 	subtitle_label_.set_text(subtitle);
-	render_back_button_ = show_back_label;
+	conditionally_activate(kBackText, show_back_label);
 	selected_item_ = selected_item;
 	option_list_ = options;
 }
@@ -69,19 +102,14 @@ void Menu::deactivate_impl()
 	option_list_.clear();
 }
 
-void Menu::render_impl(Optional<SpriteRenderer*> /*parent_sprite_renderer*/)
+void Menu::render_impl(Optional<SpriteRenderer*> parent_sprite_renderer)
 {
-	render_title();
-
+	kTitleText.render(parent_sprite_renderer);
 	// TOOD(sasiala): center text for subtitle
-	subtitle_label_.render(loaded_width_, loaded_height_);
+	subtitle_label_.render(parent_sprite_renderer);
+	kBackText.render(parent_sprite_renderer);
 
-	if (render_back_button_)
-	{
-		kBackText.render(loaded_width_, loaded_height_);
-	}
-
-	render_options();
+	render_options(parent_sprite_renderer);
 }
 
 void Menu::set_key_impl(KeyId key_id, bool val)
@@ -131,7 +159,7 @@ void Menu::process_input_impl(float dt)
 	else if (keys_pressed_[to_index(ButtonsHandled::kBackButton)]
 		&& !keys_processed_[to_index(ButtonsHandled::kBackButton)])
 	{
-		if (render_back_button_)
+		if (kBackText.is_active())
 		{
 			menu_button_handler_->handle_back_button();
 		}
@@ -168,28 +196,21 @@ void Menu::process_input_impl(float dt)
 	}
 }
 
-void Menu::render_title()
-{
-	// TOOD(sasiala): center text
-	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
-	kTitleText.render(loaded_width_, loaded_height_);
-}
-
-void Menu::render_options()
+void Menu::render_options(Optional<SpriteRenderer*> parent_sprite_renderer)
 {
 	// TODO(sasiala): consider adding scrolling to list
 	ASSERT(option_list_.size() < kMenuList.kMaxRows, "Too many rows for menu list");
 
 	const auto &text_renderer = ResourceManager::get_font(default_font_id_);
 	auto pos_y_ratio = kMenuList.kYTopRatio;
-	Label option_label{ kMenuList.kXRatio, kMenuList.kYTopRatio, kMenuList.kTextScaleFromHeight, kMenuList.kDeselectedColor, "" };
+	Label option_label{true, kMenuList.kXRatio, kMenuList.kYTopRatio, kMenuList.kTextScaleFromHeight, kMenuList.kDeselectedColor, "", loaded_width_, loaded_height_};
 	for (auto i = size_t{ 0 }; i < option_list_.size(); ++i)
 	{
 		const auto color = (i == selected_item_) ? kMenuList.kSelectedColor : kMenuList.kDeselectedColor;
 		option_label.set_text(option_list_.at(i));
 		option_label.set_y_ratio(pos_y_ratio);
 		option_label.set_color(color);
-		option_label.render(loaded_width_, loaded_height_);
+		option_label.render(parent_sprite_renderer);
 
 		pos_y_ratio += kMenuList.kRowHeightRatio;
 	}

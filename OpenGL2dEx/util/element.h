@@ -10,11 +10,17 @@ namespace util {
 	// for the classes which inherit from this.  Can set it in activate &deactivate
 class Element {
 public:
-	Element() = default;
+	Element(const bool is_active)
+		: is_active_{is_active}
+	{
+	}
+
 	virtual ~Element()
 	{
 	}
 
+	// TODO(sasiala): I'm not sure initialize needs to be a part of Element and could
+	// rather be a part of the child classes
 	void initialize(const glm::mat4 &projection)
 	{
 		initialize_impl(projection);
@@ -72,6 +78,18 @@ private:
 
 	bool is_active_;
 }; // class Element
+
+inline void conditionally_activate(Element &e, bool activate)
+{
+	if (activate)
+	{
+		e.activate();
+	}
+	else
+	{
+		e.deactivate();
+	}
+}
 
 } // namespace util
 

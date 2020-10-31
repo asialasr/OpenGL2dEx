@@ -14,7 +14,7 @@ namespace util {
 	GameViewport::GameViewport(IResetGlProperties &gl_property_resetter,
 							   Dimension width, 
 							   Dimension height)
-		: Element{}
+		: Element{false}
 		, keys_pressed_{}
 		, keys_processed_{}
 		, gl_property_resetter_{ gl_property_resetter }

@@ -6,7 +6,8 @@ namespace util {
 
 
 	MainMenu::MainMenu(Dimension load_width, Dimension load_height)
-		: loaded_width_{ load_width }
+		: Element{ false }
+		, loaded_width_{ load_width }
 		, loaded_height_{ load_height }
 		, background_texture_id_ {}
 		, sprite_shader_id_{}

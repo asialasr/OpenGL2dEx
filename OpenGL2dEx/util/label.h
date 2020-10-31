@@ -1,6 +1,7 @@
 #ifndef UTIL_LABEL_H
 #define UTIL_LABEL_H
 
+#include "element.h"
 #include "resource_mgr.h"
 
 #include <glm/glm.hpp>
@@ -8,19 +9,25 @@
 namespace util {
 
 // TODO(sasiala): shouldn't the label be an element?
-class Label {
+class Label : public Element {
 public:
-	Label(const float      x_ratio,
-		  const float      y_ratio,
-		  const float      scale_ratio,
-		  const glm::vec3 &color,
-		  const std::string &text )
-		: x_ratio_{x_ratio}
+	Label(const bool         initially_active,
+		  const float        x_ratio,
+		  const float        y_ratio,
+		  const float        scale_ratio,
+		  const glm::vec3   &color,
+		  const std::string &text,
+		  const Dimension    viewport_width,
+		  const Dimension    viewport_height)
+		: Element{initially_active}
+		, x_ratio_ { x_ratio }
 		, y_ratio_{y_ratio}
 		, scale_ratio_{scale_ratio}
 		, color_{color}
 		, font_id_{}
 		, text_{text}
+		, viewport_width_{ viewport_width }
+		, viewport_height_{ viewport_height }
 	{
 	}
 
@@ -54,14 +61,45 @@ public:
 		text_ = text;
 	}
 
-	void render(const Dimension viewport_width, const Dimension viewport_height)
+	void set_viewport_size(const Dimension viewport_width, 
+		                   const Dimension viewport_height)
 	{
-		const auto &text_renderer = ResourceManager::get_font(font_id_);
-		text_renderer.update_size(viewport_width, viewport_height);
-		text_renderer.render_text(text_, x(viewport_width), y(viewport_height), scale(viewport_height), color_);
+		viewport_width_ = viewport_width;
+		viewport_height_ = viewport_height;
 	}
 
 private:
+	// Element
+	void initialize_impl(const glm::mat4 &/*projection*/) override
+	{
+	}
+	void update_impl(Time /*dt*/) override
+	{
+	}
+	void activate_impl() override
+	{
+	}
+	void deactivate_impl() override
+	{
+	}
+	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
+	{
+		if (!is_active())
+		{
+			return;
+		}
+
+		const auto &text_renderer = ResourceManager::get_font(font_id_);
+		text_renderer.update_size(viewport_width_, viewport_height_);
+		text_renderer.render_text(text_, x(viewport_width_), y(viewport_height_), scale(viewport_height_), color_);
+	}
+	void set_key_impl(KeyId /*key_id*/, bool /*val*/) override
+	{
+	}
+	void process_input_impl(float /*dt*/) override
+	{
+	}
+
 	float x(const Dimension width) const
 	{
 		return x_ratio_ * width;
@@ -85,6 +123,9 @@ private:
 	ResourceManager::FontId font_id_;
 
 	std::string text_;
+
+	Dimension viewport_width_;
+	Dimension viewport_height_;
 };
 
 } // namespace util
