@@ -15,6 +15,7 @@
 
 namespace util
 {
+	Game::GameSpeedMultiplier Game::game_speed_multiplier_{ 1.0f };
 
 	namespace {
 		Dimension animate_dimension(Dimension current, Dimension target, int dx)
@@ -120,7 +121,7 @@ namespace util
 	{
 		if (GameState::kActive == state_)
 		{
-			game_viewport_.process_input(dt);
+			game_viewport_.process_input(game_speed_multiplier_ * dt);
 		}
 		else if (GameState::kMainMenu == state_)
 		{
@@ -132,7 +133,7 @@ namespace util
 	{
 		if (state_ == GameState::kActive)
 		{
-			game_viewport_.update(dt);
+			game_viewport_.update(game_speed_multiplier_ * dt);
 		}
 		else if (state_ == GameState::kMainMenu)
 		{

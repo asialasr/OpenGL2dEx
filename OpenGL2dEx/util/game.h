@@ -21,6 +21,7 @@ namespace util {
 	{
 	public:
 		using Dimension = unsigned int;
+		using GameSpeedMultiplier = float;
 
 		Game(IResetGlProperties &gl_property_resetter, 
 			 Dimension width, 
@@ -46,6 +47,16 @@ namespace util {
 		GameState state() const
 		{
 			return state_;
+		}
+
+		static void set_game_speed_multiplier(const GameSpeedMultiplier multiplier)
+		{
+			game_speed_multiplier_ = multiplier;
+		}
+
+		static GameSpeedMultiplier game_speed_multiplier()
+		{
+			return game_speed_multiplier_;
 		}
 
 	private:
@@ -107,6 +118,9 @@ namespace util {
 		ResourceManager::ShaderId font_shader_id_;
 
 		size_t                 current_level_;
+
+		// TODO(sasiala): I don't think this should be static, it's just temporarily convenient
+		static GameSpeedMultiplier game_speed_multiplier_;
 
 		// TODO(sasiala): is there a less cluttered way to do this?  Could move the
 		// function definitions, but they're so simple that it would almost be more 

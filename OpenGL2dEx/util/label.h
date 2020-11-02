@@ -8,24 +8,36 @@
 
 namespace util {
 
-// TODO(sasiala): shouldn't the label be an element?
 class Label : public Element {
 public:
-	Label(const bool         initially_active,
-		  const float        x_ratio,
-		  const float        y_ratio,
-		  const float        scale_ratio,
-		  const glm::vec3   &color,
-		  const std::string &text,
-		  const Dimension    viewport_width,
-		  const Dimension    viewport_height)
-		: Element{initially_active}
-		, x_ratio_ { x_ratio }
-		, y_ratio_{y_ratio}
-		, scale_ratio_{scale_ratio}
-		, color_{color}
+	Label()
+		: Element{ false }
+		, x_ratio_{ 0.0f }
+		, y_ratio_{ 0.0f }
+		, scale_ratio_{ 1.0f }
+		, color_{ 0.0f, 0.0f, 0.0f }
 		, font_id_{}
-		, text_{text}
+		, text_{ "" }
+		, viewport_width_{ 0 }
+		, viewport_height_{ 0 }
+	{
+	}
+
+	Label(const bool         active,
+		const float        x_ratio,
+		const float        y_ratio,
+		const float        scale_ratio,
+		const glm::vec3   &color,
+		const std::string &text,
+		const Dimension    viewport_width,
+		const Dimension    viewport_height)
+		: Element{ active }
+		, x_ratio_{ x_ratio }
+		, y_ratio_{ y_ratio }
+		, scale_ratio_{ scale_ratio }
+		, color_{ color }
+		, font_id_{}
+		, text_{ text }
 		, viewport_width_{ viewport_width }
 		, viewport_height_{ viewport_height }
 	{
@@ -46,7 +58,7 @@ public:
 		y_ratio_ = y_ratio;
 	}
 
-	void sey_scale_ratio(const float scale_ratio)
+	void set_scale_ratio(const float scale_ratio)
 	{
 		scale_ratio_ = scale_ratio;
 	}

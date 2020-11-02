@@ -5,6 +5,12 @@ namespace util {
 
 class AudioManager {
 public:
+	using VolumePercentage = float;
+
+	// accepts volume as a percentage, e.g. volume = 98.0f means "98.0%"
+	static void set_volume(VolumePercentage volume);
+	static VolumePercentage volume();
+
 	enum class GameState {
 		kMenu,
 		kActive,

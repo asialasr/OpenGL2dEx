@@ -5,6 +5,7 @@
 #include "level_selection_menu.h"
 #include "opening_menu.h"
 #include "resource_mgr.h"
+#include "settings_menu.h"
 
 namespace util {
 
@@ -112,7 +113,7 @@ private:
 
 	void open_settings_impl() override
 	{
-		// TODO(sasiala)
+		open_menu(settings_menu_);
 	}
 
 	void open_help_impl() override
@@ -167,6 +168,7 @@ private:
 
 	OpeningMenu opening_menu_;
 	LevelSelectionMenu level_selection_menu_;
+	SettingsMenu settings_menu_;
 
 	std::vector<Element*> menu_stack_;
 }; // class MainMenu
