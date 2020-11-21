@@ -16,18 +16,30 @@ public:
 	using Color = glm::vec3;
 	using Index = size_t;
 
+	TextToggle()
+		: Element{ active }
+		, selected_option_{}
+		, selected_color_{}
+		, deselected_color_{}
+	{
+		for (auto i = size_t{ 0 }; i < count_of(labels_); ++i)
+		{
+			labels_[i] = Label{};
+		}
+	}
+
 	TextToggle(const bool         active,
-		       const float        x_ratio,
-		       const float        y_ratio,
-			   const float        width_ratio,
-			   const float        height_ratio,
-		       const float        text_scale_ratio,
-			   const Index        selected_option,
-		       const char* const  text[kNumOptions],
-		       const Dimension    viewport_width,
-		       const Dimension    viewport_height,
-		       const Color		 &selected_color,
-		       const Color		 &deselected_color)
+		const float        x_ratio,
+		const float        y_ratio,
+		const float        width_ratio,
+		const float        height_ratio,
+		const float        text_scale_ratio,
+		const Index        selected_option,
+		const char* const  text[kNumOptions],
+		const Dimension    viewport_width,
+		const Dimension    viewport_height,
+		const Color		 &selected_color,
+		const Color		 &deselected_color)
 		: Element{ active }
 		, selected_option_{ selected_option }
 		, selected_color_{ selected_color }
@@ -39,6 +51,24 @@ public:
 			const auto color = (i == selected_option_) ? selected_color_ : deselected_color_;
 			labels_[i] = Label{ active, x, y_ratio, text_scale_ratio, color, text[i], viewport_width, viewport_height };
 		}
+	}
+
+	TextToggle(const TextToggle<kNumOptions> &other)
+		: Element{ other }
+		, selected_option_{ other.selected_option_ }
+		, selected_color_{ other.selected_color_ }
+		, deselected_color_{ other.deselected_color_ }
+	{
+		copy(other.labels_, labels_);
+	}
+
+	TextToggle<kNumOptions> &operator=(const TextToggle<kNumOptions> &other)
+	{
+		Element::operator=(other);
+		selected_option_ = other.selected_option_;
+		selected_color_ = other.selected_color_;
+		deselected_color_ = other.deselected_color_;
+		copy(other.labels_, labels_);
 	}
 
 	void selected_index() const

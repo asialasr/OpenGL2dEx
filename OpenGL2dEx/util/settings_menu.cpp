@@ -2,6 +2,16 @@
 
 namespace util {
 
+namespace {
+	Label make_label(const char     *str, 
+					 size_t          button_index, 
+					 const Dimension viewport_width, 
+					 const Dimension viewport_height)
+	{
+		return{ true, 0.05f, (0.25f + button_index * (.65 / 4)), 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, str, viewport_width, viewport_height };
+	}
+} // namespace
+
 	SettingsMenu::SettingsMenu(Dimension load_width, Dimension load_height)
 		: Element{ false }
 		, menu_{ load_width, load_height }
@@ -25,7 +35,17 @@ namespace util {
 
 	void SettingsMenu::activate_impl()
 	{
-		menu_.update_info("", "SETTINGS TEST", true, { "A", "B", "C" }, 0);
+		const auto loaded_width = loaded_width_;
+		const auto loaded_height = loaded_height_;
+		auto create_label = [loaded_width, loaded_height](const char *str, size_t index) {
+			return MenuObject{ make_label(str, index, loaded_width, loaded_height) };
+		};
+		auto make_list = [create_label, loaded_width, loaded_height]() -> MenuType::OptionList
+		{
+			static MenuType::OptionList::ObjectArray arr{ create_label("A", 0), create_label("B", 1), create_label("C", 2) };
+			return{ arr };
+		};
+		menu_.update_info("", "SETTINGS TEST", true, make_list(), 0);
 		menu_.activate();
 	}
 

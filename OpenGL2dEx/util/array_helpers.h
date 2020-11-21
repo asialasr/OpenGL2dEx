@@ -19,6 +19,15 @@ void fill(T (&arr)[COUNT], const T &value)
 	}
 }
 
+template <typename T, size_t COUNT>
+void copy(const T(&origin)[COUNT], T(&dest)[COUNT])
+{
+	for (auto i = size_t{ 0 }; i < COUNT; ++i)
+	{
+		dest[i] = origin[i];
+	}
+}
+
 // TODO(sasiala): on one hand I'd like a more general implementation in terms of
 // the number of inputs, but on the other you can only have so many inputs to a 
 // function before it gets a little ridiculous, so may be OK to leave like this

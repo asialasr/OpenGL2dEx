@@ -3,11 +3,39 @@
 
 #include "element.h"
 #include "menu.h"
+#include "types.h"
 
 namespace util {
 
 class SettingsMenu : public Element
 {
+private:
+	using ToggleType = ElementPair<Label, ElementPair<Label, Label>>;
+	using LabelType = Label;
+	class MenuObject : public ElementUnion<LabelType, ToggleType>
+	{
+	private:
+		using ParentType = ElementUnion<LabelType, ToggleType>;
+	public:
+		MenuObject(LabelType& label)
+			: ParentType{label}
+		{
+		}
+
+		MenuObject(ToggleType& toggle)
+			: ParentType{toggle}
+		{
+		}
+
+		template<typename T>
+		T& get()
+		{
+			return ParentType::get<T>();
+		}
+	};
+	static constexpr size_t kMenuObjectCount{ 3 };
+	using MenuType = Menu<MenuObject, kMenuObjectCount>;
+
 public:
 	SettingsMenu(Dimension load_width, Dimension load_height);
 
@@ -22,7 +50,9 @@ private:
 	// TODO(sasiala): improve event handling
 	void process_input_impl(float dt) override;
 
-	Menu menu_;
+	MenuType menu_;
+	Dimension loaded_width_;
+	Dimension loaded_height_;
 };
 
 }

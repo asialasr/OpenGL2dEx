@@ -6,7 +6,6 @@ namespace util {
 		: Element{ false }
 		, menu_options_ {load_width, load_height}
 		, handler_{ nullptr }
-		, levels_{}
 		, current_level_{}
 	{
 	}
@@ -72,13 +71,13 @@ namespace util {
 		menu_options_.process_input(dt);
 	}
 
-	void LevelSelectionMenu::handle_menu_option_highlight_impl(Menu::OptionIndex index)
+	void LevelSelectionMenu::handle_menu_option_highlight_impl(const LevelMenu::OptionIndex index)
 	{
 		current_level_ = static_cast<LevelIndex>(index);
 		handler_->change_level(current_level_);
 	}
 
-	void LevelSelectionMenu::handle_menu_option_acceptance_impl(Menu::OptionIndex /*index*/)
+	void LevelSelectionMenu::handle_menu_option_acceptance_impl(const LevelMenu::OptionIndex /*index*/)
 	{
 		handler_->start_game();
 	}

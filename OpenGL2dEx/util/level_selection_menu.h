@@ -6,11 +6,34 @@
 
 namespace util {
 
+namespace detail {
+	class LevelSelectionMenuObject : public ElementUnion<Label>
+	{
+	private:
+		using ParentType = ElementUnion<Label>;
+	public:
+		LevelSelectionMenuObject(Label& label)
+			: ParentType{ label }
+		{
+		}
+
+		template<typename T>
+		T& get()
+		{
+			return ParentType::get<T>();
+		}
+	};
+
+	constexpr size_t kMaxLevelSelectionItems{ 7 };
+}
+
 class LevelSelectionMenu : public Element
-						 , public Menu::MenuButtonHandler {
+						 , public Menu<detail::LevelSelectionMenuObject, detail::kMaxLevelSelectionItems>::MenuButtonHandler{
 public:
-	using LevelIndex = Menu::OptionIndex;
-	using LevelList = Menu::OptionList;
+	static constexpr size_t kMaxItems = detail::kMaxLevelSelectionItems;
+	using LevelMenu = Menu<detail::LevelSelectionMenuObject, kMaxItems>;
+	using LevelIndex = LevelMenu::OptionIndex;
+	using LevelList = LevelMenu::OptionList;
 	class Handler {
 	public:
 		void change_level(const LevelIndex level_index)
@@ -59,7 +82,7 @@ public:
 
 	void update_levels(const LevelList &levels, const LevelIndex current_level)
 	{
-		levels_ = levels;
+		menu_options_.update_info("", kSubtitle, true, levels, current_level);
 		current_level_ = current_level;
 	}
 
@@ -75,15 +98,14 @@ private:
 	void process_input_impl(float dt) override;
 
 	// Menu::MenuButtonHandler
-	void handle_menu_option_highlight_impl(Menu::OptionIndex index) override;
-	void handle_menu_option_acceptance_impl(Menu::OptionIndex index) override;
+	void handle_menu_option_highlight_impl(LevelMenu::OptionIndex index) override;
+	void handle_menu_option_acceptance_impl(LevelMenu::OptionIndex index) override;
 	void handle_back_button_impl() override;
 
-	Menu menu_options_;
+	LevelMenu menu_options_;
 
 	Handler *handler_;
 
-	LevelList levels_;
 	LevelIndex current_level_;
 
 	static constexpr const char *kSubtitle = "LEVEL SELECTION";

@@ -23,6 +23,7 @@
     <ClInclude Include="util\ball_object.h" />
     <ClInclude Include="util\array_helpers.h" />
     <ClInclude Include="util\element.h" />
+    <ClInclude Include="util\element_pair.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
     <ClInclude Include="util\game_viewport.h" />
@@ -43,11 +44,14 @@
     <ClInclude Include="util\settings_menu.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
+    <ClInclude Include="util\template_helpers.h" />
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />
     <ClInclude Include="util\text_toggle.h" />
+    <ClInclude Include="util\element_list.h" />
     <ClInclude Include="util\types.h" />
     <ClInclude Include="util\label.h" />
+    <ClInclude Include="util\union.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
@@ -61,7 +65,6 @@
     <ClCompile Include="util\game_viewport.cpp" />
     <ClCompile Include="util\level_selection_menu.cpp" />
     <ClCompile Include="util\main_menu.cpp" />
-    <ClCompile Include="util\menu.cpp" />
     <ClCompile Include="util\opening_menu.cpp" />
     <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\post_processor.cpp" />
