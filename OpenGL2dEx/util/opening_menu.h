@@ -6,9 +6,47 @@
 
 namespace util {
 
+	// TODO(sasiala): I don't like this detail namespace used in these headers, b/c
+	// it feels like there's a better way and it still requires that the items have
+	// names specific to the header (e.g. "OpeningMenuObject" instead of "MenuObject")
+	namespace detail {
+		class OpeningMenuObject : public ElementUnion<Label>
+		{
+		private:
+			using ParentType = ElementUnion<Label>;
+		public:
+			OpeningMenuObject()
+				: ParentType{}
+			{
+			}
+
+			OpeningMenuObject(Label& label)
+				: ParentType{ label }
+			{
+			}
+
+			template<typename T>
+			T& get()
+			{
+				return ParentType::get<T>();
+			}
+		};
+
+		constexpr size_t kMaxOpeningMenuItems{ 3 };
+	}
+
 class OpeningMenu : public Element
-				  , public Menu::MenuButtonHandler {
+				  , public Menu<detail::OpeningMenuObject, detail::kMaxOpeningMenuItems>::MenuButtonHandler {
 public:
+	static constexpr size_t kMaxItems = detail::kMaxOpeningMenuItems;
+	using MenuType = Menu<detail::OpeningMenuObject, kMaxItems>;
+	using MenuIndex = MenuType::OptionIndex;
+	using MenuList = MenuType::OptionList;
+	using OptionList = const char *[kMaxItems];
+
+	static const glm::vec3 kSelectedTextColor;
+	static const glm::vec3 kDeselectedTextColor;
+
 	class Handler {
 	public:
 		void open_level_selection()
@@ -50,8 +88,8 @@ private:
 	void process_input_impl(float dt) override;
 
 	// Menu::MenuButtonHandler
-	void handle_menu_option_highlight_impl(Menu::OptionIndex index) override;
-	void handle_menu_option_acceptance_impl(Menu::OptionIndex index) override;
+	void handle_menu_option_highlight_impl(MenuIndex index) override;
+	void handle_menu_option_acceptance_impl(MenuIndex index) override;
 	void handle_back_button_impl() override;
 
 	enum class Index {
@@ -61,19 +99,19 @@ private:
 		kNumIndices,
 		kUnknown,
 	};
-	Index convert_index(Menu::OptionIndex index)
+	Index convert_index(const MenuIndex index)
 	{
-		ASSERT(index < static_cast<Menu::OptionIndex>(Index::kNumIndices), "Index out of bounds");
+		ASSERT(index < static_cast<MenuIndex>(Index::kNumIndices), "Index out of bounds");
 		return static_cast<Index>(index);
 	}
-	const Menu::OptionList kOptions{
+	static constexpr OptionList kOptions{
 		"Level Selection",
 		"Settings",
 		"Help"
 	};
-
-	Menu menu_options_;
-
+	MenuType menu_;
+	Dimension load_width_;
+	Dimension load_height_;
 	Handler *handler_;
 }; // class OpeningMenu
 

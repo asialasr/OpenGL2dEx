@@ -8,7 +8,7 @@ namespace {
 					 const Dimension viewport_width, 
 					 const Dimension viewport_height)
 	{
-		return{ true, 0.05f, (0.25f + button_index * (.65 / 4)), 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, str, viewport_width, viewport_height };
+		return{ true, 0.05f, static_cast<float>(0.25f + button_index * (.65 / 4)), 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, str, viewport_width, viewport_height };
 	}
 } // namespace
 

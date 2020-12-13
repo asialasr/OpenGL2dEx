@@ -134,6 +134,7 @@ private:
 
 	ResourceManager::FontId font_id_;
 
+	TODO need to implement trivially copyable string class
 	std::string text_;
 
 	Dimension viewport_width_;

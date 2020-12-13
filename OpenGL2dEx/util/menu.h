@@ -31,6 +31,7 @@ private:
 		kNumIds,
 		kUnknown
 	};
+	// TODO(sasiala): consider moving these common label definitions (title, subtitle, etc.) to a common header
 	static util::Label make_label(const MenuLabelId label_id,
 		                   const Dimension   viewport_width,
 		                   const Dimension   viewport_height)
@@ -99,6 +100,16 @@ public:
 	{
 	}
 
+	// TODO(sasiala): need to allow for rendering variable numbers of the labels in the 
+	// array; this will probably need to be changed in the element list too
+	
+	// TODO(sasiala): I don't like providing outside access to the full list,
+	// but it seems to make the most sense for now.  Reconsider.
+	OptionList& option_list()
+	{
+		return option_list_;
+	}
+
 	void set_menu_handler(MenuButtonHandler &handler)
 	{
 		menu_button_handler_ = &handler;
@@ -119,10 +130,6 @@ public:
 	}
 
 private:
-	auto get_all_element_members()
-	{
-		return Element*[]{&kTitleText, &subtitle_label_, &kBackText, &option_list_};
-	}
 
 	// Element
 	void initialize_impl(const glm::mat4 &projection) override
@@ -148,12 +155,12 @@ private:
 	void update_impl(Time dt) override
 	{
 		auto update_lambda = [](Element* e, Time dt) { e->update(dt); };
-		apply(get_all_element_members(), update_lambda, dt);
+		apply(all_element_members, update_lambda, dt);
 	}
 	void activate_impl() override
 	{
 		auto activate_lambda = [](Element* e) { e->activate(); };
-		apply(get_all_element_members(), activate_lambda);
+		apply(all_element_members, activate_lambda);
 
 		fill(keys_pressed_, false);
 		fill(keys_processed_, false);
@@ -161,7 +168,7 @@ private:
 	void deactivate_impl() override
 	{
 		auto deactivate_lambda = [](Element* e) { e->deactivate(); };
-		apply(get_all_element_members(), deactivate_lambda);
+		apply(all_element_members, deactivate_lambda);
 	}
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
 	{
@@ -169,7 +176,7 @@ private:
 							 {
 							    e->render(parent_sprite_renderer);
 							 };
-		apply(get_all_element_members(), render_lambda);
+		apply(all_element_members, render_lambda);
 	}
 
 	enum class ButtonsHandled {
@@ -330,6 +337,8 @@ private:
 	std::string title_;
 	OptionIndex selected_item_;
 	OptionList  option_list_;
+
+	Element* const all_element_members[4] = {&kTitleText, &subtitle_label_, &kBackText, &option_list_};
 
 	ResourceManager::ShaderId font_shader_id_;
 

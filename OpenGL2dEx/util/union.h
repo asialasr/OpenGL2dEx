@@ -22,7 +22,7 @@ namespace util {
 		};
 
 		template<typename ...Types>
-		constexpr bool are_types_valid()
+		constexpr bool are_types_valid_for_union()
 		{
 			return and<are_trivially_copyable<Types...>, 
 					   are_non_reference_types<Types...>, 
@@ -65,18 +65,19 @@ namespace util {
 	template<typename ...Types>
 	class Union {
 	private:
-		std::enable_if_t<impl::are_types_valid<Types...>(), bool> kEnable;
 		static constexpr size_t kDataSize = impl::max_size<Types...>::value;
 		using StorageType = unsigned char;
 		static constexpr size_t kArraySize = kDataSize / sizeof(StorageType);
 
 	public:
+		template<typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>()>>
 		Union()
 			: data_{}
 		{
 		}
 
 		template<typename T,
+			     typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>()>,
 				 typename = std::enable_if_t<impl::enable_set_v<T, Types...>>>
 		Union(const T &data)
 			: data_{}

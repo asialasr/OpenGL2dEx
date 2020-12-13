@@ -16,11 +16,21 @@ namespace util {
 template<typename ...Types>
 class ElementUnion : public Element {
 public:
+	template<typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
+			 typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>>>
+	ElementUnion()
+		: Element{ false }
+		, element_{}
+		, element_ptr_{ nullptr }
+	{
+	}
+
 	template<typename ElementType,
-			 typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>>
+		     typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
+		     typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>>>
 	ElementUnion(ElementType &element)
 		: Element{ false }
-		, element_{element}
+		, element_{ element }
 		, element_ptr_{ nullptr }
 	{
 		element_ptr_ = &element_.get<ElementType&>();
@@ -35,30 +45,44 @@ public:
 private:
 	void initialize_impl(const glm::mat4 &projection) override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->initialize(projection);
 	}
 	void update_impl(Time dt) override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->update(dt);
 	}
 	void activate_impl() override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->activate();
 	}
 	void deactivate_impl() override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->deactivate();
 	}
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->render(parent_sprite_renderer);
 	}
 	void set_key_impl(KeyId key_id, bool val) override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->set_key(key_id, val);
 	}
 	void process_input_impl(float dt) override
 	{
+		ASSERT(element_ptr_, "Element pointer uninitialized");
+
 		element_ptr_->process_input(dt);
 	}
 
@@ -93,6 +117,17 @@ public:
 		return list_[index];
 	}
 
+	// TODO(sasiala): should be passed a size to know which elements
+	// should be rendered
+	Index size() const
+	{
+		return kMaxObjects;
+	}
+
+	Index max_size() const
+	{
+		return kMaxObjects;
+	}
 private:
 	// Element
 	void initialize_impl(const glm::mat4 &projection) override

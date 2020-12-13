@@ -17,6 +17,11 @@ private:
 	private:
 		using ParentType = ElementUnion<LabelType, ToggleType>;
 	public:
+		MenuObject()
+			: ParentType{}
+		{
+		}
+
 		MenuObject(LabelType& label)
 			: ParentType{label}
 		{

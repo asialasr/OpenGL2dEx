@@ -64,7 +64,7 @@ namespace util {
 		void game_ended_impl(EndingReason reason) override;
 
 		// Menu::MenuButtonHandler
-		void change_level_impl(LevelSelectionMenu::LevelIndex index) override;
+		void change_level_impl(LevelSelectionMenu::MenuIndex index) override;
 		void start_game_impl() override;
 		void show_level_preview_impl() override;
 		void hide_level_preview_impl() override;
@@ -97,7 +97,7 @@ namespace util {
 			"levels/three.lvl",
 			"levels/four.lvl"
 		};
-		const std::vector<std::string> kLevelNames{
+		const char *kLevelNames[4] = {
 			"One",
 			"Two",
 			"Three",

@@ -183,7 +183,7 @@ namespace util
 		show_small_game_viewport(true);
 	}
 
-	void Game::change_level_impl(const LevelSelectionMenu::LevelIndex index)
+	void Game::change_level_impl(const LevelSelectionMenu::MenuIndex index)
 	{
 		ASSERT(index >= 0 && index < kMaxLevels, "Unexpected menu index");
 		game_viewport_.load_level(kLevelPaths[index]);
