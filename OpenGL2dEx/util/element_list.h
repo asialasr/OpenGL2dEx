@@ -17,7 +17,7 @@ template<typename ...Types>
 class ElementUnion : public Element {
 public:
 	template<typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
-			 typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>>>
+			 typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>()>>
 	ElementUnion()
 		: Element{ false }
 		, element_{}
@@ -26,14 +26,23 @@ public:
 	}
 
 	template<typename ElementType,
-		     typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
-		     typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>>>
+		typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
+		typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>()>>
 	ElementUnion(ElementType &element)
 		: Element{ false }
 		, element_{ element }
 		, element_ptr_{ nullptr }
 	{
-		element_ptr_ = &element_.get<ElementType&>();
+		element_ptr_ = element_.get_data_ptr();
+	}
+
+	ElementUnion(const ElementUnion<Types...> &other)
+		: Element{other}
+		, element_{ other.element_ }
+		, element_ptr_{ nullptr }
+	{
+		// TODO(sasiala): this is a hacky way to do this
+		element_ptr_ = element_.get_data_ptr();
 	}
 
 	template<typename ElementType>
@@ -86,7 +95,7 @@ private:
 		element_ptr_->process_input(dt);
 	}
 
-	Union<Types...> element_;
+	UnionWithDataPtr<Types..., Element> element_;
 	Element *element_ptr_;
 }; // class ElementUnion
 
@@ -102,26 +111,36 @@ public:
 	ElementList()
 		: Element{ false }
 		, list_{}
+		, size_{ 0 }
 	{
 	}
 
 	ElementList(ObjectArray &list)
 		: Element{ false }
+		, list_{}
+		, size_{kMaxObjects}
 	{
 		copy(list, list_);
 	}
 
-	ListObject& get(const Index index)
+	ListObject& at(const Index index)
 	{
 		ASSERT(index < kMaxObjects, "Index out of bounds.");
 		return list_[index];
+	}
+
+	void push_back(const ListObject &obj)
+	{
+		ASSERT(size_ < kMaxObjects, "No room in list");
+
+		list_[size_++] = obj;
 	}
 
 	// TODO(sasiala): should be passed a size to know which elements
 	// should be rendered
 	Index size() const
 	{
-		return kMaxObjects;
+		return size_;
 	}
 
 	Index max_size() const
@@ -135,35 +154,35 @@ private:
 		auto lambda = [](Element &e, const glm::mat4 &projection) {
 			e.initialize(projection);
 		};
-		apply(list_, lambda, projection);
+		apply_with_count(list_, size_, lambda, projection);
 	}
 	void update_impl(const Time dt) override
 	{
 		auto lambda = [](Element &e, const Time dt) {
 			e.update(dt);
 		};
-		apply(list_, lambda, dt);
+		apply_with_count(list_, size_, lambda, dt);
 	}
 	void activate_impl() override
 	{
 		auto lambda = [](Element &e) {
 			e.activate();
 		};
-		apply(list_, lambda);
+		apply_with_count(list_, size_, lambda);
 	}
 	void deactivate_impl() override
 	{
 		auto lambda = [](Element &e) {
 			e.deactivate();
 		};
-		apply(list_, lambda);
+		apply_with_count(list_, size_, lambda);
 	}
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
 	{
 		auto lambda = [](Element &e, const Optional<SpriteRenderer*> &parent_sprite_renderer) {
 			e.render(parent_sprite_renderer);
 		};
-		apply(list_, lambda, parent_sprite_renderer);
+		apply_with_count(list_, size_, lambda, parent_sprite_renderer);
 	}
 	void set_key_impl(KeyId /*key_id*/, bool /*val*/) override
 	{
@@ -173,6 +192,7 @@ private:
 	}
 
 	ObjectArray list_;
+	Index size_;
 }; // class ElementList
 
 } // namespace util

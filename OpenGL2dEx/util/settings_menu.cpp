@@ -3,7 +3,7 @@
 namespace util {
 
 namespace {
-	Label make_label(const char     *str, 
+	SettingsMenu::LabelType make_label(const char     *str, 
 					 size_t          button_index, 
 					 const Dimension viewport_width, 
 					 const Dimension viewport_height)

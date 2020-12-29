@@ -16,7 +16,7 @@ namespace {
 		constexpr auto kTextScaleFromHeight{ 1.0f / 600.0f };
 
 		const auto text_color = OpeningMenu::kDeselectedTextColor;
-		return{ Label{ true, kXRatio, kYTopRatio + (index * kRowHeightRatio), kTextScaleFromHeight, text_color, level_name, viewport_width, viewport_height } };
+		return{ OpeningMenu::LabelType{ true, kXRatio, kYTopRatio + (index * kRowHeightRatio), kTextScaleFromHeight, text_color, level_name, viewport_width, viewport_height } };
 	}
 
 	std::pair<OpeningMenu::MenuIndex, OpeningMenu::MenuList> menu_list(const OpeningMenu::OptionList &option_list, const Dimension viewport_width, const Dimension viewport_height)
@@ -30,7 +30,7 @@ namespace {
 				break;
 
 			++menu_list_pair.first;
-			menu_list_pair.second.get(i) = menu_list_object(str, i, viewport_width, viewport_height);
+			menu_list_pair.second.push_back(menu_list_object(str, i, viewport_width, viewport_height));
 		}
 
 		return menu_list_pair;

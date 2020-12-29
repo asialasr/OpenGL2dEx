@@ -17,7 +17,7 @@ namespace {
 		constexpr auto kTextScaleFromHeight{ 1.0f / 600.0f };
 
 		const auto text_color = LevelSelectionMenu::kDeselectedTextColor;
-		return {Label{ true, kXRatio, kYTopRatio + (index * kRowHeightRatio), kTextScaleFromHeight, text_color, level_name, viewport_width, viewport_height }};
+		return {LevelSelectionMenu::LabelType{ true, kXRatio, kYTopRatio + (index * kRowHeightRatio), kTextScaleFromHeight, text_color, level_name, viewport_width, viewport_height }};
 	}
 } // namespace
 
@@ -119,7 +119,7 @@ namespace {
 				break;
 
 			++menu_list_pair.first;
-			menu_list_pair.second.get(i) = menu_list_object(level_list[i], i, load_width, load_height);
+			menu_list_pair.second.push_back(menu_list_object(level_list[i], i, load_width, load_height));
 		}
 
 		return menu_list_pair;

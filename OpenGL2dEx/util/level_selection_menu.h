@@ -7,17 +7,19 @@
 namespace util {
 
 namespace detail {
-	class LevelSelectionMenuObject : public ElementUnion<Label>
+	constexpr size_t kLevelSelectionMaxStringLength{ 32 };
+	constexpr size_t kMaxLevelSelectionItems{ 4 };
+	class LevelSelectionMenuObject : public ElementUnion<Label<kLevelSelectionMaxStringLength>>
 	{
 	private:
-		using ParentType = ElementUnion<Label>;
+		using ParentType = ElementUnion<Label<kLevelSelectionMaxStringLength>>;
 	public:
 		LevelSelectionMenuObject()
 			: ParentType{}
 		{
 		}
 
-		LevelSelectionMenuObject(Label& label)
+		LevelSelectionMenuObject(Label<kLevelSelectionMaxStringLength>& label)
 			: ParentType{ label }
 		{
 		}
@@ -28,13 +30,15 @@ namespace detail {
 			return ParentType::get<T>();
 		}
 	};
-
-	constexpr size_t kMaxLevelSelectionItems{ 4 };
 }
 
 class LevelSelectionMenu : public Element
 						 , public Menu<detail::LevelSelectionMenuObject, detail::kMaxLevelSelectionItems>::MenuButtonHandler{
 public:
+	static constexpr auto kMaxStringLength = detail::kLevelSelectionMaxStringLength;
+	using StringType = string<kMaxStringLength>;
+	using LabelType = Label<StringType::max_size()>;
+
 	static constexpr size_t kMaxItems = detail::kMaxLevelSelectionItems;
 	using MenuType = Menu<detail::LevelSelectionMenuObject, kMaxItems>;
 	using MenuIndex = MenuType::OptionIndex;

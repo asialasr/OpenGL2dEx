@@ -44,6 +44,7 @@
     <ClInclude Include="util\settings_menu.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
+    <ClInclude Include="util\string.h" />
     <ClInclude Include="util\template_helpers.h" />
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />

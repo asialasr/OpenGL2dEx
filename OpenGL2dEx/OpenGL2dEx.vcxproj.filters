@@ -114,6 +114,9 @@
     <ClInclude Include="util\element_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">

@@ -24,6 +24,9 @@ namespace util {
 template <typename ELEMENT_TYPE, size_t MAX_OBJECTS>
 class Menu : public Element {
 private:
+	using StringType = string<32>;
+	using LabelType = Label<StringType::max_size()>;
+
 	enum class MenuLabelId {
 		kTitle,
 		kSubtitle,
@@ -32,7 +35,7 @@ private:
 		kUnknown
 	};
 	// TODO(sasiala): consider moving these common label definitions (title, subtitle, etc.) to a common header
-	static util::Label make_label(const MenuLabelId label_id,
+	static LabelType make_label(const MenuLabelId label_id,
 		                   const Dimension   viewport_width,
 		                   const Dimension   viewport_height)
 	{
@@ -84,12 +87,11 @@ public:
 
 	Menu(Dimension load_width, Dimension load_height)
 		: Element{ false }
-		, title_{ "" }
 		, selected_item_{}
 		, option_list_{}
 		, loaded_width_{ load_width }
 		, loaded_height_{ load_height }
-		, kTitleText{ make_label(MenuLabelId::kTitle, load_width, load_height) }
+		, title_{ make_label(MenuLabelId::kTitle, load_width, load_height) }
 		, subtitle_label_{ make_label(MenuLabelId::kSubtitle, load_width, load_height) }
 		, kBackText{ make_label(MenuLabelId::kBack, load_width, load_height) }
 		, font_shader_id_{}
@@ -115,14 +117,13 @@ public:
 		menu_button_handler_ = &handler;
 	}
 
-	void update_info(const std::string &title,
-		             const std::string &subtitle,
+	void update_info(const StringType  &title,
+		             const StringType  &subtitle,
 		             bool               show_back_label,
 		             const OptionList  &options,
 		             OptionIndex        selected_item)
 	{
-		// TODO(sasiala): shouldn't title just be set as label's text?
-		title_ = title;
+		title_.set_text(title);
 		subtitle_label_.set_text(subtitle);
 		conditionally_activate(kBackText, show_back_label);
 		selected_item_ = selected_item;
@@ -140,8 +141,8 @@ private:
 		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, loaded_width_, loaded_height_);
 
 		// label fonts
-		kTitleText.set_font(default_font_id_);
-		kTitleText.initialize(projection);
+		title_.set_font(default_font_id_);
+		title_.initialize(projection);
 
 		subtitle_label_.set_font(default_font_id_);
 		subtitle_label_.initialize(projection);
@@ -176,7 +177,7 @@ private:
 							 {
 							    e->render(parent_sprite_renderer);
 							 };
-		apply(all_element_members, render_lambda);
+		apply(all_element_members, render_lambda, parent_sprite_renderer);
 	}
 
 	enum class ButtonsHandled {
@@ -317,9 +318,9 @@ private:
 	const Dimension loaded_width_;
 	const Dimension loaded_height_;
 
-	util::Label kTitleText;
-	util::Label subtitle_label_;
-	util::Label kBackText;
+	LabelType title_;
+	LabelType subtitle_label_;
+	LabelType kBackText;
 
 	const struct {
 		// TODO(sasiala): allow adjusting of ratios based on instance
@@ -334,11 +335,10 @@ private:
 		const glm::vec3 kDeselectedColor{ 0.0f, 1.0f, 0.0f };
 	} kMenuList{};
 
-	std::string title_;
 	OptionIndex selected_item_;
 	OptionList  option_list_;
 
-	Element* const all_element_members[4] = {&kTitleText, &subtitle_label_, &kBackText, &option_list_};
+	Element* const all_element_members[4] = {&title_, &subtitle_label_, &kBackText, &option_list_};
 
 	ResourceManager::ShaderId font_shader_id_;
 

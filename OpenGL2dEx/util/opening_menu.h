@@ -10,17 +10,18 @@ namespace util {
 	// it feels like there's a better way and it still requires that the items have
 	// names specific to the header (e.g. "OpeningMenuObject" instead of "MenuObject")
 	namespace detail {
-		class OpeningMenuObject : public ElementUnion<Label>
+		constexpr size_t kOpeningMenuStringLength{ 32 };
+		class OpeningMenuObject : public ElementUnion<Label<kOpeningMenuStringLength>>
 		{
 		private:
-			using ParentType = ElementUnion<Label>;
+			using ParentType = ElementUnion<Label<kOpeningMenuStringLength>>;
 		public:
 			OpeningMenuObject()
 				: ParentType{}
 			{
 			}
 
-			OpeningMenuObject(Label& label)
+			OpeningMenuObject(Label<kOpeningMenuStringLength>& label)
 				: ParentType{ label }
 			{
 			}
@@ -38,6 +39,10 @@ namespace util {
 class OpeningMenu : public Element
 				  , public Menu<detail::OpeningMenuObject, detail::kMaxOpeningMenuItems>::MenuButtonHandler {
 public:
+	static constexpr size_t kMaxStringLength = detail::kOpeningMenuStringLength;
+	using StringType = string<kMaxStringLength>;
+	using LabelType = Label<StringType::max_size()>;
+
 	static constexpr size_t kMaxItems = detail::kMaxOpeningMenuItems;
 	using MenuType = Menu<detail::OpeningMenuObject, kMaxItems>;
 	using MenuIndex = MenuType::OptionIndex;

@@ -3,13 +3,17 @@
 
 #include "element.h"
 #include "resource_mgr.h"
+#include "string.h"
 
 #include <glm/glm.hpp>
 
 namespace util {
 
+template<size_t MAX_STRING_LENGTH>
 class Label : public Element {
 public:
+	static constexpr auto kMaxStringLength = MAX_STRING_LENGTH;
+	using StringType = string<kMaxStringLength>;
 	Label()
 		: Element{ false }
 		, x_ratio_{ 0.0f }
@@ -28,7 +32,7 @@ public:
 		const float        y_ratio,
 		const float        scale_ratio,
 		const glm::vec3   &color,
-		const std::string &text,
+		const StringType  &text,
 		const Dimension    viewport_width,
 		const Dimension    viewport_height)
 		: Element{ active }
@@ -68,7 +72,7 @@ public:
 		color_ = color;
 	}
 
-	void set_text(const std::string &text)
+	void set_text(const StringType &text)
 	{
 		text_ = text;
 	}
@@ -103,7 +107,7 @@ private:
 
 		const auto &text_renderer = ResourceManager::get_font(font_id_);
 		text_renderer.update_size(viewport_width_, viewport_height_);
-		text_renderer.render_text(text_, x(viewport_width_), y(viewport_height_), scale(viewport_height_), color_);
+		text_renderer.render_text(text_.c_str(), x(viewport_width_), y(viewport_height_), scale(viewport_height_), color_);
 	}
 	void set_key_impl(KeyId /*key_id*/, bool /*val*/) override
 	{
@@ -134,8 +138,7 @@ private:
 
 	ResourceManager::FontId font_id_;
 
-	TODO need to implement trivially copyable string class
-	std::string text_;
+	StringType text_;
 
 	Dimension viewport_width_;
 	Dimension viewport_height_;

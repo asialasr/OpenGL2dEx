@@ -9,9 +9,11 @@ namespace util {
 
 class SettingsMenu : public Element
 {
+public:
+	using LabelType = Label<32>;
+
 private:
-	using ToggleType = ElementPair<Label, ElementPair<Label, Label>>;
-	using LabelType = Label;
+	using ToggleType = ElementPair<LabelType, ElementPair<LabelType, LabelType>>;
 	class MenuObject : public ElementUnion<LabelType, ToggleType>
 	{
 	private:
