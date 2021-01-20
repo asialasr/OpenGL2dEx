@@ -24,12 +24,12 @@ private:
 		{
 		}
 
-		MenuObject(LabelType& label)
+		MenuObject(const LabelType& label)
 			: ParentType{label}
 		{
 		}
 
-		MenuObject(ToggleType& toggle)
+		MenuObject(const ToggleType& toggle)
 			: ParentType{toggle}
 		{
 		}

@@ -28,7 +28,7 @@ public:
 	template<typename ElementType,
 		typename = std::enable_if_t<and<std::is_base_of<Element, Types>...>::value>,
 		typename = std::enable_if_t<impl::are_types_valid_for_union<Types...>()>>
-	ElementUnion(ElementType &element)
+	ElementUnion(const ElementType &element)
 		: Element{ false }
 		, element_{ element }
 		, element_ptr_{ nullptr }
@@ -95,7 +95,7 @@ private:
 		element_ptr_->process_input(dt);
 	}
 
-	UnionWithDataPtr<Types..., Element> element_;
+	UnionWithDataPtr<Element, Types...> element_;
 	Element *element_ptr_;
 }; // class ElementUnion
 

@@ -227,15 +227,21 @@ namespace util {
 
 	private:
 		struct DataPointerProducer {
-			virtual PointerType *make_data_pointer(const StorageArray data) = 0;
+			virtual PointerType *make_data_pointer(StorageArray &data) const = 0;
+			virtual const PointerType *make_const_data_pointer(const StorageArray &data) const = 0;
 		};
 
 		template<typename T>
 		class DataPointerProducerImpl : public DataPointerProducer {
 		public:
-			PointerType *make_data_pointer(const StorageArray data) override
+			PointerType *make_data_pointer(StorageArray &data) const override
 			{
-				return &reinterpret_cast<T&>(*data);
+				return &static_cast<PointerType&>(reinterpret_cast<T&>(*data));
+			}
+
+			const PointerType *make_const_data_pointer(const StorageArray &data) const override
+			{
+				return &static_cast<const PointerType&>(reinterpret_cast<const T&>(*data));
 			}
 		};
 
@@ -283,10 +289,26 @@ namespace util {
 
 		PointerType *get_data_ptr()
 		{
-			ASSERT(data_pointer_producer_, "No data pointer producer defined");
-			ASSERT(data_valid(), "Invalid data");
+			if (!data_valid())
+			{
+				return nullptr;
+			}
 
+
+			ASSERT(data_pointer_producer_, "No data pointer producer defined");
 			return data_pointer_producer_->make_data_pointer(data());
+		}
+
+		const PointerType *get_const_data_ptr() const
+		{
+			if (!data_valid())
+			{
+				return nullptr;
+			}
+
+
+			ASSERT(data_pointer_producer_, "No data pointer producer defined");
+			return data_pointer_producer_->make_const_data_pointer(data());
 		}
 
 	private:
