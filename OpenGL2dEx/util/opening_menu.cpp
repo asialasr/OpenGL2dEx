@@ -50,6 +50,7 @@ namespace {
 	{
 		menu_.initialize(projection);
 		menu_.set_menu_handler(*this);
+		menu_.update_info("MAIN MENU", "", false, menu_list(kOptions, load_width_, load_height_).second, 0);
 	}
 
 	void OpeningMenu::update_impl(Time dt)
@@ -59,7 +60,6 @@ namespace {
 
 	void OpeningMenu::activate_impl()
 	{
-		menu_.update_info("", "", false, menu_list(kOptions, load_width_, load_height_).second, 0);
 		menu_.activate();
 	}
 
@@ -125,6 +125,16 @@ namespace {
 	void OpeningMenu::handle_back_button_impl()
 	{
 		ASSERT(false, "Back button not allowed on opening menu");
+	}
+
+	void OpeningMenu::apply_highlight_impl(MenuType::ElementType &element)
+	{
+		element.get<LabelType>().set_color(kSelectedTextColor);
+	}
+
+	void OpeningMenu::remove_highlight_impl(MenuType::ElementType &element)
+	{
+		element.get<LabelType>().set_color(kDeselectedTextColor);
 	}
 
 } // namespace util

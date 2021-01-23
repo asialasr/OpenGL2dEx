@@ -1,4 +1,4 @@
-#ifndef  SETTINGS_MANAGER_H
+#ifndef SETTINGS_MANAGER_H
 #define SETTINGS_MANAGER_H
 
 #include "audio_manager.h"

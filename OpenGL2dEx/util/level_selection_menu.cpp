@@ -105,6 +105,16 @@ namespace {
 	{
 		handler_->close_level_selection();
 	}
+	
+	void LevelSelectionMenu::apply_highlight_impl(MenuType::ElementType &element)
+	{
+		element.get<LabelType>().set_color(kSelectedTextColor);
+	}
+
+	void LevelSelectionMenu::remove_highlight_impl(MenuType::ElementType &element)
+	{
+		element.get<LabelType>().set_color(kDeselectedTextColor);
+	}
 
 	std::pair<LevelSelectionMenu::MenuIndex, LevelSelectionMenu::MenuList> LevelSelectionMenu::menu_list(
 		const LevelList &level_list, 

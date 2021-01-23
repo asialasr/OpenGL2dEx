@@ -1,3 +1,6 @@
+#ifndef STRING_H
+#define STRING_H
+
 #include "array_helpers.h"
 
 namespace util {
@@ -248,3 +251,5 @@ template<size_t N>
 using string = string_base<char, '\0', size_t, N>;
 
 } // namespace util
+
+#endif // STRING_H

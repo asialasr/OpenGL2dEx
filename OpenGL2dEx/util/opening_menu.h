@@ -96,6 +96,8 @@ private:
 	void handle_menu_option_highlight_impl(MenuIndex index) override;
 	void handle_menu_option_acceptance_impl(MenuIndex index) override;
 	void handle_back_button_impl() override;
+	void apply_highlight_impl(MenuType::ElementType &element) override;
+	void remove_highlight_impl(MenuType::ElementType &element) override;
 
 	enum class Index {
 		kLevelSelection,

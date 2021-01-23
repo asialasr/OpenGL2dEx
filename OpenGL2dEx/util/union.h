@@ -206,8 +206,7 @@ namespace util {
 			return data_;
 		}
 	private:
-		// TODO(sasiala): do we need to align data_? Or this class?  Like: alignas(Types...)
-		StorageArray  data_;
+		StorageArray alignas(Types...) data_;
 		Destroyer    *destroyer_;
 		Copier       *copier_;
 		bool          initialized_;

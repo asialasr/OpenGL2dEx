@@ -12,6 +12,7 @@ class Element {
 public:
 	Element(const bool is_active)
 		: is_active_{is_active}
+		, default_active_state_{is_active}
 	{
 	}
 
@@ -24,7 +25,7 @@ public:
 	void initialize(const glm::mat4 &projection)
 	{
 		initialize_impl(projection);
-		is_active_ = false;
+		is_active_ = default_active_state_;
 	}
 
 	void update(const Time dt)
@@ -77,6 +78,7 @@ private:
 	virtual void process_input_impl(float dt) = 0;
 
 	bool is_active_;
+	bool default_active_state_;
 }; // class Element
 
 inline void conditionally_activate(Element &e, bool activate)

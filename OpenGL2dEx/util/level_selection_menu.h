@@ -98,7 +98,7 @@ public:
 	{
 		const auto menu_list_pair = menu_list(levels, load_width_, load_height_);
 		ASSERT(current_level < menu_list_pair.first, "Current level not found in list");
-		menu_options_.update_info("", kSubtitle, true, menu_list_pair.second, current_level);
+		menu_options_.update_info("MAIN MENU", kSubtitle, true, menu_list_pair.second, current_level);
 		current_level_ = current_level;
 	}
 
@@ -117,6 +117,8 @@ private:
 	void handle_menu_option_highlight_impl(MenuIndex index) override;
 	void handle_menu_option_acceptance_impl(MenuIndex index) override;
 	void handle_back_button_impl() override;
+	void apply_highlight_impl(MenuType::ElementType &element) override;
+	void remove_highlight_impl(MenuType::ElementType &element) override;
 
 	static std::pair<MenuIndex, MenuList> menu_list(const LevelList &level_list, Dimension load_width, Dimension load_height);
 

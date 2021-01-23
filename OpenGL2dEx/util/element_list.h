@@ -21,7 +21,6 @@ public:
 	ElementUnion()
 		: Element{ false }
 		, element_{}
-		, element_ptr_{ nullptr }
 	{
 	}
 
@@ -31,18 +30,13 @@ public:
 	ElementUnion(const ElementType &element)
 		: Element{ false }
 		, element_{ element }
-		, element_ptr_{ nullptr }
 	{
-		element_ptr_ = element_.get_data_ptr();
 	}
 
 	ElementUnion(const ElementUnion<Types...> &other)
 		: Element{other}
 		, element_{ other.element_ }
-		, element_ptr_{ nullptr }
 	{
-		// TODO(sasiala): this is a hacky way to do this
-		element_ptr_ = element_.get_data_ptr();
 	}
 
 	template<typename ElementType>
@@ -54,49 +48,53 @@ public:
 private:
 	void initialize_impl(const glm::mat4 &projection) override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->initialize(projection);
+		element_ptr()->initialize(projection);
 	}
 	void update_impl(Time dt) override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->update(dt);
+		element_ptr()->update(dt);
 	}
 	void activate_impl() override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->activate();
+		element_ptr()->activate();
 	}
 	void deactivate_impl() override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->deactivate();
+		element_ptr()->deactivate();
 	}
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->render(parent_sprite_renderer);
+		element_ptr()->render(parent_sprite_renderer);
 	}
 	void set_key_impl(KeyId key_id, bool val) override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->set_key(key_id, val);
+		element_ptr()->set_key(key_id, val);
 	}
 	void process_input_impl(float dt) override
 	{
-		ASSERT(element_ptr_, "Element pointer uninitialized");
+		ASSERT(element_ptr(), "Element pointer uninitialized");
 
-		element_ptr_->process_input(dt);
+		element_ptr()->process_input(dt);
+	}
+
+	Element *element_ptr()
+	{
+		return element_.get_data_ptr();
 	}
 
 	UnionWithDataPtr<Element, Types...> element_;
-	Element *element_ptr_;
 }; // class ElementUnion
 
 template<typename ELEMENT_TYPE, size_t MAX_OBJECTS,

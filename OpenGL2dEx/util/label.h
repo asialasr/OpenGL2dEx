@@ -1,5 +1,5 @@
-#ifndef UTIL_LABEL_H
-#define UTIL_LABEL_H
+#ifndef LABEL_H
+#define LABEL_H
 
 #include "element.h"
 #include "resource_mgr.h"
@@ -146,4 +146,4 @@ private:
 
 } // namespace util
 
-#endif // UTIL_LABEL_H
+#endif // LABEL_H

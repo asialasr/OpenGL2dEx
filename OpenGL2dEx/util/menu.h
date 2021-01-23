@@ -42,9 +42,9 @@ private:
 		switch (label_id)
 		{
 		case MenuLabelId::kTitle:
-			return{ true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU", viewport_width, viewport_height };
+			return{ true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "", viewport_width, viewport_height };
 		case MenuLabelId::kSubtitle:
-			return{ true, 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "LEVEL SELECTION", viewport_width, viewport_height };
+			return{ true, 5.0f / 800.0f, 60.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "", viewport_width, viewport_height };
 		case MenuLabelId::kBack:
 			return{ true, 5.0f / 800.0f, 95.0f / 600.0f, 1.0f / 600.0f, glm::vec3{ 0.0f, 1.0f, 0.0f }, "(B) BACK", viewport_width, viewport_height };
 		default:
@@ -53,7 +53,7 @@ private:
 		}
 
 		// return something; should not reach, but avoid warnings/static analysis findings (if added)
-		return{ true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "MAIN MENU", viewport_width, viewport_height };
+		return{ true, 5.0f / 800.0f, 15.0f / 600.0f, 1.5f / 600.0f, glm::vec3{ 1.0f, 1.0f, 1.0f }, "", viewport_width, viewport_height };
 	}
 
 public:
@@ -79,10 +79,22 @@ public:
 			handle_back_button_impl();
 		}
 
+		void apply_highlight(ElementType &element)
+		{
+			apply_highlight_impl(element);
+		}
+
+		void remove_highlight(ElementType &element)
+		{
+			remove_highlight_impl(element);
+		}
+
 	private:
 		virtual void handle_menu_option_highlight_impl(OptionIndex index) = 0;
 		virtual void handle_menu_option_acceptance_impl(OptionIndex index) = 0;
 		virtual void handle_back_button_impl() = 0;
+		virtual void apply_highlight_impl(ElementType &element) = 0;
+		virtual void remove_highlight_impl(ElementType &element) = 0;
 	};
 
 	Menu(Dimension load_width, Dimension load_height)
@@ -128,6 +140,7 @@ public:
 		conditionally_activate(kBackText, show_back_label);
 		selected_item_ = selected_item;
 		option_list_ = options;
+		menu_button_handler_->apply_highlight(option_list_.at(selected_item_));
 	}
 
 private:
@@ -160,19 +173,19 @@ private:
 	}
 	void activate_impl() override
 	{
-		auto activate_lambda = [](Element* e) { e->activate(); };
-		apply(all_element_members, activate_lambda);
-
 		fill(keys_pressed_, false);
 		fill(keys_processed_, false);
 	}
 	void deactivate_impl() override
 	{
-		auto deactivate_lambda = [](Element* e) { e->deactivate(); };
-		apply(all_element_members, deactivate_lambda);
 	}
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override
 	{
+		if (!is_active())
+		{
+			return;
+		}
+
 		auto render_lambda = [](Element* e, Optional<SpriteRenderer*> parent_sprite_renderer)
 							 {
 							    e->render(parent_sprite_renderer);
@@ -273,6 +286,8 @@ private:
 		}
 		else
 		{
+			menu_button_handler_->remove_highlight(option_list_.at(selected_item_));
+
 			if (keys_pressed_[to_index(ButtonsHandled::kDownButton)]
 				&& !keys_processed_[to_index(ButtonsHandled::kDownButton)])
 			{
@@ -299,6 +314,8 @@ private:
 				menu_button_handler_->handle_menu_option_highlight(selected_item_);
 				keys_processed_[to_index(ButtonsHandled::kUpButton)] = true;
 			}
+
+			menu_button_handler_->apply_highlight(option_list_.at(selected_item_));
 		}
 	}
 

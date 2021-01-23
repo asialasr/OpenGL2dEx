@@ -38,6 +38,9 @@ namespace util {
 
 		level_selection_menu_.initialize(projection);
 		level_selection_menu_.set_handler(*this);
+
+		settings_menu_.initialize(projection);
+		settings_menu_.set_handler(*this);
 	}
 
 	void MainMenu::update_impl(const Time dt)

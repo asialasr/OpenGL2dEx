@@ -12,6 +12,7 @@ namespace util {
 class MainMenu : public Element
 			   , public OpeningMenu::Handler
 			   , public LevelSelectionMenu::Handler 
+			   , public SettingsMenu::Handler
 {
 public:
 	class MenuButtonHandler {
@@ -149,6 +150,11 @@ private:
 	{
 		ASSERT(menu_button_handler_, "No menu handler");
 		menu_button_handler_->hide_level_preview();
+	}
+
+	void close_settings_impl() override
+	{
+		close_menu();
 	}
 
 	void render_background();

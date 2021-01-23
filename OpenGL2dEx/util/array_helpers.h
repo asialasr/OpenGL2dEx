@@ -1,5 +1,5 @@
-#ifndef COUNT_OF_H
-#define COUNT_OF_H
+#ifndef ARRAY_HELPERS_H
+#define ARRAY_HELPERS_H
 
 #include "logging.h"
 
@@ -129,4 +129,4 @@ namespace util
 	}
 } // namespace util
 
-#endif // COUNT_OF_H
+#endif // ARRAY_HELPERS_H
