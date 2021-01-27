@@ -103,9 +103,9 @@ public:
 		, option_list_{}
 		, loaded_width_{ load_width }
 		, loaded_height_{ load_height }
-		, title_{ make_label(MenuLabelId::kTitle, load_width, load_height) }
+		, title_label_{ make_label(MenuLabelId::kTitle, load_width, load_height) }
 		, subtitle_label_{ make_label(MenuLabelId::kSubtitle, load_width, load_height) }
-		, kBackText{ make_label(MenuLabelId::kBack, load_width, load_height) }
+		, back_label_{ make_label(MenuLabelId::kBack, load_width, load_height) }
 		, font_shader_id_{}
 		, default_font_id_{}
 		, menu_button_handler_{ nullptr }
@@ -135,9 +135,9 @@ public:
 		             const OptionList  &options,
 		             OptionIndex        selected_item)
 	{
-		title_.set_text(title);
+		title_label_.set_text(title);
 		subtitle_label_.set_text(subtitle);
-		conditionally_activate(kBackText, show_back_label);
+		conditionally_activate(back_label_, show_back_label);
 		selected_item_ = selected_item;
 		option_list_ = options;
 		menu_button_handler_->apply_highlight(option_list_.at(selected_item_));
@@ -154,14 +154,14 @@ private:
 		default_font_id_ = ResourceManager::load_font(kDefaultFontPath, font_shader_id_, kDefaultFontSize, loaded_width_, loaded_height_);
 
 		// label fonts
-		title_.set_font(default_font_id_);
-		title_.initialize(projection);
+		title_label_.set_font(default_font_id_);
+		title_label_.initialize(projection);
 
 		subtitle_label_.set_font(default_font_id_);
 		subtitle_label_.initialize(projection);
 
-		kBackText.set_font(default_font_id_);
-		kBackText.initialize(projection);
+		back_label_.set_font(default_font_id_);
+		back_label_.initialize(projection);
 
 		option_list_.initialize(projection);
 	}
@@ -278,7 +278,7 @@ private:
 		else if (keys_pressed_[to_index(ButtonsHandled::kBackButton)]
 			&& !keys_processed_[to_index(ButtonsHandled::kBackButton)])
 		{
-			if (kBackText.is_active())
+			if (back_label_.is_active())
 			{
 				menu_button_handler_->handle_back_button();
 			}
@@ -319,47 +319,23 @@ private:
 		}
 	}
 
-	// TODO(sasiala): I don't like these methods of converting ratios, but it's the easiest
-	// way so far to make sure things scale with size.  Reconsider a better way
-	float convert_ratio_from_height(const float ratio) const
-	{
-		return ratio * loaded_height_;
-	}
-	float convert_ratio_from_width(const float ratio) const
-	{
-		return ratio * loaded_width_;
-	}
 	static constexpr const char *kDefaultFontPath = "fonts/OCRAEXT.TTF";
 	static constexpr util::TextRenderer::FontSize kDefaultFontSize{ 24 };
 
 	const Dimension loaded_width_;
 	const Dimension loaded_height_;
 
-	LabelType title_;
+	LabelType title_label_;
 	LabelType subtitle_label_;
-	LabelType kBackText;
-
-	const struct {
-		// TODO(sasiala): allow adjusting of ratios based on instance
-		static constexpr auto kYTopRatio{ 0.25f };
-		static constexpr auto kYBottomRatio{ 0.90f };
-		static constexpr auto kRowHeightRatio{ static_cast<float>((kYBottomRatio - kYTopRatio) / kMaxObjects) };
-		static constexpr auto kMaxRows{ kMaxObjects };
-		static constexpr auto kXRatio{ 0.05f };
-		static constexpr auto kTextScaleFromHeight{ 1.0f / 600.0f };
-
-		const glm::vec3 kSelectedColor{ 1.0f, 1.0f, 1.0f };
-		const glm::vec3 kDeselectedColor{ 0.0f, 1.0f, 0.0f };
-	} kMenuList{};
+	LabelType back_label_;
 
 	OptionIndex selected_item_;
 	OptionList  option_list_;
 
-	Element* const all_element_members[4] = {&title_, &subtitle_label_, &kBackText, &option_list_};
+	Element* const all_element_members[4] = {&title_label_, &subtitle_label_, &back_label_, &option_list_};
 
 	ResourceManager::ShaderId font_shader_id_;
-
-	ResourceManager::FontId default_font_id_;
+	ResourceManager::FontId   default_font_id_;
 
 	MenuButtonHandler *menu_button_handler_;
 
