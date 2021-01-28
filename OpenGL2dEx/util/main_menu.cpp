@@ -4,7 +4,6 @@
 
 namespace util {
 
-
 	MainMenu::MainMenu(Dimension load_width, Dimension load_height)
 		: Element{ false }
 		, loaded_width_{ load_width }
@@ -16,6 +15,7 @@ namespace util {
 		, menu_button_handler_{ nullptr }
 		, opening_menu_{ load_width, load_height }
 		, level_selection_menu_{ load_width, load_height }
+		, settings_menu_{ load_width, load_height }
 		, menu_stack_{}
 	{
 	}
@@ -38,6 +38,9 @@ namespace util {
 
 		level_selection_menu_.initialize(projection);
 		level_selection_menu_.set_handler(*this);
+
+		settings_menu_.initialize(projection);
+		settings_menu_.set_handler(*this);
 	}
 
 	void MainMenu::update_impl(const Time dt)

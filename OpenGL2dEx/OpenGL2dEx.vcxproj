@@ -23,6 +23,7 @@
     <ClInclude Include="util\ball_object.h" />
     <ClInclude Include="util\array_helpers.h" />
     <ClInclude Include="util\element.h" />
+    <ClInclude Include="util\element_pair.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\game_object.h" />
     <ClInclude Include="util\game_viewport.h" />
@@ -39,12 +40,19 @@
     <ClInclude Include="util\power_up.h" />
     <ClInclude Include="util\reset_gl_properties.h" />
     <ClInclude Include="util\resource_mgr.h" />
+    <ClInclude Include="util\settings_manager.h" />
+    <ClInclude Include="util\settings_menu.h" />
     <ClInclude Include="util\shader.h" />
     <ClInclude Include="util\sprite_renderer.h" />
+    <ClInclude Include="util\string.h" />
+    <ClInclude Include="util\template_helpers.h" />
     <ClInclude Include="util\texture_2d.h" />
     <ClInclude Include="util\text_renderer.h" />
+    <ClInclude Include="util\text_toggle.h" />
+    <ClInclude Include="util\element_list.h" />
     <ClInclude Include="util\types.h" />
     <ClInclude Include="util\label.h" />
+    <ClInclude Include="util\union.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
@@ -58,11 +66,11 @@
     <ClCompile Include="util\game_viewport.cpp" />
     <ClCompile Include="util\level_selection_menu.cpp" />
     <ClCompile Include="util\main_menu.cpp" />
-    <ClCompile Include="util\menu.cpp" />
     <ClCompile Include="util\opening_menu.cpp" />
     <ClCompile Include="util\particle_generator.cpp" />
     <ClCompile Include="util\post_processor.cpp" />
     <ClCompile Include="util\resource_mgr.cpp" />
+    <ClCompile Include="util\settings_menu.cpp" />
     <ClCompile Include="util\shader.cpp" />
     <ClCompile Include="util\sprite_renderer.cpp" />
     <ClCompile Include="util\texture_2d.cpp" />
@@ -178,6 +186,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -190,6 +199,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -204,6 +214,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -220,6 +231,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

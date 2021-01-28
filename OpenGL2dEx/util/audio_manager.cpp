@@ -3,6 +3,7 @@
 #include "logging.h"
 
 #include <irrklang-32bit-1.6.0/irrKlang.h>
+#include <string>
 
 namespace {
 	// TODO(sasiala): deal with the .dll's and all for irrklang
@@ -11,10 +12,20 @@ namespace {
 
 namespace util {
 
+void AudioManager::set_volume(const VolumePercentage volume)
+{
+	sound_engine->setSoundVolume(volume / 100.0f);
+}
+
+AudioManager::VolumePercentage AudioManager::volume()
+{
+	return sound_engine->getSoundVolume() * 100.0f;
+}
+
 void AudioManager::play_background_music(const GameState state, const bool loop)
 {
 	ASSERT(GameState::kActive == state, "Invalid game state");
-
+	LOG("Volume: " + std::to_string(sound_engine->getSoundVolume()));
 	sound_engine->play2D(kActiveGameBgMusicPath, loop);
 }
 

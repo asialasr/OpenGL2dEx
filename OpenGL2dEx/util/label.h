@@ -1,31 +1,47 @@
-#ifndef UTIL_LABEL_H
-#define UTIL_LABEL_H
+#ifndef LABEL_H
+#define LABEL_H
 
 #include "element.h"
 #include "resource_mgr.h"
+#include "string.h"
 
 #include <glm/glm.hpp>
 
 namespace util {
 
-// TODO(sasiala): shouldn't the label be an element?
+template<size_t MAX_STRING_LENGTH>
 class Label : public Element {
 public:
-	Label(const bool         initially_active,
-		  const float        x_ratio,
-		  const float        y_ratio,
-		  const float        scale_ratio,
-		  const glm::vec3   &color,
-		  const std::string &text,
-		  const Dimension    viewport_width,
-		  const Dimension    viewport_height)
-		: Element{initially_active}
-		, x_ratio_ { x_ratio }
-		, y_ratio_{y_ratio}
-		, scale_ratio_{scale_ratio}
-		, color_{color}
+	static constexpr auto kMaxStringLength = MAX_STRING_LENGTH;
+	using StringType = string<kMaxStringLength>;
+	Label()
+		: Element{ false }
+		, x_ratio_{ 0.0f }
+		, y_ratio_{ 0.0f }
+		, scale_ratio_{ 1.0f }
+		, color_{ 0.0f, 0.0f, 0.0f }
 		, font_id_{}
-		, text_{text}
+		, text_{ "" }
+		, viewport_width_{ 0 }
+		, viewport_height_{ 0 }
+	{
+	}
+
+	Label(const bool         active,
+		const float        x_ratio,
+		const float        y_ratio,
+		const float        scale_ratio,
+		const glm::vec3   &color,
+		const StringType  &text,
+		const Dimension    viewport_width,
+		const Dimension    viewport_height)
+		: Element{ active }
+		, x_ratio_{ x_ratio }
+		, y_ratio_{ y_ratio }
+		, scale_ratio_{ scale_ratio }
+		, color_{ color }
+		, font_id_{}
+		, text_{ text }
 		, viewport_width_{ viewport_width }
 		, viewport_height_{ viewport_height }
 	{
@@ -46,7 +62,7 @@ public:
 		y_ratio_ = y_ratio;
 	}
 
-	void sey_scale_ratio(const float scale_ratio)
+	void set_scale_ratio(const float scale_ratio)
 	{
 		scale_ratio_ = scale_ratio;
 	}
@@ -56,7 +72,7 @@ public:
 		color_ = color;
 	}
 
-	void set_text(const std::string &text)
+	void set_text(const StringType &text)
 	{
 		text_ = text;
 	}
@@ -91,7 +107,7 @@ private:
 
 		const auto &text_renderer = ResourceManager::get_font(font_id_);
 		text_renderer.update_size(viewport_width_, viewport_height_);
-		text_renderer.render_text(text_, x(viewport_width_), y(viewport_height_), scale(viewport_height_), color_);
+		text_renderer.render_text(text_.c_str(), x(viewport_width_), y(viewport_height_), scale(viewport_height_), color_);
 	}
 	void set_key_impl(KeyId /*key_id*/, bool /*val*/) override
 	{
@@ -122,7 +138,7 @@ private:
 
 	ResourceManager::FontId font_id_;
 
-	std::string text_;
+	StringType text_;
 
 	Dimension viewport_width_;
 	Dimension viewport_height_;
@@ -130,4 +146,4 @@ private:
 
 } // namespace util
 
-#endif // UTIL_LABEL_H
+#endif // LABEL_H

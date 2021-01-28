@@ -21,6 +21,7 @@ namespace util {
 	{
 	public:
 		using Dimension = unsigned int;
+		using GameSpeedMultiplier = float;
 
 		Game(IResetGlProperties &gl_property_resetter, 
 			 Dimension width, 
@@ -48,12 +49,22 @@ namespace util {
 			return state_;
 		}
 
+		static void set_game_speed_multiplier(const GameSpeedMultiplier multiplier)
+		{
+			game_speed_multiplier_ = multiplier;
+		}
+
+		static GameSpeedMultiplier game_speed_multiplier()
+		{
+			return game_speed_multiplier_;
+		}
+
 	private:
 		// GameViewport::GameStateCallback
 		void game_ended_impl(EndingReason reason) override;
 
 		// Menu::MenuButtonHandler
-		void change_level_impl(LevelSelectionMenu::LevelIndex index) override;
+		void change_level_impl(LevelSelectionMenu::MenuIndex index) override;
 		void start_game_impl() override;
 		void show_level_preview_impl() override;
 		void hide_level_preview_impl() override;
@@ -86,7 +97,7 @@ namespace util {
 			"levels/three.lvl",
 			"levels/four.lvl"
 		};
-		const std::vector<std::string> kLevelNames{
+		const char *kLevelNames[4] = {
 			"One",
 			"Two",
 			"Three",
@@ -107,6 +118,9 @@ namespace util {
 		ResourceManager::ShaderId font_shader_id_;
 
 		size_t                 current_level_;
+
+		// TODO(sasiala): I don't think this should be static, it's just temporarily convenient
+		static GameSpeedMultiplier game_speed_multiplier_;
 
 		// TODO(sasiala): is there a less cluttered way to do this?  Could move the
 		// function definitions, but they're so simple that it would almost be more 

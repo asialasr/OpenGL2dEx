@@ -5,17 +5,19 @@
 #include "level_selection_menu.h"
 #include "opening_menu.h"
 #include "resource_mgr.h"
+#include "settings_menu.h"
 
 namespace util {
 
 class MainMenu : public Element
 			   , public OpeningMenu::Handler
 			   , public LevelSelectionMenu::Handler 
+			   , public SettingsMenu::Handler
 {
 public:
 	class MenuButtonHandler {
 	public:
-		void change_level(const LevelSelectionMenu::LevelIndex level)
+		void change_level(const LevelSelectionMenu::MenuIndex level)
 		{
 			change_level_impl(level);
 		}
@@ -36,7 +38,7 @@ public:
 		}
 
 	private:
-		virtual void change_level_impl(LevelSelectionMenu::LevelIndex level) = 0;
+		virtual void change_level_impl(LevelSelectionMenu::MenuIndex level) = 0;
 		virtual void start_game_impl() = 0;
 		virtual void show_level_preview_impl() = 0;
 		virtual void hide_level_preview_impl() = 0;
@@ -61,12 +63,12 @@ public:
 		background_color_ = background_color;
 	}
 
-	void update_current_level(const LevelSelectionMenu::LevelIndex current_level)
+	void update_current_level(const LevelSelectionMenu::MenuIndex current_level)
 	{
 		level_selection_menu_.update_current_level(current_level);
 	}
 
-	void update_levels(const LevelSelectionMenu::LevelList &levels, const LevelSelectionMenu::LevelIndex current_level)
+	void update_levels(const LevelSelectionMenu::LevelList &levels, const LevelSelectionMenu::MenuIndex current_level)
 	{
 		level_selection_menu_.update_levels(levels, current_level);
 	}
@@ -112,7 +114,7 @@ private:
 
 	void open_settings_impl() override
 	{
-		// TODO(sasiala)
+		open_menu(settings_menu_);
 	}
 
 	void open_help_impl() override
@@ -121,7 +123,7 @@ private:
 	}
 
 	// LevelSelectionMenu::Handler
-	void change_level_impl(const LevelSelectionMenu::LevelIndex level_index) override
+	void change_level_impl(const LevelSelectionMenu::MenuIndex level_index) override
 	{
 		ASSERT(menu_button_handler_, "No menu handler");
 		menu_button_handler_->change_level(level_index);
@@ -150,6 +152,11 @@ private:
 		menu_button_handler_->hide_level_preview();
 	}
 
+	void close_settings_impl() override
+	{
+		close_menu();
+	}
+
 	void render_background();
 
 	Dimension loaded_width_;
@@ -167,6 +174,7 @@ private:
 
 	OpeningMenu opening_menu_;
 	LevelSelectionMenu level_selection_menu_;
+	SettingsMenu settings_menu_;
 
 	std::vector<Element*> menu_stack_;
 }; // class MainMenu

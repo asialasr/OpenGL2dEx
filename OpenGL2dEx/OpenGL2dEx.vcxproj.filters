@@ -93,6 +93,30 @@
     <ClInclude Include="util\array_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util\settings_menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\settings_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\text_toggle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\element_pair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\union.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\template_helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\element_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="util\game.cpp">
@@ -143,9 +167,6 @@
     <ClCompile Include="glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util\menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="util\main_menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -153,6 +174,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util\level_selection_menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\settings_menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
