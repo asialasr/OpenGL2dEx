@@ -17,8 +17,9 @@ Here is a list of the libraries I currently use (not sure all of these are used 
 I'll try to figure out the best way to deal with these, but for now, the best resource is learnopengl.com until I get this all set up better.
 
 ## Credits
-Portions of this software are copyright © 2020 The FreeType
-Project (www.freetype.org).  All rights reserved.
+ * Portions of this software are copyright © 2020 The FreeType Project (www.freetype.org).  All rights reserved.  The FreeType project is licensed under the FTL license.
+ * This software makes use of the assimp library for importing assets.
+ * This software makes use of the GLFW library for windowing and input processing.
 
 **Disclaimer: I haven't tested this out a ton and I know there are certainly some bugs with collisions.
 
