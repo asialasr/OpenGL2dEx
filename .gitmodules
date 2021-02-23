@@ -1,9 +1,6 @@
 [submodule "libs/freetype-windows-binaries"]
 	path = libs/freetype-windows-binaries
 	url = https://github.com/ubawurinna/freetype-windows-binaries.git
-[submodule "libs/assimp"]
-	path = libs/assimp
-	url = https://github.com/assimp/assimp.git
 [submodule "libs/glfw"]
 	path = libs/glfw
 	url = https://github.com/glfw/glfw.git
