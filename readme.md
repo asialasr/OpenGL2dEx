@@ -22,6 +22,7 @@ I'll try to figure out the best way to deal with these, but for now, the best re
  * This software makes use of the GLFW library for windowing and input processing.
  * This software makes use of the GLM library under the MIT license.
  * This software makes use of the irrKlang library under their free (non-commercial) licensing.  Please see [irrKlang's website](https://www.ambiera.com/irrklang/index.html) for more information about irrKlang.
+ * This software makes use of the stb image loading software under the public domain.
 
 **Disclaimer: I haven't tested this out a ton and I know there are certainly some bugs with collisions.
 
