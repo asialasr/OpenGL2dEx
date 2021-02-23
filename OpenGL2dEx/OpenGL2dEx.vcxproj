@@ -185,15 +185,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\irrklang\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\irrklang\lib\Win32-visualStudio;$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;irrKlang.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)\freetype.dll"</Command>
+      <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
+copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -201,15 +202,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\irrklang\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\irrklang\lib\Win32-visualStudio;$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;irrKlang.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)\freetype.dll"</Command>
+      <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
+copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -219,17 +221,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\irrklang\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\irrklang\lib\Win32-visualStudio;$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;irrKlang.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)\freetype.dll"</Command>
+      <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
+copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -239,17 +242,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\irrklang\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glad\include;$(SolutionDir)libs\freetype-windows-binaries\include;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4373</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\irrklang\lib\Win32-visualStudio;$(SolutionDir)\libs\glfw\src\Debug;$(SolutionDir)\libs\freetype-windows-binaries\win32;C:\Users\Sean\Documents\Git\Libraries\OpenGLLibs\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;irrKlang.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)\freetype.dll"</Command>
+      <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
+copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
