@@ -15,7 +15,7 @@ Required Tools:
 To Build:
 1. run ```./configure.sh``` from the root of this repo (using git bash).  This will clear out the submodules, update them, then build any libraries that need building.  My scripting skills need improving and I threw this together quickly, so I foresee issues arising with this script over time.
 2. Open the solution in Visual Studio.
-3. Build the project from Visual Studio, then run the project.
+3. Build the project from Visual Studio, then run the project.  **Important**: be sure to build the **x86** version - **NOT x64** (I'll try to get x64 working at some point, but currently it doesn't build).
 
 ## Licensing
 I have chosen to release this software under the MIT license (not that there are many real uses for this project).  Please see License.md for further information.  Please also be aware that some libraries used by this project are currently used under a non-commercial license, but have commercial licensing available.  If you have any questions or concerns, please don't hesitate to contact me.
