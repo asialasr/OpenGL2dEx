@@ -1,17 +1,28 @@
 # OpenGL2dEx Developer's Guide
-*Note: this will be difficult to get running at the moment - LearnOpenGL.com is the best resource while I figure out the best/safest way to add the libraries to the project.  See the "Libraries" section for some more info.*
-
 *Note: a lot of this project is used as a bit of a playground for me to try things out, so at times things might be implemented in a way that allows me to try out new things rather than the safest or best way.  For example, there's a Union class that was fun to work on creating, but in the long-run isn't necessarily a "good" or "safe" class in that I'm not certain how it'll work (or not) with other compilers, etc.*
 
 This project is based on the 2D game example over at [Learn OpenGL](https://learnopengl.com).  Originally, I followed through the steps with similar code to what they have available over there, but with my own touches.  Eventually, I wound up refactoring the code and have modified the vast majority of the project.  In addition, I have begun adding my own new features (animations, menus, etc.).  
 
 I've only really tested this on a Windows 10 laptop and a Windows 10 desktop, so I'm not certain how well it behaves on other machines, although it worked nicely when I switched between the two so it should hopefully work on other Windows 10 machines without issue.
 
+## Getting Started
+*Disclaimer: I've only tested this on my laptop - not even my desktop - so it's very possible that my solution is still relying on some things it shouldn't be.  If you run into any issues, don't hesitate to reach out.*
+
+Required Tools:
+ * CMake - used to build some of the libraries
+ * Visual Studio - I use Visual Studio Community 2015
+
+To Build:
+1. run ```./configure.sh``` from the root of this repo (using git bash).  This will clear out the submodules, update them, then build any libraries that need building.  My scripting skills need improving and I threw this together quickly, so I foresee issues arising with this script over time.
+2. Open the solution in Visual Studio.
+3. Build the project from Visual Studio, then run the project.
+
 ## Licensing
 I have chosen to release this software under the MIT license (not that there are many real uses for this project).  Please see License.md for further information.  Please also be aware that some libraries used by this project are currently used under a non-commercial license, but have commercial licensing available.  If you have any questions or concerns, please don't hesitate to contact me.
 
 ## Credits
  * This was originally based off of an example project over at [learnopengl.com](https://learnopengl.com) and was initially created by following the 2D game tutorial over there.  Throughout the tutorial, I took liberties with it and afterwards I have added new features and refactored the majority of the code.  The code at Learn OpenGL is "[licensed under](https://learnopengl.com/About) the terms of the CC BY-NC 4.0 license as published by Creative Commons, either version 4 of the License, or (at your option) any later version."  For simplicity, I am using version 4 of the license.
+ * Most/all images & music in this project are also from the Learn OpenGL project and are under the same (mentioned in previous bullet point) license.
  * Portions of this software are copyright © 2020 The FreeType Project (www.freetype.org).  All rights reserved.  The FreeType project is licensed under the FTL license.
  * This software makes use of the GLFW library for windowing and input processing.
  * This software makes use of the GLM library under the MIT license.
