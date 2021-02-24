@@ -2,7 +2,7 @@
 
 #include "logging.h"
 
-#include <irrklang-32bit-1.6.0/irrKlang.h>
+#include <irrKlang.h>
 #include <string>
 
 namespace {
