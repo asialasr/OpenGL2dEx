@@ -194,7 +194,7 @@
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
-copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
+copy "$(SolutionDir)libs\irrklang\bin\*.dll" "$(TargetDir)*.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -211,7 +211,7 @@ copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
-copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
+copy "$(SolutionDir)libs\irrklang\bin\*.dll" "$(TargetDir)*.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -232,7 +232,7 @@ copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
-copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
+copy "$(SolutionDir)libs\irrklang\bin\*.dll" "$(TargetDir)*.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -253,7 +253,7 @@ copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)libs\freetype-windows-binaries\win32\freetype.dll" "$(TargetDir)freetype.dll"
-copy "$(SolutionDir)libs\irrklang\bin\irrKlang.dll" "$(TargetDir)irrKlang.dll"</Command>
+copy "$(SolutionDir)libs\irrklang\bin\*.dll" "$(TargetDir)*.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
