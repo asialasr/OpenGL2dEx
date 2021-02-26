@@ -83,6 +83,7 @@ namespace util {
 		power_ups_.clear();
 		effects_->clear_effects();
 		particle_generator_->clear_particles();
+		reset_player();
 	}
 
 	void GameViewport::initialize_impl(const glm::mat4 &screen_projection)
@@ -154,7 +155,7 @@ namespace util {
 
 	void GameViewport::update_impl(Time dt)
 	{
-		if (!is_active())
+		if (!is_active() || level_.is_completed())
 		{
 			return;
 		}
@@ -164,6 +165,12 @@ namespace util {
 
 		ball_->move(dt, width_);
 		check_collisions();
+
+		if (level_.is_completed())
+		{
+			reset();
+			return;
+		}
 
 		if (ball_->position().y >= height_)
 		{
@@ -311,6 +318,11 @@ namespace util {
 			{
 				AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kNormal);
 			}
+
+			if (level_.is_completed())
+			{
+				return;
+			}
 		}
 		else
 		{
@@ -408,6 +420,10 @@ namespace util {
 				if (std::get<0>(collision_tuple))
 				{
 					handle_ball_box_collision(collision_tuple, index, box);
+					if (level_.is_completed())
+					{
+						return;
+					}
 				}
 			}
 			++index;
@@ -578,7 +594,10 @@ namespace util {
 			reset();
 			game_state_callback_->game_ended(GameStateCallback::EndingReason::kLost);
 		}
-		reset_player();
+		else
+		{
+			reset_player();
+		}
 	}
 
 	void GameViewport::delete_dynamic_data()
@@ -778,7 +797,8 @@ namespace util {
 
 	void GameViewport::level_complete()
 	{
-		// TODO(sasiala)
+		// TODO(sasiala): I don't think we want a reset here, but rather a game won state
+		game_state_callback_->game_ended(GameStateCallback::EndingReason::kWon);
 	}
 
 }

@@ -173,14 +173,30 @@ namespace util
 		main_menu_.set_key(key, val);
 	}
 
-	void Game::game_ended_impl(const EndingReason /*reason*/)
+	void Game::game_ended_impl(const EndingReason reason)
 	{
-		// TODO(sasiala): handle various ending reasons
-		main_menu_.update_current_level(current_level_);
-		main_menu_.open_level_selection_next_activate();
-		main_menu_.activate();
-		state_ = GameState::kMainMenu;
-		show_small_game_viewport(true);
+		switch (reason)
+		{
+		case EndingReason::kLost:
+			main_menu_.update_current_level(current_level_);
+			main_menu_.open_level_selection_next_activate();
+			main_menu_.activate();
+			state_ = GameState::kMainMenu;
+			show_small_game_viewport(true);
+			break;
+		case EndingReason::kWon:
+			// TODO(sasiala): winning should open a new overlay 
+			// on the open level instead of doing what losing does.
+			main_menu_.update_current_level(current_level_);
+			main_menu_.open_level_selection_next_activate();
+			main_menu_.activate();
+			state_ = GameState::kMainMenu;
+			show_small_game_viewport(true);
+			break;
+		default:
+			ASSERT(false, "Unknown reason for game end");
+			break;
+		}
 	}
 
 	void Game::change_level_impl(const LevelSelectionMenu::MenuIndex index)
