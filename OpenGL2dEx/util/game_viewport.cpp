@@ -38,6 +38,7 @@ namespace util {
 		, sprite_shader_id_{}
 		, font_shader_id_{}
 		, default_font_id_{}
+		, state_{State::kUnknown}
 		, lives_{ kInitialLifeCount }
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
@@ -64,10 +65,18 @@ namespace util {
 
 	void GameViewport::load_level(const char * const path)
 	{
+		// TODO(sasiala) this clearing should be acomplished by reset()
+		// call, but that currently calls load_level()
 		reset_lives();
+		power_ups_.clear();
+		effects_->clear_effects();
+		particle_generator_->clear_particles();
+		reset_player();
+
 		level_path_ = path;
 		level_.load(level_path_, width_, height_ / 2,
 			block_solid_texture_id_, block_texture_id_);
+		state_ = State::kBefore;
 	}
 
 	void GameViewport::reset_level()
@@ -155,7 +164,9 @@ namespace util {
 
 	void GameViewport::update_impl(Time dt)
 	{
-		if (!is_active() || level_.is_completed())
+		ASSERT(state_ < State::kNumStates, "Invalid game viewport state");
+
+		if (!is_active() || state_ != State::kPlaying)
 		{
 			return;
 		}
@@ -166,9 +177,13 @@ namespace util {
 		ball_->move(dt, width_);
 		check_collisions();
 
-		if (level_.is_completed())
+		if (state_ == State::kLost)
 		{
 			reset();
+			return;
+		}
+		if (state_ == State::kWon)
+		{
 			return;
 		}
 
@@ -319,7 +334,7 @@ namespace util {
 				AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kNormal);
 			}
 
-			if (level_.is_completed())
+			if (state_ != State::kPlaying)
 			{
 				return;
 			}
@@ -420,7 +435,7 @@ namespace util {
 				if (std::get<0>(collision_tuple))
 				{
 					handle_ball_box_collision(collision_tuple, index, box);
-					if (level_.is_completed())
+					if (state_ != State::kPlaying)
 					{
 						return;
 					}
@@ -593,6 +608,7 @@ namespace util {
 		{
 			reset();
 			game_state_callback_->game_ended(GameStateCallback::EndingReason::kLost);
+			state_ = State::kLost;
 		}
 		else
 		{
@@ -799,6 +815,7 @@ namespace util {
 	{
 		// TODO(sasiala): I don't think we want a reset here, but rather a game won state
 		game_state_callback_->game_ended(GameStateCallback::EndingReason::kWon);
+		state_ = State::kWon;
 	}
 
 }

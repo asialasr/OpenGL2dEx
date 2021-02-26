@@ -49,6 +49,17 @@ public:
 	private:
 		virtual void game_ended_impl(EndingReason reason) = 0;
 	};
+
+	enum class State {
+		kBefore,
+		kPlaying,
+		kPaused,
+		kLost,
+		kWon,
+		kNumStates,
+		kUnknown
+	};
+
 	// TODO(sasiala): allow changing dimensions & pos dynamically
 	GameViewport(IResetGlProperties &gl_property_resetter,
 				 Dimension width, 
@@ -57,6 +68,29 @@ public:
 	void set_game_state_callback(GameStateCallback &callback)
 	{
 		game_state_callback_ = &callback;
+	}
+
+	void start_game()
+	{
+		switch (state_)
+		{
+		case State::kWon:
+			reset();
+			state_ = State::kPlaying;
+			break;
+		case State::kLost:
+			state_ = State::kPlaying;
+			break;
+		case State::kBefore:
+			state_ = State::kPlaying;
+			break;
+		case State::kPaused:
+			state_ = State::kPlaying;
+			break;
+		default:
+			ASSERT(false, "Unhandled starting game state");
+			break;
+		}
 	}
 
 	void set_size(Dimension width, Dimension height);
@@ -245,6 +279,8 @@ private:
 	
 	// fonts
 	ResourceManager::FontId default_font_id_;
+
+	State state_;
 
 	LifeCount lives_;
 

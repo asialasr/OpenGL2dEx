@@ -208,6 +208,7 @@ namespace util
 
 	void Game::start_game_impl()
 	{
+		game_viewport_.start_game();
 		close_main_menu();
 	}
 
