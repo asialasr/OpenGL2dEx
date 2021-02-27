@@ -22,8 +22,17 @@ private:
 	using OptionList = ElementList<Option, kMaxOptions>;
 
 public:
+	enum class Mode {
+		kWon,
+		kLost,
+		kNumModes,
+		kUnknown,
+	};
+
 	GameEndedOverlay();
 	GameEndedOverlay(Dimension width, Dimension height);
+
+	void set_mode(Mode mode);
 
 private:
 	void initialize_impl(const glm::mat4 &projection) override;

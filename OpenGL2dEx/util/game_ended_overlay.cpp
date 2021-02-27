@@ -63,6 +63,24 @@ namespace {
 		}
 	}
 
+	void GameEndedOverlay::set_mode(const Mode mode)
+	{
+		switch (mode)
+		{
+		case Mode::kWon:
+			title_label_.set_text("CONGRATULATIONS");
+			subtitle_label_.set_text("You won the game!");
+			break;
+		case Mode::kLost:
+			title_label_.set_text("OUT OF LIVES");
+			subtitle_label_.set_text("");
+			break;
+		default:
+			ASSERT(false, "Unhandled mode type");
+			break;
+		}
+	}
+
 	void GameEndedOverlay::initialize_impl(const glm::mat4 &projection)
 	{
 		apply(all_element_members_, ElementLambdas::initialize_pointer, projection);
