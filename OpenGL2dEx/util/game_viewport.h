@@ -77,9 +77,11 @@ public:
 		{
 		case State::kWon:
 			reset();
+			game_ended_overlay_.deactivate();
 			state_ = State::kPlaying;
 			break;
 		case State::kLost:
+			game_ended_overlay_.deactivate();
 			state_ = State::kPlaying;
 			break;
 		case State::kBefore:

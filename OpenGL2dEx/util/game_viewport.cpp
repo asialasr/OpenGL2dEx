@@ -77,6 +77,8 @@ namespace util {
 		level_path_ = path;
 		level_.load(level_path_, width_, height_ / 2,
 			block_solid_texture_id_, block_texture_id_);
+
+		game_ended_overlay_.deactivate();
 		state_ = State::kBefore;
 	}
 
@@ -612,6 +614,7 @@ namespace util {
 			reset();
 			game_state_callback_->game_ended(GameStateCallback::EndingReason::kLost);
 			state_ = State::kLost;
+			game_ended_overlay_.activate();
 		}
 		else
 		{
@@ -819,6 +822,7 @@ namespace util {
 		// TODO(sasiala): I don't think we want a reset here, but rather a game won state
 		game_state_callback_->game_ended(GameStateCallback::EndingReason::kWon);
 		state_ = State::kWon;
+		game_ended_overlay_.activate();
 	}
 
 }
