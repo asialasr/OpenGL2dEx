@@ -88,7 +88,7 @@ namespace {
 		menu_.set_key(key_id, val);
 	}
 
-	void OpeningMenu::process_input_impl(float dt)
+	void OpeningMenu::process_input_impl(Time dt)
 	{
 		if (!is_active())
 		{

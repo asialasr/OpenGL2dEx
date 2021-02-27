@@ -81,7 +81,7 @@ namespace {
 		menu_options_.set_key(key_id, val);
 	}
 
-	void LevelSelectionMenu::process_input_impl(float dt)
+	void LevelSelectionMenu::process_input_impl(Time dt)
 	{
 		if (!is_active())
 		{

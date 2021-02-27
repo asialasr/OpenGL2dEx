@@ -84,6 +84,11 @@ public:
 		viewport_height_ = viewport_height;
 	}
 
+	static constexpr size_t max_size()
+	{
+		return kMaxStringLength;
+	}
+
 private:
 	// Element
 	void initialize_impl(const glm::mat4 &/*projection*/) override

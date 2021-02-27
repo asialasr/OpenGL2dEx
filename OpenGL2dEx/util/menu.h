@@ -262,7 +262,7 @@ private:
 			*key_processed_ptr = false;
 		}
 	}
-	void process_input_impl(float dt) override
+	void process_input_impl(Time dt) override
 	{
 		if (!is_active())
 		{

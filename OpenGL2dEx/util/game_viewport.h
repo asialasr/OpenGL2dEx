@@ -160,7 +160,7 @@ private:
 	void handle_left_button(float dt);
 	void handle_right_button(float dt);
 	void handle_launch_button();
-	void process_input_impl(float dt) override;
+	void process_input_impl(Time dt) override;
 
 	static constexpr struct {
 		float relative_x_;

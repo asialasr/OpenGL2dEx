@@ -552,7 +552,7 @@ namespace util {
 		ball_->set_stuck(false);
 	}
 
-	void GameViewport::process_input_impl(float dt)
+	void GameViewport::process_input_impl(Time dt)
 	{
 		if (!is_active())
 		{

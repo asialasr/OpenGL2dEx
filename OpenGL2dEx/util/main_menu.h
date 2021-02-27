@@ -82,7 +82,7 @@ private:
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
 	void set_key_impl(KeyId key_id, bool val) override;
 	// TODO(sasiala): improve event handling
-	void process_input_impl(float dt) override;
+	void process_input_impl(Time dt) override;
 
 	void open_menu(Element &menu)
 	{

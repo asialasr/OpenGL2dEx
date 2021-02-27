@@ -145,7 +145,7 @@ private:
 		auto function = [](Label &label, KeyId key_id, bool val) { label.set_key(key_id, val); };
 		apply(labels_, function, key_id, val);
 	}
-	void process_input_impl(float dt) override
+	void process_input_impl(Time dt) override
 	{
 		if (!is_active())
 		{

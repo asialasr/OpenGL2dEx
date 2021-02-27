@@ -80,7 +80,7 @@ namespace {
 		menu_.set_key(key_id, val);
 	}
 
-	void SettingsMenu::process_input_impl(float dt)
+	void SettingsMenu::process_input_impl(Time dt)
 	{
 		if (!is_active())
 		{
