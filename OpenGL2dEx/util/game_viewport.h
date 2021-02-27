@@ -4,6 +4,7 @@
 #include "game_level.h"
 #include "element.h"
 
+#include "game_ended_overlay.h"
 #include "logging.h"
 #include "power_up.h"
 #include "types.h"
@@ -306,6 +307,8 @@ private:
 	std::vector<PowerUp> power_ups_;
 
 	SpriteRenderer *sprite_renderer_;
+
+	GameEndedOverlay game_ended_overlay_;
 };
 
 } // namespace util

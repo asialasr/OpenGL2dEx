@@ -46,6 +46,7 @@ namespace util {
 		, effects_{ nullptr }
 		, shake_time_{ 0.0f }
 		, power_ups_{}
+		, game_ended_overlay_{width, height}
 	{
 	}
 
@@ -245,6 +246,8 @@ namespace util {
 		}
 
 		render_lives();
+
+		game_ended_overlay_.render({ sprite_renderer_ });
 
 		effects_->end_render();
 		effects_->render(static_cast<float>(glfwGetTime()));
