@@ -16,7 +16,7 @@ namespace util {
 	
 	class IResetGlProperties;
 
-	class Game : public GameViewport::GameStateCallback
+	class Game : public GameViewport::ActionHandler
 			   , public MainMenu::MenuButtonHandler
 	{
 	public:
@@ -60,8 +60,8 @@ namespace util {
 		}
 
 	private:
-		// GameViewport::GameStateCallback
-		void game_ended_impl(EndingReason reason) override;
+		// GameViewport::ActionHandler
+		void handle_game_viewport_action_impl(Action reason) override;
 
 		// Menu::MenuButtonHandler
 		void change_level_impl(LevelSelectionMenu::MenuIndex index) override;

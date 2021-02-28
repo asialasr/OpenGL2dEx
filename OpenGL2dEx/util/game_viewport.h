@@ -34,21 +34,21 @@ public:
 	using Collision = std::tuple<bool, Direction, glm::vec2>;
 	using LifeCount = unsigned int;
 
-	class GameStateCallback {
+	class ActionHandler {
 	public:
-		enum class EndingReason {
+		enum class Action {
 			kWon = 0,
 			kLost,
 			kNumReasons,
 			kUnknown,
 		};
-		void game_ended(EndingReason reason)
+		void handle_game_viewport_action(Action reason)
 		{
-			game_ended_impl(reason);
+			handle_game_viewport_action_impl(reason);
 		}
 
 	private:
-		virtual void game_ended_impl(EndingReason reason) = 0;
+		virtual void handle_game_viewport_action_impl(Action reason) = 0;
 	};
 
 	enum class State {
@@ -66,7 +66,7 @@ public:
 				 Dimension width, 
 				 Dimension height);
 
-	void set_game_state_callback(GameStateCallback &callback)
+	void set_game_state_callback(ActionHandler &callback)
 	{
 		game_state_callback_ = &callback;
 	}
@@ -237,7 +237,7 @@ private:
 	Dimension width_;
 	Dimension height_;
 
-	GameStateCallback *game_state_callback_;
+	ActionHandler *game_state_callback_;
 
 	GameLevel level_;
 	const char * level_path_;

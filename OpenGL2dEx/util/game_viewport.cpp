@@ -612,7 +612,7 @@ namespace util {
 		if (out_of_lives())
 		{
 			reset();
-			game_state_callback_->game_ended(GameStateCallback::EndingReason::kLost);
+			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kLost);
 			state_ = State::kLost;
 			game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kLost);
 			game_ended_overlay_.activate();
@@ -821,7 +821,7 @@ namespace util {
 	void GameViewport::level_complete()
 	{
 		// TODO(sasiala): I don't think we want a reset here, but rather a game won state
-		game_state_callback_->game_ended(GameStateCallback::EndingReason::kWon);
+		game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kWon);
 		state_ = State::kWon;
 		game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kWon);
 		game_ended_overlay_.activate();
