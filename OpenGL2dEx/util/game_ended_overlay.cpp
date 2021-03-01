@@ -45,16 +45,22 @@ namespace {
 		, title_label_{ make_label<TitleLabel::max_size()>(LabelId::kTitle, 0, 0) }
 		, subtitle_label_{ make_label<SubtitleLabel::max_size()>(LabelId::kSubtitle, 0, 0)}
 		, options_{}
+		, keys_pressed_{}
+		, keys_processed_{}
+		, handler_{nullptr}
 	{
 	}
 
-	GameEndedOverlay::GameEndedOverlay(Dimension width, Dimension height)
+	GameEndedOverlay::GameEndedOverlay(Handler &handler, Dimension width, Dimension height)
 		: Element{ false }
 		, loaded_width_{ width }
 		, loaded_height_{ height }
 		, title_label_{ make_label<TitleLabel::max_size()>(LabelId::kTitle, width, height) }
 		, subtitle_label_{ make_label<SubtitleLabel::max_size()>(LabelId::kSubtitle, width, height) }
 		, options_{}
+		, keys_pressed_{}
+		, keys_processed_{}
+		, handler_{&handler}
 	{
 		for (auto i = size_t{ 0 }; i < kMaxOptions; ++i)
 		{
@@ -70,10 +76,16 @@ namespace {
 		case Mode::kWon:
 			title_label_.set_text("CONGRATULATIONS");
 			subtitle_label_.set_text("You won the game!");
+			options_.at(0).set_text("(M) Main Menu");
+			options_.at(1).set_text("(L) Level Selection");
+			options_.at(2).set_text("(R) Restart Level");
 			break;
 		case Mode::kLost:
 			title_label_.set_text("OUT OF LIVES");
 			subtitle_label_.set_text("");
+			options_.at(0).set_text("(M) Main Menu");
+			options_.at(1).set_text("(L) Level Selection");
+			options_.at(2).set_text("(R) Restart Level");
 			break;
 		default:
 			ASSERT(false, "Unhandled mode type");
@@ -99,6 +111,8 @@ namespace {
 	void GameEndedOverlay::activate_impl()
 	{
 		apply(all_element_members_, ElementLambdas::activate_pointer);
+		fill(keys_pressed_, false);
+		fill(keys_processed_, false);
 	}
 	
 	void GameEndedOverlay::deactivate_impl()
@@ -123,6 +137,21 @@ namespace {
 			return;
 		}
 
+		const auto converted_id = convert_id(key_id);
+		if (converted_id == ButtonsHandled::kUnknown)
+		{
+			LOG("Unhandled key ID");
+		}
+		else
+		{
+			keys_pressed_[to_index(convert_id(key_id))] = val;
+
+			if (!val)
+			{
+				keys_processed_[to_index(convert_id(key_id))] = false;
+			}
+		}
+
 		apply(all_element_members_, ElementLambdas::set_key_pointer, key_id, val);
 	}
 	
@@ -133,5 +162,24 @@ namespace {
 			return;
 		}
 		apply(all_element_members_, ElementLambdas::process_input_pointer, dt);
+
+		if (keys_pressed_[to_index(ButtonsHandled::kLevelSelection)] && 
+			!keys_processed_[to_index(ButtonsHandled::kLevelSelection)])
+		{
+			handler_->handle_game_overlay_event(Handler::Event::kOpenLevelSelection);
+			keys_processed_[to_index(ButtonsHandled::kLevelSelection)] = true;
+		}
+		if (keys_pressed_[to_index(ButtonsHandled::kMainMenu)] &&
+			!keys_processed_[to_index(ButtonsHandled::kMainMenu)])
+		{
+			handler_->handle_game_overlay_event(Handler::Event::kOpenMainMenu);
+			keys_processed_[to_index(ButtonsHandled::kMainMenu)] = true;
+		}
+		if (keys_pressed_[to_index(ButtonsHandled::kRestartGame)] &&
+			!keys_processed_[to_index(ButtonsHandled::kRestartGame)])
+		{
+			handler_->handle_game_overlay_event(Handler::Event::kRestartGame);
+			keys_processed_[to_index(ButtonsHandled::kRestartGame)] = true;
+		}
 	}
 } // namespace util

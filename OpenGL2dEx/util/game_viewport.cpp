@@ -46,7 +46,7 @@ namespace util {
 		, effects_{ nullptr }
 		, shake_time_{ 0.0f }
 		, power_ups_{}
-		, game_ended_overlay_{width, height}
+		, game_ended_overlay_{*this, width, height}
 	{
 	}
 
@@ -255,6 +255,33 @@ namespace util {
 		effects_->render(static_cast<float>(glfwGetTime()));
 
 		check_for_gl_errors();
+	}
+
+	void GameViewport::handle_game_overlay_event_impl(const Event event)
+	{
+		switch (event)
+		{
+		case Event::kRestartGame:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kPlaying;
+			break;
+		case Event::kOpenLevelSelection:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kBefore;
+			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kShowLevelSelection);
+			break;
+		case Event::kOpenMainMenu:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kBefore;
+			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kReturnToMainMenu);
+			break;
+		default:
+			ASSERT(false, "Unhandled event type");
+			break;
+		}
 	}
 
 	namespace {
@@ -493,26 +520,28 @@ namespace util {
 			return;
 		}
 
-		bool *key_ptr = nullptr;
-		bool *key_processed_ptr = nullptr;
-		switch (convert_id(key_id))
+		if (state_ == State::kPlaying)
 		{
-		case ButtonsHandled::kLeftButton:
-		case ButtonsHandled::kRightButton:
-		case ButtonsHandled::kLaunchButton:
-			key_ptr = &keys_pressed_[to_index(convert_id(key_id))];
-			key_processed_ptr = &keys_processed_[to_index(convert_id(key_id))];
-			break;
-		default:
-			LOG("Unhandled key ID");
-			return;
-		}
+			const auto converted_id = convert_id(key_id);
+			if (converted_id == ButtonsHandled::kUnknown)
+			{
+				LOG("Unhandled key ID");
+			}
+			else
+			{
+				keys_pressed_[to_index(convert_id(key_id))] = val;
+				
+				if (!val)
+				{
+					keys_processed_[to_index(convert_id(key_id))] = false;
+				}
+			}
 
-		// update keys & processed arrays accordingly
-		*key_ptr = val;
-		if (!val)
+		}
+		else
 		{
-			*key_processed_ptr = false;
+			// pass event on when not playing
+			game_ended_overlay_.set_key(key_id, val);
 		}
 	}
 
@@ -564,20 +593,29 @@ namespace util {
 			return;
 		}
 
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_A))])
+		if (state_ == State::kPlaying)
 		{
-			handle_left_button(dt);
-			keys_processed_[to_index(convert_id(GLFW_KEY_A))] = true;
+			// handle game actions when the game is playing
+			if (keys_pressed_[to_index(ButtonsHandled::kLeftButton)])
+			{
+				handle_left_button(dt);
+				keys_processed_[to_index(ButtonsHandled::kLeftButton)] = true;
+			}
+			if (keys_pressed_[to_index(ButtonsHandled::kRightButton)])
+			{
+				handle_right_button(dt);
+				keys_processed_[to_index(ButtonsHandled::kRightButton)] = true;
+			}
+			if (keys_pressed_[to_index(ButtonsHandled::kLaunchButton)])
+			{
+				handle_launch_button();
+				keys_processed_[to_index(ButtonsHandled::kLaunchButton)] = true;
+			}
 		}
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_D))])
+		else
 		{
-			handle_right_button(dt);
-			keys_processed_[to_index(convert_id(GLFW_KEY_D))] = true;
-		}
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_SPACE))])
-		{
-			handle_launch_button();
-			keys_processed_[to_index(convert_id(GLFW_KEY_SPACE))] = true;
+			// pass down event to other objects
+			game_ended_overlay_.process_input(dt);
 		}
 	}
 
@@ -612,8 +650,14 @@ namespace util {
 		if (out_of_lives())
 		{
 			reset();
-			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kLost);
 			state_ = State::kLost;
+
+			// TODO(sasiala): temp fix for bug where holding key as 
+			// game ends will make it marked pressed when game is restarted 
+			// until the user presses and releases that key
+			fill(keys_pressed_, false);
+			fill(keys_processed_, false);
+
 			game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kLost);
 			game_ended_overlay_.activate();
 		}
@@ -820,9 +864,14 @@ namespace util {
 
 	void GameViewport::level_complete()
 	{
-		// TODO(sasiala): I don't think we want a reset here, but rather a game won state
-		game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kWon);
 		state_ = State::kWon;
+
+		// TODO(sasiala): temp fix for bug where holding key as 
+		// game ends will make it marked pressed when game is restarted 
+		// until the user presses and releases that key
+		fill(keys_pressed_, false);
+		fill(keys_processed_, false);
+
 		game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kWon);
 		game_ended_overlay_.activate();
 	}

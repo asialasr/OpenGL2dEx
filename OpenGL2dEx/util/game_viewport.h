@@ -21,7 +21,8 @@ class ParticleGenerator;
 class PostProcessor;
 class IResetGlProperties;
 
-class GameViewport : public Element {
+class GameViewport : public Element
+				   , public GameEndedOverlay::Handler {
 public:
 	enum class Direction {
 		kUp,
@@ -37,8 +38,8 @@ public:
 	class ActionHandler {
 	public:
 		enum class Action {
-			kWon = 0,
-			kLost,
+			kShowLevelSelection = 0,
+			kReturnToMainMenu,
 			kNumReasons,
 			kUnknown,
 		};
@@ -115,6 +116,9 @@ private:
 	void activate_impl() override;
 	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
+
+	// GameEndedOverlay::Handler
+	void handle_game_overlay_event_impl(Event event) override;
 
 	enum class ButtonsHandled {
 		kLeftButton = 0,
