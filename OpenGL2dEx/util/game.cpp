@@ -173,14 +173,20 @@ namespace util
 		main_menu_.set_key(key, val);
 	}
 
-	void Game::game_ended_impl(const EndingReason /*reason*/)
+	void Game::handle_game_viewport_action_impl(const Action reason)
 	{
-		// TODO(sasiala): handle various ending reasons
-		main_menu_.update_current_level(current_level_);
-		main_menu_.open_level_selection_next_activate();
-		main_menu_.activate();
-		state_ = GameState::kMainMenu;
-		show_small_game_viewport(true);
+		switch (reason)
+		{
+		case Action::kShowLevelSelection:
+			open_level_selection(true);
+			break;
+		case Action::kReturnToMainMenu:
+			open_main_menu();
+			break;
+		default:
+			ASSERT(false, "Unknown reason for game end");
+			break;
+		}
 	}
 
 	void Game::change_level_impl(const LevelSelectionMenu::MenuIndex index)
@@ -192,6 +198,7 @@ namespace util
 
 	void Game::start_game_impl()
 	{
+		game_viewport_.start_game();
 		close_main_menu();
 	}
 
@@ -212,6 +219,15 @@ namespace util
 		game_viewport_.deactivate();
 		main_menu_.activate();
 		state_ = GameState::kMainMenu;
+	}
+
+	void Game::open_level_selection(const bool animate)
+	{
+		main_menu_.update_current_level(current_level_);
+		main_menu_.open_level_selection_next_activate();
+		main_menu_.activate();
+		state_ = GameState::kMainMenu;
+		show_small_game_viewport(animate);
 	}
 
 	void Game::show_small_game_viewport(const bool animate)

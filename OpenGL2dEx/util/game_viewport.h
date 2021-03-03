@@ -4,6 +4,7 @@
 #include "game_level.h"
 #include "element.h"
 
+#include "game_ended_overlay.h"
 #include "logging.h"
 #include "power_up.h"
 #include "types.h"
@@ -20,7 +21,8 @@ class ParticleGenerator;
 class PostProcessor;
 class IResetGlProperties;
 
-class GameViewport : public Element {
+class GameViewport : public Element
+				   , public GameEndedOverlay::Handler {
 public:
 	enum class Direction {
 		kUp,
@@ -33,30 +35,66 @@ public:
 	using Collision = std::tuple<bool, Direction, glm::vec2>;
 	using LifeCount = unsigned int;
 
-	class GameStateCallback {
+	class ActionHandler {
 	public:
-		enum class EndingReason {
-			kWon = 0,
-			kLost,
+		enum class Action {
+			kShowLevelSelection = 0,
+			kReturnToMainMenu,
 			kNumReasons,
 			kUnknown,
 		};
-		void game_ended(EndingReason reason)
+		void handle_game_viewport_action(Action reason)
 		{
-			game_ended_impl(reason);
+			handle_game_viewport_action_impl(reason);
 		}
 
 	private:
-		virtual void game_ended_impl(EndingReason reason) = 0;
+		virtual void handle_game_viewport_action_impl(Action reason) = 0;
 	};
+
+	enum class State {
+		kBefore,
+		kPlaying,
+		kPaused,
+		kLost,
+		kWon,
+		kNumStates,
+		kUnknown
+	};
+
 	// TODO(sasiala): allow changing dimensions & pos dynamically
 	GameViewport(IResetGlProperties &gl_property_resetter,
 				 Dimension width, 
 				 Dimension height);
 
-	void set_game_state_callback(GameStateCallback &callback)
+	void set_game_state_callback(ActionHandler &callback)
 	{
 		game_state_callback_ = &callback;
+	}
+
+	void start_game()
+	{
+		switch (state_)
+		{
+		case State::kWon:
+			reset();
+			game_ended_overlay_.deactivate();
+			state_ = State::kPlaying;
+			break;
+		case State::kLost:
+			game_ended_overlay_.deactivate();
+			state_ = State::kPlaying;
+			break;
+		case State::kBefore:
+			state_ = State::kPlaying;
+			break;
+		case State::kPaused:
+			state_ = State::kPlaying;
+			break;
+		default:
+			ASSERT(false, "Unhandled starting game state");
+			break;
+		}
 	}
 
 	void set_size(Dimension width, Dimension height);
@@ -78,6 +116,9 @@ private:
 	void activate_impl() override;
 	void deactivate_impl() override;
 	void render_impl(Optional<SpriteRenderer*> parent_sprite_renderer) override;
+
+	// GameEndedOverlay::Handler
+	void handle_game_overlay_event_impl(Event event) override;
 
 	enum class ButtonsHandled {
 		kLeftButton = 0,
@@ -126,7 +167,7 @@ private:
 	void handle_left_button(float dt);
 	void handle_right_button(float dt);
 	void handle_launch_button();
-	void process_input_impl(float dt) override;
+	void process_input_impl(Time dt) override;
 
 	static constexpr struct {
 		float relative_x_;
@@ -200,7 +241,7 @@ private:
 	Dimension width_;
 	Dimension height_;
 
-	GameStateCallback *game_state_callback_;
+	ActionHandler *game_state_callback_;
 
 	GameLevel level_;
 	const char * level_path_;
@@ -246,6 +287,8 @@ private:
 	// fonts
 	ResourceManager::FontId default_font_id_;
 
+	State state_;
+
 	LifeCount lives_;
 
 	// TODO(sasiala): the usage of "relative" vs "ratio_from_height_" differs across
@@ -270,6 +313,8 @@ private:
 	std::vector<PowerUp> power_ups_;
 
 	SpriteRenderer *sprite_renderer_;
+
+	GameEndedOverlay game_ended_overlay_;
 };
 
 } // namespace util

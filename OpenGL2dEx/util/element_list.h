@@ -82,7 +82,7 @@ private:
 
 		element_ptr()->set_key(key_id, val);
 	}
-	void process_input_impl(float dt) override
+	void process_input_impl(Time dt) override
 	{
 		ASSERT(element_ptr(), "Element pointer uninitialized");
 
@@ -127,6 +127,12 @@ public:
 		return list_[index];
 	}
 
+	ListObject& back()
+	{
+		ASSERT(size_ > 0, "No elements in list");
+		return list_[size_ - 1];
+	}
+
 	void push_back(const ListObject &obj)
 	{
 		ASSERT(size_ < kMaxObjects, "No room in list");
@@ -141,7 +147,7 @@ public:
 		return size_;
 	}
 
-	Index max_size() const
+	static constexpr Index max_size()
 	{
 		return kMaxObjects;
 	}

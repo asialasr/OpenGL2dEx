@@ -2,6 +2,7 @@
 #define GAME_LEVEL_H
 
 #include "game_object.h"
+#include "logging.h"
 #include "resource_mgr.h"
 #include <vector>
 
@@ -18,9 +19,11 @@ public:
 		: block_solid_texture_id_{}
 		, block_texture_id_{}
 		, bricks_{}
+		, bricks_alive_{}
 	{
 	}
 
+	// TODO(sasiala): shouldn't need to load each time we reset level
 	// load from file
 	void load(const char                   *file, 
 			  unsigned int                 level_width, 
@@ -30,7 +33,10 @@ public:
 
 	void draw(SpriteRenderer &renderer);
 	
-	bool is_completed();
+	bool is_completed()
+	{
+		return (bricks_alive_ == 0);
+	}
 
 	const BrickContainer &bricks() const
 	{
@@ -40,7 +46,13 @@ public:
 	void set_brick_destroyed(const size_t index, 
 							 const bool destroyed)
 	{
-		bricks_.at(index).set_destroyed(destroyed);
+		ASSERT(bricks_alive_ > 0, "No bricks available to destroy");
+		auto &brick = bricks_.at(index);
+		ASSERT(!brick.is_solid(), "Brick is indestructible (solid brick)");
+		ASSERT(!brick.is_destroyed(), "Brick is already destroyed");
+
+		brick.set_destroyed(destroyed);
+		--bricks_alive_;
 	}
 
 private:
@@ -50,6 +62,7 @@ private:
 	ResourceManager::Texture2DId block_solid_texture_id_;
 	ResourceManager::Texture2DId block_texture_id_;
 	BrickContainer               bricks_;
+	size_t                       bricks_alive_;
 
 	enum class TileColor {
 		kOne = 1,

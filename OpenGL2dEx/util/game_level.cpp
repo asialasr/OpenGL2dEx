@@ -56,18 +56,6 @@ void GameLevel::draw(SpriteRenderer &renderer)
 	}
 }
 
-bool GameLevel::is_completed()
-{
-	for (auto &tile : bricks_)
-	{
-		if (!tile.is_solid() && !tile.is_destroyed())
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
 void GameLevel::initialize(std::vector<std::vector<unsigned int>> tile_data,
 	unsigned int level_width, unsigned int level_height)
 {
@@ -77,6 +65,8 @@ void GameLevel::initialize(std::vector<std::vector<unsigned int>> tile_data,
 	unsigned int width = tile_data.at(0).size();
 	float unit_width = level_width / static_cast<float>(width);
 	float unit_height = level_height / static_cast<float>(height);
+
+	bricks_alive_ = 0;
 
 	for (unsigned int y = 0; y < height; ++y)
 	{
@@ -118,10 +108,7 @@ void GameLevel::initialize(std::vector<std::vector<unsigned int>> tile_data,
 				}
 
 				bricks_.push_back(GameObject(pos, size, ResourceManager::get_texture(block_texture_id_), { color }, {}));
-			}
-			else if (current_val < 0)
-			{
-				ASSERT(false, "Tile data at y = " + std::to_string(y) + ", x = " + std::to_string(x));
+				++bricks_alive_;
 			}
 		}
 

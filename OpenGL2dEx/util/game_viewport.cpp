@@ -38,6 +38,7 @@ namespace util {
 		, sprite_shader_id_{}
 		, font_shader_id_{}
 		, default_font_id_{}
+		, state_{State::kUnknown}
 		, lives_{ kInitialLifeCount }
 		, paddle_{ nullptr }
 		, ball_{ nullptr }
@@ -45,6 +46,7 @@ namespace util {
 		, effects_{ nullptr }
 		, shake_time_{ 0.0f }
 		, power_ups_{}
+		, game_ended_overlay_{*this, width, height}
 	{
 	}
 
@@ -64,10 +66,20 @@ namespace util {
 
 	void GameViewport::load_level(const char * const path)
 	{
+		// TODO(sasiala) this clearing should be acomplished by reset()
+		// call, but that currently calls load_level()
 		reset_lives();
+		power_ups_.clear();
+		effects_->clear_effects();
+		particle_generator_->clear_particles();
+		reset_player();
+
 		level_path_ = path;
 		level_.load(level_path_, width_, height_ / 2,
 			block_solid_texture_id_, block_texture_id_);
+
+		game_ended_overlay_.deactivate();
+		state_ = State::kBefore;
 	}
 
 	void GameViewport::reset_level()
@@ -83,6 +95,7 @@ namespace util {
 		power_ups_.clear();
 		effects_->clear_effects();
 		particle_generator_->clear_particles();
+		reset_player();
 	}
 
 	void GameViewport::initialize_impl(const glm::mat4 &screen_projection)
@@ -154,7 +167,9 @@ namespace util {
 
 	void GameViewport::update_impl(Time dt)
 	{
-		if (!is_active())
+		ASSERT(state_ < State::kNumStates, "Invalid game viewport state");
+
+		if (!is_active() || state_ != State::kPlaying)
 		{
 			return;
 		}
@@ -164,6 +179,16 @@ namespace util {
 
 		ball_->move(dt, width_);
 		check_collisions();
+
+		if (state_ == State::kLost)
+		{
+			reset();
+			return;
+		}
+		if (state_ == State::kWon)
+		{
+			return;
+		}
 
 		if (ball_->position().y >= height_)
 		{
@@ -224,10 +249,39 @@ namespace util {
 
 		render_lives();
 
+		game_ended_overlay_.render({ sprite_renderer_ });
+
 		effects_->end_render();
 		effects_->render(static_cast<float>(glfwGetTime()));
 
 		check_for_gl_errors();
+	}
+
+	void GameViewport::handle_game_overlay_event_impl(const Event event)
+	{
+		switch (event)
+		{
+		case Event::kRestartGame:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kPlaying;
+			break;
+		case Event::kOpenLevelSelection:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kBefore;
+			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kShowLevelSelection);
+			break;
+		case Event::kOpenMainMenu:
+			game_ended_overlay_.deactivate();
+			reset();
+			state_ = State::kBefore;
+			game_state_callback_->handle_game_viewport_action(ActionHandler::Action::kReturnToMainMenu);
+			break;
+		default:
+			ASSERT(false, "Unhandled event type");
+			break;
+		}
 	}
 
 	namespace {
@@ -310,6 +364,11 @@ namespace util {
 			else
 			{
 				AudioManager::play_ball_brick_collision_sound(AudioManager::BallBrickCollisionType::kNormal);
+			}
+
+			if (state_ != State::kPlaying)
+			{
+				return;
 			}
 		}
 		else
@@ -408,6 +467,10 @@ namespace util {
 				if (std::get<0>(collision_tuple))
 				{
 					handle_ball_box_collision(collision_tuple, index, box);
+					if (state_ != State::kPlaying)
+					{
+						return;
+					}
 				}
 			}
 			++index;
@@ -457,26 +520,28 @@ namespace util {
 			return;
 		}
 
-		bool *key_ptr = nullptr;
-		bool *key_processed_ptr = nullptr;
-		switch (convert_id(key_id))
+		if (state_ == State::kPlaying)
 		{
-		case ButtonsHandled::kLeftButton:
-		case ButtonsHandled::kRightButton:
-		case ButtonsHandled::kLaunchButton:
-			key_ptr = &keys_pressed_[to_index(convert_id(key_id))];
-			key_processed_ptr = &keys_processed_[to_index(convert_id(key_id))];
-			break;
-		default:
-			LOG("Unhandled key ID");
-			return;
-		}
+			const auto converted_id = convert_id(key_id);
+			if (converted_id == ButtonsHandled::kUnknown)
+			{
+				LOG("Unhandled key ID");
+			}
+			else
+			{
+				keys_pressed_[to_index(convert_id(key_id))] = val;
+				
+				if (!val)
+				{
+					keys_processed_[to_index(convert_id(key_id))] = false;
+				}
+			}
 
-		// update keys & processed arrays accordingly
-		*key_ptr = val;
-		if (!val)
+		}
+		else
 		{
-			*key_processed_ptr = false;
+			// pass event on when not playing
+			game_ended_overlay_.set_key(key_id, val);
 		}
 	}
 
@@ -521,27 +586,36 @@ namespace util {
 		ball_->set_stuck(false);
 	}
 
-	void GameViewport::process_input_impl(float dt)
+	void GameViewport::process_input_impl(Time dt)
 	{
 		if (!is_active())
 		{
 			return;
 		}
 
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_A))])
+		if (state_ == State::kPlaying)
 		{
-			handle_left_button(dt);
-			keys_processed_[to_index(convert_id(GLFW_KEY_A))] = true;
+			// handle game actions when the game is playing
+			if (keys_pressed_[to_index(ButtonsHandled::kLeftButton)])
+			{
+				handle_left_button(dt);
+				keys_processed_[to_index(ButtonsHandled::kLeftButton)] = true;
+			}
+			if (keys_pressed_[to_index(ButtonsHandled::kRightButton)])
+			{
+				handle_right_button(dt);
+				keys_processed_[to_index(ButtonsHandled::kRightButton)] = true;
+			}
+			if (keys_pressed_[to_index(ButtonsHandled::kLaunchButton)])
+			{
+				handle_launch_button();
+				keys_processed_[to_index(ButtonsHandled::kLaunchButton)] = true;
+			}
 		}
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_D))])
+		else
 		{
-			handle_right_button(dt);
-			keys_processed_[to_index(convert_id(GLFW_KEY_D))] = true;
-		}
-		if (keys_pressed_[to_index(convert_id(GLFW_KEY_SPACE))])
-		{
-			handle_launch_button();
-			keys_processed_[to_index(convert_id(GLFW_KEY_SPACE))] = true;
+			// pass down event to other objects
+			game_ended_overlay_.process_input(dt);
 		}
 	}
 
@@ -576,9 +650,21 @@ namespace util {
 		if (out_of_lives())
 		{
 			reset();
-			game_state_callback_->game_ended(GameStateCallback::EndingReason::kLost);
+			state_ = State::kLost;
+
+			// TODO(sasiala): temp fix for bug where holding key as 
+			// game ends will make it marked pressed when game is restarted 
+			// until the user presses and releases that key
+			fill(keys_pressed_, false);
+			fill(keys_processed_, false);
+
+			game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kLost);
+			game_ended_overlay_.activate();
 		}
-		reset_player();
+		else
+		{
+			reset_player();
+		}
 	}
 
 	void GameViewport::delete_dynamic_data()
@@ -778,7 +864,16 @@ namespace util {
 
 	void GameViewport::level_complete()
 	{
-		// TODO(sasiala)
+		state_ = State::kWon;
+
+		// TODO(sasiala): temp fix for bug where holding key as 
+		// game ends will make it marked pressed when game is restarted 
+		// until the user presses and releases that key
+		fill(keys_pressed_, false);
+		fill(keys_processed_, false);
+
+		game_ended_overlay_.set_mode(GameEndedOverlay::Mode::kWon);
+		game_ended_overlay_.activate();
 	}
 
 }
