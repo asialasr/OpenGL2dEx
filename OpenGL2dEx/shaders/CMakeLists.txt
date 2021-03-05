@@ -1,0 +1,9 @@
+set(RESOURCE_FILES
+    effects.fs
+    effects.vs
+    particle.fs
+    particle.vs
+    sprite.fs
+    sprite.vs
+    text_2d.fs
+    text_2d.vs)

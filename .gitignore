@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # logfile
 log.txt
+
+# builds (CMake)
+cmake_builds

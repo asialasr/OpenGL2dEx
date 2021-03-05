@@ -1,0 +1,2 @@
+set(RESOURCE_FILES
+    OCRAEXT.TTF)
