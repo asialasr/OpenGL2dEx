@@ -1,4 +1,12 @@
 cmake_minimum_required(VERSION 3.17)
+function(copy_resource_to_build target src dest)
+#    add_custom_command(
+#        TARGET ${target} POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy
+#                ${CMAKE_CURRENT_LIST_DIR}/${src}
+#                ${CMAKE_CURRENT_BINARY_DIR}/${dest})
+    configure_file(${src} ${dest} COPYONLY)
+endfunction()
 
 # Function from: https://crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources/
 # Used for compatibility with older CMake versions

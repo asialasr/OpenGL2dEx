@@ -1,7 +1,6 @@
-set(RESOURCE_FILES
-    powerup_chaos.png
-    powerup_confuse.png
-    powerup_increase.png
-    powerup_passthrough.png
-    powerup_speed.png
-    powerup_sticky.png)
+copy_resource_to_build(OpenGL2dEx powerup_chaos.png powerup_chaos.png)
+copy_resource_to_build(OpenGL2dEx powerup_confuse.png powerup_confuse.png)
+copy_resource_to_build(OpenGL2dEx powerup_increase.png powerup_increase.png)
+copy_resource_to_build(OpenGL2dEx powerup_passthrough.png powerup_passthrough.png)
+copy_resource_to_build(OpenGL2dEx powerup_speed.png powerup_speed.png)
+copy_resource_to_build(OpenGL2dEx powerup_sticky.png powerup_sticky.png)

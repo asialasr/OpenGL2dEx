@@ -1,9 +1,8 @@
-set(RESOURCE_FILES
-    effects.fs
-    effects.vs
-    particle.fs
-    particle.vs
-    sprite.fs
-    sprite.vs
-    text_2d.fs
-    text_2d.vs)
+copy_resource_to_build(OpenGL2dEx effects.fs effects.fs)
+copy_resource_to_build(OpenGL2dEx effects.vs effects.vs)
+copy_resource_to_build(OpenGL2dEx particle.fs particle.fs)
+copy_resource_to_build(OpenGL2dEx particle.vs particle.vs)
+copy_resource_to_build(OpenGL2dEx sprite.fs sprite.fs)
+copy_resource_to_build(OpenGL2dEx sprite.vs sprite.vs)
+copy_resource_to_build(OpenGL2dEx text_2d.fs text_2d.fs)
+copy_resource_to_build(OpenGL2dEx text_2d.vs text_2d.vs)

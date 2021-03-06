@@ -1,6 +1,5 @@
-set(RESOURCE_FILES
-    bleep.mp3
-    bleep.wav
-    breakout.mp3
-    powerup.wav
-    solid.wav)
+copy_resource_to_build(OpenGL2dEx bleep.mp3 bleep.mp3)
+copy_resource_to_build(OpenGL2dEx bleep.wav bleep.wav)
+copy_resource_to_build(OpenGL2dEx breakout.mp3 breakout.mp3)
+copy_resource_to_build(OpenGL2dEx powerup.wav powerup.wav)
+copy_resource_to_build(OpenGL2dEx solid.wav solid.wav)

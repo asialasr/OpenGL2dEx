@@ -1,2 +1,1 @@
-set(RESOURCE_FILES
-    OCRAEXT.TTF)
+copy_resource_to_build(OpenGL2dEx OCRAEXT.TTF OCRAEXT.TTF)
